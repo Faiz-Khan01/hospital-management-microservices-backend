@@ -1,0 +1,355 @@
+{
+  "info": {
+    "name": "HospitalSync — Full API Test Suite",
+    "description": "Comprehensive API collection for Hospital Management Microservices. All requests route through API Gateway at http://localhost:8080",
+    "_postman_id": "hospital-mgmt-v2-collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "BASE_URL", "value": "http://localhost:8080", "type": "string" },
+    { "key": "TOKEN", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{BASE_URL}}/api/v1/auth/register", "host": ["{{BASE_URL}}"], "path": ["api", "v1", "auth", "register"] },
+            "body": { "mode": "raw", "raw": "{\"username\": \"testdoctor\", \"email\": \"doctor@hospital.com\", \"password\": \"Doctor@123\", \"role\": \"DOCTOR\"}" }
+          }
+        },
+        {
+          "name": "Login (Get JWT Token)",
+          "event": [{ "listen": "test", "script": { "exec": ["const json = pm.response.json(); if (json.token) { pm.collectionVariables.set('TOKEN', json.token); pm.test('Token received', () => pm.expect(json.token).to.be.a('string')); }"], "type": "text/javascript" } }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{BASE_URL}}/api/v1/auth/login", "host": ["{{BASE_URL}}"], "path": ["api", "v1", "auth", "login"] },
+            "body": { "mode": "raw", "raw": "{\"username\": \"admin\", \"password\": \"admin123\"}" }
+          }
+        },
+        {
+          "name": "Get My Profile",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{TOKEN}}" }],
+            "url": { "raw": "{{BASE_URL}}/api/v1/auth/me", "host": ["{{BASE_URL}}"], "path": ["api", "v1", "auth", "me"] }
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{BASE_URL}}/api/v1/auth/forgot-password", "host": ["{{BASE_URL}}"], "path": ["api", "v1", "auth", "forgot-password"] },
+            "body": { "mode": "raw", "raw": "{\"email\": \"doctor@hospital.com\"}" }
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{TOKEN}}" }],
+            "url": { "raw": "{{BASE_URL}}/api/v1/auth/change-password", "host": ["{{BASE_URL}}"], "path": ["api", "v1", "auth", "change-password"] },
+            "body": { "mode": "raw", "raw": "{\"oldPassword\": \"admin123\", \"newPassword\": \"Admin@456\"}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Patients",
+      "item": [
+        {
+          "name": "Get All Patients",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{TOKEN}}" }],
+            "url": { "raw": "{{BASE_URL}}/api/v1/patients", "host": ["{{BASE_URL}}"], "path": ["api", "v1", "patients"] }
+          }
+        },
+        {
+          "name": "Create Patient",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{TOKEN}}" }],
+            "url": { "raw": "{{BASE_URL}}/api/v1/patients", "host": ["{{BASE_URL}}"], "path": ["api", "v1", "patients"] },
+            "body": { "mode": "raw", "raw": "{\"name\": \"Ravi Kumar\", \"age\": 45, \"gender\": \"Male\", \"contact\": \"9876543210\", \"disease\": \"Hypertension\"}" }
+          }
+        },
+        {
+          "name": "Get Patient by ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{TOKEN}}" }],
+            "url": { "raw": "{{BASE_URL}}/api/v1/patients/1", "host": ["{{BASE_URL}}"], "path": ["api", "v1", "patients", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Doctors",
+      "item": [
+        {
+          "name": "Get All Doctors",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{TOKEN}}" }],
+            "url": { "raw": "{{BASE_URL}}/api/v1/doctors", "host": ["{{BASE_URL}}"], "path": ["api", "v1", "doctors"] }
+          }
+        },
+        {
+          "name": "Create Doctor",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{TOKEN}}" }],
+            "url": { "raw": "{{BASE_URL}}/api/v1/doctors", "host": ["{{BASE_URL}}"], "path": ["api", "v1", "doctors"] },
+            "body": { "mode": "raw", "raw": "{\"name\": \"Dr. Anita Sharma\", \"specialization\": \"Cardiology\", \"qualification\": \"MBBS, MD\", \"experience\": 12}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Appointments",
+      "item": [
+        {
+          "name": "Get All Appointments",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{TOKEN}}" }],
+            "url": { "raw": "{{BASE_URL}}/api/v1/appointments", "host": ["{{BASE_URL}}"], "path": ["api", "v1", "appointments"] }
+          }
+        },
+        {
+          "name": "Book Appointment (triggers notification)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{TOKEN}}" }],
+            "url": { "raw": "{{BASE_URL}}/api/v1/appointments", "host": ["{{BASE_URL}}"], "path": ["api", "v1", "appointments"] },
+            "body": { "mode": "raw", "raw": "{\"patientId\": 1, \"doctorId\": 1, \"appointmentDate\": \"2026-09-10T10:00:00\"}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Prescriptions",
+      "item": [
+        {
+          "name": "Get All Prescriptions",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{TOKEN}}" }],
+            "url": { "raw": "{{BASE_URL}}/api/v1/prescriptions", "host": ["{{BASE_URL}}"], "path": ["api", "v1", "prescriptions"] }
+          }
+        },
+        {
+          "name": "Create Prescription",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{TOKEN}}" }],
+            "url": { "raw": "{{BASE_URL}}/api/v1/prescriptions", "host": ["{{BASE_URL}}"], "path": ["api", "v1", "prescriptions"] },
+            "body": { "mode": "raw", "raw": "{\"patientId\": 1, \"doctorId\": 1, \"medicines\": \"Amlodipine 5mg OD\", \"notes\": \"Take after meals\"}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Billing",
+      "item": [
+        {
+          "name": "Get All Bills",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{TOKEN}}" }],
+            "url": { "raw": "{{BASE_URL}}/api/v1/billing", "host": ["{{BASE_URL}}"], "path": ["api", "v1", "billing"] }
+          }
+        },
+        {
+          "name": "Create Bill",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{TOKEN}}" }],
+            "url": { "raw": "{{BASE_URL}}/api/v1/billing", "host": ["{{BASE_URL}}"], "path": ["api", "v1", "billing"] },
+            "body": { "mode": "raw", "raw": "{\"patientId\": 1, \"totalAmount\": 3500, \"status\": \"PENDING\", \"description\": \"OPD Consultation + Lab Tests\"}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Payments (auto-notifies on PAID)",
+      "item": [
+        {
+          "name": "Get All Payments",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{TOKEN}}" }],
+            "url": { "raw": "{{BASE_URL}}/api/v1/payments", "host": ["{{BASE_URL}}"], "path": ["api", "v1", "payments"] }
+          }
+        },
+        {
+          "name": "Create Payment",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{TOKEN}}" }],
+            "url": { "raw": "{{BASE_URL}}/api/v1/payments", "host": ["{{BASE_URL}}"], "path": ["api", "v1", "payments"] },
+            "body": { "mode": "raw", "raw": "{\"patientId\": 1, \"billingId\": 1, \"amount\": 3500, \"paymentMethod\": \"UPI\", \"transactionId\": \"UPI2409031234\", \"status\": \"PAID\"}" }
+          }
+        },
+        {
+          "name": "Update Payment to PAID (triggers notification)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{TOKEN}}" }],
+            "url": { "raw": "{{BASE_URL}}/api/v1/payments/1", "host": ["{{BASE_URL}}"], "path": ["api", "v1", "payments", "1"] },
+            "body": { "mode": "raw", "raw": "{\"amount\": 3500, \"paymentMethod\": \"UPI\", \"transactionId\": \"UPI2409031234\", \"status\": \"PAID\"}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. Lab Tests & Reports (auto-notifies on COMPLETED)",
+      "item": [
+        {
+          "name": "Get All Lab Tests",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{TOKEN}}" }],
+            "url": { "raw": "{{BASE_URL}}/api/v1/lab-tests", "host": ["{{BASE_URL}}"], "path": ["api", "v1", "lab-tests"] }
+          }
+        },
+        {
+          "name": "Create Lab Test",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{TOKEN}}" }],
+            "url": { "raw": "{{BASE_URL}}/api/v1/lab-tests", "host": ["{{BASE_URL}}"], "path": ["api", "v1", "lab-tests"] },
+            "body": { "mode": "raw", "raw": "{\"name\": \"Complete Blood Count\", \"code\": \"CBC001\", \"category\": \"Hematology\", \"price\": 350}" }
+          }
+        },
+        {
+          "name": "Get All Lab Reports",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{TOKEN}}" }],
+            "url": { "raw": "{{BASE_URL}}/api/v1/lab-reports", "host": ["{{BASE_URL}}"], "path": ["api", "v1", "lab-reports"] }
+          }
+        },
+        {
+          "name": "Update Lab Report to COMPLETED (triggers notification)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{TOKEN}}" }],
+            "url": { "raw": "{{BASE_URL}}/api/v1/lab-reports/1", "host": ["{{BASE_URL}}"], "path": ["api", "v1", "lab-reports", "1"] },
+            "body": { "mode": "raw", "raw": "{\"resultValue\": \"WBC: 9.2K/μL, Hgb: 14.1 g/dL\", \"status\": \"COMPLETED\", \"comments\": \"All values within normal range\"}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "9. Medical Records (EHR)",
+      "item": [
+        {
+          "name": "Get All Medical Records",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{TOKEN}}" }],
+            "url": { "raw": "{{BASE_URL}}/api/v1/medical-records", "host": ["{{BASE_URL}}"], "path": ["api", "v1", "medical-records"] }
+          }
+        },
+        {
+          "name": "Create Medical Record",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{TOKEN}}" }],
+            "url": { "raw": "{{BASE_URL}}/api/v1/medical-records", "host": ["{{BASE_URL}}"], "path": ["api", "v1", "medical-records"] },
+            "body": { "mode": "raw", "raw": "{\"patientId\": 1, \"doctorId\": 1, \"diagnosis\": \"Hypertension Stage II\", \"treatment\": \"Amlodipine 5mg OD\", \"recordType\": \"OPD\", \"visitDate\": \"2026-09-03\"}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "10. Medicines (Pharmacy)",
+      "item": [
+        {
+          "name": "Get All Medicines",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{TOKEN}}" }],
+            "url": { "raw": "{{BASE_URL}}/api/v1/medicines", "host": ["{{BASE_URL}}"], "path": ["api", "v1", "medicines"] }
+          }
+        },
+        {
+          "name": "Create Medicine",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{TOKEN}}" }],
+            "url": { "raw": "{{BASE_URL}}/api/v1/medicines", "host": ["{{BASE_URL}}"], "path": ["api", "v1", "medicines"] },
+            "body": { "mode": "raw", "raw": "{\"name\": \"Amoxicillin 500mg\", \"genericName\": \"Amoxicillin\", \"category\": \"Antibiotics\", \"manufacturer\": \"Sun Pharma\", \"price\": 45, \"stock\": 840, \"unit\": \"Capsule\", \"expiryDate\": \"2027-06-30\"}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "11. Notifications",
+      "item": [
+        {
+          "name": "Trigger Appointment Confirmation",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{TOKEN}}" }],
+            "url": { "raw": "{{BASE_URL}}/api/v1/notifications/trigger", "host": ["{{BASE_URL}}"], "path": ["api", "v1", "notifications", "trigger"] },
+            "body": { "mode": "raw", "raw": "{\"userId\": 1, \"type\": \"APPOINTMENT_CONFIRMATION\", \"patientName\": \"Ravi Kumar\", \"doctorName\": \"Dr. Anita Sharma\", \"departmentName\": \"Cardiology\", \"appointmentDate\": \"2026-09-10T10:00:00\"}" }
+          }
+        },
+        {
+          "name": "Get User Notifications",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{TOKEN}}" }],
+            "url": { "raw": "{{BASE_URL}}/api/v1/notifications/user/1", "host": ["{{BASE_URL}}"], "path": ["api", "v1", "notifications", "user", "1"] }
+          }
+        },
+        {
+          "name": "Get Unread Count",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{TOKEN}}" }],
+            "url": { "raw": "{{BASE_URL}}/api/v1/notifications/user/1/unread-count", "host": ["{{BASE_URL}}"], "path": ["api", "v1", "notifications", "user", "1", "unread-count"] }
+          }
+        },
+        {
+          "name": "Mark Notification as Read",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Authorization", "value": "Bearer {{TOKEN}}" }],
+            "url": { "raw": "{{BASE_URL}}/api/v1/notifications/1/read", "host": ["{{BASE_URL}}"], "path": ["api", "v1", "notifications", "1", "read"] }
+          }
+        },
+        {
+          "name": "Mark All as Read",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Authorization", "value": "Bearer {{TOKEN}}" }],
+            "url": { "raw": "{{BASE_URL}}/api/v1/notifications/user/1/read-all", "host": ["{{BASE_URL}}"], "path": ["api", "v1", "notifications", "user", "1", "read-all"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "12. Admin Dashboard",
+      "item": [
+        {
+          "name": "Admin Dashboard Summary",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{TOKEN}}" }],
+            "url": { "raw": "{{BASE_URL}}/api/v1/users/dashboard/admin", "host": ["{{BASE_URL}}"], "path": ["api", "v1", "users", "dashboard", "admin"] }
+          }
+        }
+      ]
+    }
+  ]
+}

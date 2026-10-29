@@ -1,0 +1,10 @@
+package com.hospital.notification.enums;
+
+public enum NotificationType {
+    APPOINTMENT_CONFIRMATION,
+    APPOINTMENT_REMINDER,
+    APPOINTMENT_CANCELLATION,
+    LAB_REPORT_AVAILABLE,
+    PAYMENT_CONFIRMATION,
+    PRESCRIPTION_NOTIFICATION
+}

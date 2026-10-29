@@ -1,24 +1,39 @@
-# Compiled class file
-*.class
+# Node & Frontend
+**/node_modules/
+**/dist/
+**/build/
+.npm
+.eslintcache
 
-# Log file
+# Java & Backend Maven
+**/target/
+**/.mvn/wrapper/
+**/mvnw
+**/mvnw.cmd
+
+# IDEs & Editors
+.idea/
+**/.idea/
+*.iml
+**/*.iml
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Environment & Sensitive configs
+.env
+!.env.example
+
+# Logs & Temp files
 *.log
+**/logs/
+tmp/
+temp/
 
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
-*.jar
-*.war
-*.nar
-*.ear
-*.zip
-*.tar.gz
-*.rar
-
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-replay_pid*
+# OS Specific
+.DS_Store
+Thumbs.db
+Desktop.ini

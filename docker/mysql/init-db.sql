@@ -1,0 +1,21 @@
+-- Initialize all microservice databases for Hospital Management System
+CREATE DATABASE IF NOT EXISTS hospital_auth_db;
+CREATE DATABASE IF NOT EXISTS patient_db;
+CREATE DATABASE IF NOT EXISTS doctor_db;
+CREATE DATABASE IF NOT EXISTS appointment_db;
+CREATE DATABASE IF NOT EXISTS billing_db;
+CREATE DATABASE IF NOT EXISTS prescription_db;
+CREATE DATABASE IF NOT EXISTS user_db;
+CREATE DATABASE IF NOT EXISTS role_db;
+CREATE DATABASE IF NOT EXISTS department_db;
+CREATE DATABASE IF NOT EXISTS medical_record_db;
+CREATE DATABASE IF NOT EXISTS medicine_db;
+CREATE DATABASE IF NOT EXISTS lab_test_db;
+CREATE DATABASE IF NOT EXISTS lab_report_db;
+CREATE DATABASE IF NOT EXISTS payment_db;
+CREATE DATABASE IF NOT EXISTS notification_db;
+CREATE DATABASE IF NOT EXISTS admission_db;
+
+-- Grant privileges to root
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%';
+FLUSH PRIVILEGES;

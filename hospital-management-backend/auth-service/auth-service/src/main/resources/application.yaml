@@ -1,0 +1,58 @@
+server:
+  port: 8086
+
+spring:
+  application:
+    name: auth-service
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/hospital_auth_db?createDatabaseIfNotExist=true
+    username: root
+    password: Password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 1
+      idle-timeout: 30000
+      max-lifetime: 60000
+      connection-timeout: 20000
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    open-in-view: false
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    healthcheck:
+      enabled: true
+  instance:
+    prefer-ip-address: true
+    health-check-url-path: /actuator/health
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+
+# ===============================
+# JWT CONFIGURATION
+# ===============================
+jwt:
+  secret: ${JWT_SECRET:HospitalSyncSecretKey2026SecureJwtSigningKeyString}
+  expiration: 86400000
+
+# Default first-admin bootstrap credentials
+app:
+  bootstrap-admin:
+    username: ${ADMIN_USERNAME:admin}
+    email: ${ADMIN_EMAIL:admin@hospital.com}
+    name: ${ADMIN_NAME:System Administrator}
+    password: ${ADMIN_PASSWORD:admin123}

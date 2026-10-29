@@ -1,0 +1,457 @@
+networks:
+  hospital-network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+    driver: local
+
+services:
+  # ==========================================
+  # DATABASE: MySQL 8.0
+  # ==========================================
+  mysql:
+    image: mysql:8.0
+    container_name: hospital-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: Password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docker/mysql/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pPassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - hospital-network
+
+  # ==========================================
+  # CACHE: Redis 7
+  # ==========================================
+  redis:
+    image: redis:7-alpine
+    container_name: hospital-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - hospital-network
+
+  # ==========================================
+  # SERVICE DISCOVERY: Eureka Naming Server
+  # ==========================================
+  naming-server:
+    build:
+      context: ./hospital-management-backend/naming-server/naming-server
+      dockerfile: Dockerfile
+    container_name: naming-server
+    restart: on-failure
+    ports:
+      - "8761:8761"
+    environment:
+      - EUREKA_CLIENT_REGISTER_WITH_EUREKA=false
+      - EUREKA_CLIENT_FETCH_REGISTRY=false
+    networks:
+      - hospital-network
+
+  # ==========================================
+  # API GATEWAY
+  # ==========================================
+  api-gateway:
+    build:
+      context: ./hospital-management-backend/api-gateway/api-gateway
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    restart: on-failure
+    ports:
+      - "8080:8080"
+    environment:
+      - JWT_SECRET=${JWT_SECRET:-HospitalSyncSecretKey2026SecureJwtSigningKeyString}
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
+    depends_on:
+      - naming-server
+    networks:
+      - hospital-network
+
+  # ==========================================
+  # CORE & DOMAIN MICROSERVICES
+  # ==========================================
+  auth-service:
+    build:
+      context: ./hospital-management-backend/auth-service/auth-service
+      dockerfile: Dockerfile
+    container_name: auth-service
+    restart: on-failure
+    ports:
+      - "8086:8086"
+    environment:
+      - JWT_SECRET=${JWT_SECRET:-HospitalSyncSecretKey2026SecureJwtSigningKeyString}
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/hospital_auth_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=Password
+      - ADMIN_USERNAME=${ADMIN_USERNAME:-}
+      - ADMIN_EMAIL=${ADMIN_EMAIL:-}
+      - ADMIN_NAME=${ADMIN_NAME:-System Administrator}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-}
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
+    depends_on:
+      mysql:
+        condition: service_healthy
+      naming-server:
+        condition: service_started
+    networks:
+      - hospital-network
+
+  patient-service:
+    build:
+      context: ./hospital-management-backend/patient-service/patient-service
+      dockerfile: Dockerfile
+    container_name: patient-service
+    restart: on-failure
+    ports:
+      - "8081:8081"
+    environment:
+      - JWT_SECRET=${JWT_SECRET:-HospitalSyncSecretKey2026SecureJwtSigningKeyString}
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/patient_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=Password
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
+    depends_on:
+      mysql:
+        condition: service_healthy
+      naming-server:
+        condition: service_started
+    networks:
+      - hospital-network
+
+  doctor-service:
+    build:
+      context: ./hospital-management-backend/doctor-service/doctor-service
+      dockerfile: Dockerfile
+    container_name: doctor-service
+    restart: on-failure
+    ports:
+      - "8082:8082"
+    environment:
+      - JWT_SECRET=${JWT_SECRET:-HospitalSyncSecretKey2026SecureJwtSigningKeyString}
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/doctor_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=Password
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
+    depends_on:
+      mysql:
+        condition: service_healthy
+      naming-server:
+        condition: service_started
+    networks:
+      - hospital-network
+
+  admission-service:
+    build:
+      context: ./hospital-management-backend/admission-service
+      dockerfile: Dockerfile
+    container_name: admission-service
+    restart: on-failure
+    ports:
+      - "8096:8096"
+    environment:
+      - JWT_SECRET=${JWT_SECRET:-HospitalSyncSecretKey2026SecureJwtSigningKeyString}
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/admission_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=Password
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
+    depends_on:
+      mysql:
+        condition: service_healthy
+      naming-server:
+        condition: service_started
+    networks:
+      - hospital-network
+
+  appointment-service:
+    build:
+      context: ./hospital-management-backend/appointment-service/appointment-service
+      dockerfile: Dockerfile
+    container_name: appointment-service
+    restart: on-failure
+    ports:
+      - "8083:8083"
+    environment:
+      - JWT_SECRET=${JWT_SECRET:-HospitalSyncSecretKey2026SecureJwtSigningKeyString}
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/appointment_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=Password
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
+    depends_on:
+      mysql:
+        condition: service_healthy
+      naming-server:
+        condition: service_started
+    networks:
+      - hospital-network
+
+  billing-service:
+    build:
+      context: ./hospital-management-backend/billing-service/billing-service
+      dockerfile: Dockerfile
+    container_name: billing-service
+    restart: on-failure
+    ports:
+      - "8084:8084"
+    environment:
+      - JWT_SECRET=${JWT_SECRET:-HospitalSyncSecretKey2026SecureJwtSigningKeyString}
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/billing_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=Password
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
+    depends_on:
+      mysql:
+        condition: service_healthy
+      naming-server:
+        condition: service_started
+    networks:
+      - hospital-network
+
+  prescription-service:
+    build:
+      context: ./hospital-management-backend/prescription-service/prescription-service
+      dockerfile: Dockerfile
+    container_name: prescription-service
+    restart: on-failure
+    ports:
+      - "8085:8085"
+    environment:
+      - JWT_SECRET=${JWT_SECRET:-HospitalSyncSecretKey2026SecureJwtSigningKeyString}
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/prescription_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=Password
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
+    depends_on:
+      mysql:
+        condition: service_healthy
+      naming-server:
+        condition: service_started
+    networks:
+      - hospital-network
+
+  user-service:
+    build:
+      context: ./hospital-management-backend/user-service
+      dockerfile: Dockerfile
+    container_name: user-service
+    restart: on-failure
+    ports:
+      - "8087:8087"
+    environment:
+      - JWT_SECRET=${JWT_SECRET:-HospitalSyncSecretKey2026SecureJwtSigningKeyString}
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/user_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=Password
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_DATA_REDIS_PORT=6379
+    depends_on:
+      mysql:
+        condition: service_healthy
+      naming-server:
+        condition: service_started
+      redis:
+        condition: service_started
+    networks:
+      - hospital-network
+
+  role-service:
+    build:
+      context: ./hospital-management-backend/role-service
+      dockerfile: Dockerfile
+    container_name: role-service
+    restart: on-failure
+    ports:
+      - "8088:8088"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/role_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=Password
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
+    depends_on:
+      mysql:
+        condition: service_healthy
+      naming-server:
+        condition: service_started
+    networks:
+      - hospital-network
+
+  department-service:
+    build:
+      context: ./hospital-management-backend/department-service
+      dockerfile: Dockerfile
+    container_name: department-service
+    restart: on-failure
+    ports:
+      - "8089:8089"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/department_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=Password
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
+    depends_on:
+      mysql:
+        condition: service_healthy
+      naming-server:
+        condition: service_started
+    networks:
+      - hospital-network
+
+  medical-record-service:
+    build:
+      context: ./hospital-management-backend/medical-record-service
+      dockerfile: Dockerfile
+    container_name: medical-record-service
+    restart: on-failure
+    ports:
+      - "8090:8090"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/medical_record_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=Password
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
+    depends_on:
+      mysql:
+        condition: service_healthy
+      naming-server:
+        condition: service_started
+    networks:
+      - hospital-network
+
+  medicine-service:
+    build:
+      context: ./hospital-management-backend/medicine-service
+      dockerfile: Dockerfile
+    container_name: medicine-service
+    restart: on-failure
+    ports:
+      - "8091:8091"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/medicine_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=Password
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
+    depends_on:
+      mysql:
+        condition: service_healthy
+      naming-server:
+        condition: service_started
+    networks:
+      - hospital-network
+
+  lab-test-service:
+    build:
+      context: ./hospital-management-backend/lab-test-service
+      dockerfile: Dockerfile
+    container_name: lab-test-service
+    restart: on-failure
+    ports:
+      - "8092:8092"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/lab_test_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=Password
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
+    depends_on:
+      mysql:
+        condition: service_healthy
+      naming-server:
+        condition: service_started
+    networks:
+      - hospital-network
+
+  lab-report-service:
+    build:
+      context: ./hospital-management-backend/lab-report-service
+      dockerfile: Dockerfile
+    container_name: lab-report-service
+    restart: on-failure
+    ports:
+      - "8093:8093"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/lab_report_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=Password
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
+    depends_on:
+      mysql:
+        condition: service_healthy
+      naming-server:
+        condition: service_started
+    networks:
+      - hospital-network
+
+  payment-service:
+    build:
+      context: ./hospital-management-backend/payment-service
+      dockerfile: Dockerfile
+    container_name: payment-service
+    restart: on-failure
+    ports:
+      - "8094:8094"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/payment_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=Password
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
+      - RAZORPAY_KEY_ID=${RAZORPAY_KEY_ID:-rzp_test_HospitalSyncKey}
+      - RAZORPAY_KEY_SECRET=${RAZORPAY_KEY_SECRET:-rzp_test_HospitalSyncSecret}
+    depends_on:
+      mysql:
+        condition: service_healthy
+      naming-server:
+        condition: service_started
+    networks:
+      - hospital-network
+
+  notification-service:
+    build:
+      context: ./hospital-management-backend/notification-service
+      dockerfile: Dockerfile
+    container_name: notification-service
+    restart: on-failure
+    ports:
+      - "8095:8095"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/notification_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=Password
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
+    depends_on:
+      mysql:
+        condition: service_healthy
+      naming-server:
+        condition: service_started
+    networks:
+      - hospital-network
+
+  # ==========================================
+  # FRONTEND: React / Vite + Nginx
+  # ==========================================
+  frontend:
+    build:
+      context: ./hospital-management-frontend
+      dockerfile: Dockerfile
+    container_name: hospital-frontend
+    restart: on-failure
+    ports:
+      - "5173:80"
+      - "80:80"
+    depends_on:
+      - api-gateway
+    networks:
+      - hospital-network

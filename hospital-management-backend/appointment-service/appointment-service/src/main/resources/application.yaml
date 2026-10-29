@@ -1,0 +1,58 @@
+server:
+  port: 8083
+
+jwt:
+  secret: ${JWT_SECRET:HospitalSyncSecretKey2026SecureJwtSigningKeyString}
+
+spring:
+  application:
+    name: APPOINTMENT-SERVICE
+
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/appointment_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC}
+    username: root
+    password: Password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 1
+      idle-timeout: 30000
+      max-lifetime: 60000
+      connection-timeout: 20000
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      patientService:
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+
+      doctorService:
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+
+      notificationService:
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/

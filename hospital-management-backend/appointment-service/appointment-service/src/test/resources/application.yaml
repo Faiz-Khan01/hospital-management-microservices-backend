@@ -1,0 +1,23 @@
+jwt:
+  secret: test-jwt-secret-for-context-tests-only
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:appointment_test;DB_CLOSE_DELAY=-1;MODE=MySQL
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.H2Dialect
+  cloud:
+    discovery:
+      enabled: false
+    openfeign:
+      circuitbreaker:
+        enabled: false
+
+eureka:
+  client:
+    enabled: false

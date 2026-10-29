@@ -1,0 +1,44 @@
+server:
+  port: 8096
+
+jwt:
+  secret: ${JWT_SECRET:HospitalSyncSecretKey2026SecureJwtSigningKeyString}
+
+spring:
+  application:
+    name: ADMISSION-SERVICE
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/admission_db?createDatabaseIfNotExist=true
+    username: root
+    password: Password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 1
+      idle-timeout: 30000
+      max-lifetime: 60000
+      connection-timeout: 20000
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

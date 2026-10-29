@@ -1,0 +1,146 @@
+server:
+  port: 8080  # API Gateway runs on port 8080
+
+spring:
+  application:
+    name: API-GATEWAY  # Service name registered in Eureka
+
+  cloud:
+    config:
+      enabled: false  # Disable Spring Cloud Config Server
+
+    gateway:
+      discovery:
+        locator:
+          enabled: true  # Enable dynamic routing via Eureka
+          lower-case-service-id: true  # Convert service IDs to lowercase
+
+      # 🌐 Centralized CORS configuration for all routes
+      globalcors:
+        add-to-simple-url-handler-mapping: true
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:5173"  # Frontend (React/Vite)
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+            allowCredentials: true
+
+      # 🔧 Removes duplicate CORS headers to avoid conflicts
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_FIRST
+
+      routes:
+        # 🔐 Auth Service Route (handles authentication requests)
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/api/v1/auth/**
+
+        # 👤 Patient & Bed Management Service Route
+        - id: patient-service
+          uri: lb://patient-service
+          predicates:
+            - Path=/api/v1/patients/**
+
+        # 🛏️ Inpatient Admission & Bed Management Service
+        - id: admission-service
+          uri: lb://admission-service
+          predicates:
+           - Path=/api/v1/admissions/**, /api/v1/wards/**, /api/v1/beds/**
+
+        # 🩺 Doctor Service Route
+        - id: doctor-service
+          uri: lb://doctor-service
+          predicates:
+            - Path=/api/v1/doctors/**
+
+        # 📅 Appointment Service Route
+        - id: appointment-service
+          uri: lb://appointment-service
+          predicates:
+            - Path=/api/v1/appointments/**
+
+        # 💳 Billing Service Route
+        - id: billing-service
+          uri: lb://billing-service
+          predicates:
+            - Path=/api/v1/billing/**
+
+        # 💊 Prescription Service Route
+        - id: prescription-service
+          uri: lb://prescription-service
+          predicates:
+            - Path=/api/v1/prescriptions/**
+
+        # 👥 User Service Route
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/api/v1/users/**
+
+        # 🔑 Role Service Route
+        - id: role-service
+          uri: lb://role-service
+          predicates:
+            - Path=/api/v1/roles/**
+
+        # 🏢 Department Service Route
+        - id: department-service
+          uri: lb://department-service
+          predicates:
+            - Path=/api/v1/departments/**
+
+        # 📋 Medical Record Service Route
+        - id: medical-record-service
+          uri: lb://medical-record-service
+          predicates:
+            - Path=/api/v1/medical-records/**
+
+        # 💊 Medicine Service Route
+        - id: medicine-service
+          uri: lb://medicine-service
+          predicates:
+            - Path=/api/v1/medicines/**
+
+        # 🧪 Lab Test Service Route
+        - id: lab-test-service
+          uri: lb://lab-test-service
+          predicates:
+            - Path=/api/v1/lab-tests/**
+
+        # 📄 Lab Report Service Route
+        - id: lab-report-service
+          uri: lb://lab-report-service
+          predicates:
+            - Path=/api/v1/lab-reports/**
+
+        # 💰 Payment Service Route
+        - id: payment-service
+          uri: lb://payment-service
+          predicates:
+            - Path=/api/v1/payments/**
+
+        # 🔔 Notification Service Route
+        - id: notification-service
+          uri: lb://notification-service
+          predicates:
+            - Path=/api/v1/notifications/**
+
+jwt:
+  secret: ${JWT_SECRET:HospitalSyncSecretKey2026SecureJwtSigningKeyString}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/  # Eureka Server URL
+
+logging:
+  level:
+    org.springframework.cloud.gateway: TRACE  # Gateway request tracing
+    org.springframework.http.server.reactive: DEBUG  # HTTP request debugging
+    reactor.netty: DEBUG  # Netty reactive network logs
