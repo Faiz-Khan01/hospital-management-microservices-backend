@@ -42,6 +42,7 @@ function Sidebar({
     { id: 'abdm', label: 'ABDM & ABHA Gateway', icon: 'bi-qr-code', roles: ['ADMIN', 'RECEPTIONIST', 'DOCTOR'] },
     { id: 'telemedicine', label: 'Tele-Medicine Video OPD', icon: 'bi-camera-video-fill', roles: ['ADMIN', 'DOCTOR', 'PATIENT'] },
     { id: 'laundry', label: 'Laundry & Linen Desk', icon: 'bi-tag-fill', roles: ['ADMIN', 'DOCTOR', 'NURSE'] },
+    { id: 'chemo', label: 'Daycare Chemotherapy', icon: 'bi-droplet-half', roles: ['ADMIN', 'DOCTOR', 'NURSE'] },
     { id: 'analytics', label: 'Executive Operations & Revenue', icon: 'bi-graph-up-arrow', roles: ['ADMIN'] },
   ];
 

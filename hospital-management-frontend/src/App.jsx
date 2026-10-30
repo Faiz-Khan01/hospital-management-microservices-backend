@@ -43,6 +43,7 @@ const BmwPanel = lazy(() => import('./components/bmw/BmwPanel'));
 const AbdmPanel = lazy(() => import('./components/abdm/AbdmPanel'));
 const TelemedicinePanel = lazy(() => import('./components/telemedicine/TelemedicinePanel'));
 const LaundryPanel = lazy(() => import('./components/laundry/LaundryPanel'));
+const ChemoInfusionPanel = lazy(() => import('./components/oncology/ChemoInfusionPanel'));
 const ExecutiveAnalyticsPanel = lazy(() => import('./components/analytics/ExecutiveAnalyticsPanel'));
 const ProfilePanel = lazy(() => import('./components/settings/ProfilePanel'));
 const SettingsPanel = lazy(() => import('./components/settings/SettingsPanel'));
@@ -348,6 +349,10 @@ function App() {
 
                   {activeTab === 'laundry' && (
                     <LaundryPanel role={role} patients={patients} doctors={doctors} searchQuery={searchQuery} darkMode={darkMode} />
+                  )}
+
+                  {activeTab === 'chemo' && (
+                    <ChemoInfusionPanel patients={patients} doctors={doctors} searchQuery={searchQuery} darkMode={darkMode} />
                   )}
 
                   {activeTab === 'analytics' && role === 'ADMIN' && (
