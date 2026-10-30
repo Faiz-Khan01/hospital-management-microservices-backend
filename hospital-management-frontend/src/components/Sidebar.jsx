@@ -27,10 +27,14 @@ function Sidebar({
     { id: 'lab', label: 'Laboratory', icon: 'bi-moisture', roles: ['ADMIN', 'DOCTOR', 'LAB_TECHNICIAN', 'PATIENT'] },
     { id: 'pharmacy', label: 'Pharmacy Inventory', icon: 'bi-capsule-pill', roles: ['ADMIN', 'PHARMACIST'] },
     { id: 'beds', label: 'Beds & Inpatient', icon: 'bi-hospital-fill', roles: ['ADMIN', 'DOCTOR', 'NURSE', 'RECEPTIONIST'] },
+    { id: 'icu', label: 'ICU Telemetry Station', icon: 'bi-heart-pulse-fill', roles: ['ADMIN', 'DOCTOR', 'NURSE'] },
     { id: 'ot', label: 'Operation Theatre (OT)', icon: 'bi-scissors', roles: ['ADMIN', 'DOCTOR', 'NURSE'] },
     { id: 'blood-bank', label: 'Blood Bank', icon: 'bi-droplet-fill', roles: ['ADMIN', 'DOCTOR', 'NURSE', 'LAB_TECHNICIAN'] },
     { id: 'ambulance', label: 'Ambulance & EMS', icon: 'bi-truck-front-fill', roles: ['ADMIN', 'DOCTOR', 'NURSE', 'RECEPTIONIST'] },
     { id: 'payments', label: 'Payments & Ledger', icon: 'bi-wallet2', roles: ['ADMIN', 'ACCOUNTANT', 'PATIENT'] },
+    { id: 'tpa', label: 'TPA & Health Insurance', icon: 'bi-shield-check', roles: ['ADMIN', 'RECEPTIONIST', 'ACCOUNTANT'] },
+    { id: 'biomedical', label: 'Bio-Medical Assets', icon: 'bi-tools', roles: ['ADMIN', 'DOCTOR', 'NURSE'] },
+    { id: 'pacs', label: 'PACS Radiology Imaging', icon: 'bi-film', roles: ['ADMIN', 'DOCTOR', 'LAB_TECHNICIAN'] },
   ];
 
   const dashboardSubMenus = [

@@ -29,9 +29,13 @@ const LabPanel = lazy(() => import('./components/lab/LabPanel'));
 const PharmacyPanel = lazy(() => import('./components/pharmacy/PharmacyPanel'));
 const PaymentsPanel = lazy(() => import('./components/payments/PaymentsPanel'));
 const BedsPanel = lazy(() => import('./components/admissions/BedsPanel'));
+const IcuCentralPanel = lazy(() => import('./components/icu/IcuCentralPanel'));
 const OtPanel = lazy(() => import('./components/surgery/OtPanel'));
 const BloodBankPanel = lazy(() => import('./components/bloodbank/BloodBankPanel'));
 const AmbulancePanel = lazy(() => import('./components/ambulance/AmbulancePanel'));
+const TpaDeskPanel = lazy(() => import('./components/tpa/TpaDeskPanel'));
+const BiomedicalPanel = lazy(() => import('./components/biomedical/BiomedicalPanel'));
+const PacsViewerPanel = lazy(() => import('./components/pacs/PacsViewerPanel'));
 const ProfilePanel = lazy(() => import('./components/settings/ProfilePanel'));
 const SettingsPanel = lazy(() => import('./components/settings/SettingsPanel'));
 const HelpSupportPanel = lazy(() => import('./components/settings/HelpSupportPanel'));
@@ -282,6 +286,10 @@ function App() {
                     <BedsPanel initialBeds={beds} patients={patients} doctors={doctors} onBedsUpdated={fetchAllData} darkMode={darkMode} />
                   )}
 
+                  {activeTab === 'icu' && (
+                    <IcuCentralPanel role={role} patients={patients} doctors={doctors} searchQuery={searchQuery} darkMode={darkMode} />
+                  )}
+
                   {activeTab === 'ot' && (
                     <OtPanel role={role} patients={patients} doctors={doctors} searchQuery={searchQuery} darkMode={darkMode} />
                   )}
@@ -292,6 +300,18 @@ function App() {
 
                   {activeTab === 'ambulance' && (
                     <AmbulancePanel role={role} patients={patients} doctors={doctors} searchQuery={searchQuery} darkMode={darkMode} />
+                  )}
+
+                  {activeTab === 'tpa' && (
+                    <TpaDeskPanel role={role} patients={patients} doctors={doctors} searchQuery={searchQuery} darkMode={darkMode} />
+                  )}
+
+                  {activeTab === 'biomedical' && (
+                    <BiomedicalPanel role={role} patients={patients} doctors={doctors} searchQuery={searchQuery} darkMode={darkMode} />
+                  )}
+
+                  {activeTab === 'pacs' && (
+                    <PacsViewerPanel role={role} patients={patients} doctors={doctors} searchQuery={searchQuery} darkMode={darkMode} />
                   )}
 
                   {activeTab === 'profile' && (
