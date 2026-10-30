@@ -42,6 +42,7 @@ const MortuaryPanel = lazy(() => import('./components/mortuary/MortuaryPanel'));
 const BmwPanel = lazy(() => import('./components/bmw/BmwPanel'));
 const AbdmPanel = lazy(() => import('./components/abdm/AbdmPanel'));
 const TelemedicinePanel = lazy(() => import('./components/telemedicine/TelemedicinePanel'));
+const LaundryPanel = lazy(() => import('./components/laundry/LaundryPanel'));
 const ProfilePanel = lazy(() => import('./components/settings/ProfilePanel'));
 const SettingsPanel = lazy(() => import('./components/settings/SettingsPanel'));
 const HelpSupportPanel = lazy(() => import('./components/settings/HelpSupportPanel'));
@@ -342,6 +343,10 @@ function App() {
 
                   {activeTab === 'telemedicine' && (
                     <TelemedicinePanel role={role} patients={patients} doctors={doctors} searchQuery={searchQuery} darkMode={darkMode} />
+                  )}
+
+                  {activeTab === 'laundry' && (
+                    <LaundryPanel role={role} patients={patients} doctors={doctors} searchQuery={searchQuery} darkMode={darkMode} />
                   )}
 
                   {activeTab === 'profile' && (

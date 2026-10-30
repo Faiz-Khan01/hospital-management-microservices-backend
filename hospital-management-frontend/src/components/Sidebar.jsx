@@ -41,6 +41,7 @@ function Sidebar({
     { id: 'bmw', label: 'Bio-Medical Waste (BMW)', icon: 'bi-trash3-fill', roles: ['ADMIN', 'DOCTOR', 'NURSE'] },
     { id: 'abdm', label: 'ABDM & ABHA Gateway', icon: 'bi-qr-code', roles: ['ADMIN', 'RECEPTIONIST', 'DOCTOR'] },
     { id: 'telemedicine', label: 'Tele-Medicine Video OPD', icon: 'bi-camera-video-fill', roles: ['ADMIN', 'DOCTOR', 'PATIENT'] },
+    { id: 'laundry', label: 'Laundry & Linen Desk', icon: 'bi-tag-fill', roles: ['ADMIN', 'DOCTOR', 'NURSE'] },
   ];
 
   const dashboardSubMenus = [
