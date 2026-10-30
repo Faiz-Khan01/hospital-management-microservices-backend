@@ -36,6 +36,7 @@ const AmbulancePanel = lazy(() => import('./components/ambulance/AmbulancePanel'
 const TpaDeskPanel = lazy(() => import('./components/tpa/TpaDeskPanel'));
 const BiomedicalPanel = lazy(() => import('./components/biomedical/BiomedicalPanel'));
 const PacsViewerPanel = lazy(() => import('./components/pacs/PacsViewerPanel'));
+const CssdPanel = lazy(() => import('./components/cssd/CssdPanel'));
 const ProfilePanel = lazy(() => import('./components/settings/ProfilePanel'));
 const SettingsPanel = lazy(() => import('./components/settings/SettingsPanel'));
 const HelpSupportPanel = lazy(() => import('./components/settings/HelpSupportPanel'));
@@ -312,6 +313,10 @@ function App() {
 
                   {activeTab === 'pacs' && (
                     <PacsViewerPanel role={role} patients={patients} doctors={doctors} searchQuery={searchQuery} darkMode={darkMode} />
+                  )}
+
+                  {activeTab === 'cssd' && (
+                    <CssdPanel role={role} patients={patients} doctors={doctors} searchQuery={searchQuery} darkMode={darkMode} />
                   )}
 
                   {activeTab === 'profile' && (
