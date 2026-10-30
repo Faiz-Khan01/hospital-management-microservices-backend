@@ -29,6 +29,9 @@ const LabPanel = lazy(() => import('./components/lab/LabPanel'));
 const PharmacyPanel = lazy(() => import('./components/pharmacy/PharmacyPanel'));
 const PaymentsPanel = lazy(() => import('./components/payments/PaymentsPanel'));
 const BedsPanel = lazy(() => import('./components/admissions/BedsPanel'));
+const OtPanel = lazy(() => import('./components/surgery/OtPanel'));
+const BloodBankPanel = lazy(() => import('./components/bloodbank/BloodBankPanel'));
+const AmbulancePanel = lazy(() => import('./components/ambulance/AmbulancePanel'));
 const ProfilePanel = lazy(() => import('./components/settings/ProfilePanel'));
 const SettingsPanel = lazy(() => import('./components/settings/SettingsPanel'));
 const HelpSupportPanel = lazy(() => import('./components/settings/HelpSupportPanel'));
@@ -277,6 +280,18 @@ function App() {
 
                   {activeTab === 'beds' && role !== 'PATIENT' && (
                     <BedsPanel initialBeds={beds} patients={patients} doctors={doctors} onBedsUpdated={fetchAllData} darkMode={darkMode} />
+                  )}
+
+                  {activeTab === 'ot' && (
+                    <OtPanel role={role} patients={patients} doctors={doctors} searchQuery={searchQuery} darkMode={darkMode} />
+                  )}
+
+                  {activeTab === 'blood-bank' && (
+                    <BloodBankPanel role={role} patients={patients} doctors={doctors} searchQuery={searchQuery} darkMode={darkMode} />
+                  )}
+
+                  {activeTab === 'ambulance' && (
+                    <AmbulancePanel role={role} patients={patients} doctors={doctors} searchQuery={searchQuery} darkMode={darkMode} />
                   )}
 
                   {activeTab === 'profile' && (
