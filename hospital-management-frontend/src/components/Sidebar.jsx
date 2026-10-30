@@ -36,6 +36,7 @@ function Sidebar({
     { id: 'biomedical', label: 'Bio-Medical Assets', icon: 'bi-tools', roles: ['ADMIN', 'DOCTOR', 'NURSE'] },
     { id: 'pacs', label: 'PACS Radiology Imaging', icon: 'bi-film', roles: ['ADMIN', 'DOCTOR', 'LAB_TECHNICIAN'] },
     { id: 'cssd', label: 'CSSD & Infection Control', icon: 'bi-virus', roles: ['ADMIN', 'DOCTOR', 'NURSE'] },
+    { id: 'dietary', label: 'Dietary & Nutrition', icon: 'bi-cup-hot-fill', roles: ['ADMIN', 'DOCTOR', 'NURSE'] },
   ];
 
   const dashboardSubMenus = [
