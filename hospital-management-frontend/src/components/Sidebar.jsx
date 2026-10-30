@@ -40,6 +40,7 @@ function Sidebar({
     { id: 'mortuary', label: 'Mortuary & Death Desk', icon: 'bi-file-earmark-medical-fill', roles: ['ADMIN', 'DOCTOR', 'NURSE'] },
     { id: 'bmw', label: 'Bio-Medical Waste (BMW)', icon: 'bi-trash3-fill', roles: ['ADMIN', 'DOCTOR', 'NURSE'] },
     { id: 'abdm', label: 'ABDM & ABHA Gateway', icon: 'bi-qr-code', roles: ['ADMIN', 'RECEPTIONIST', 'DOCTOR'] },
+    { id: 'telemedicine', label: 'Tele-Medicine Video OPD', icon: 'bi-camera-video-fill', roles: ['ADMIN', 'DOCTOR', 'PATIENT'] },
   ];
 
   const dashboardSubMenus = [
