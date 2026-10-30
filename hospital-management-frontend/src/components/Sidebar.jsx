@@ -38,6 +38,7 @@ function Sidebar({
     { id: 'cssd', label: 'CSSD & Infection Control', icon: 'bi-virus', roles: ['ADMIN', 'DOCTOR', 'NURSE'] },
     { id: 'dietary', label: 'Dietary & Nutrition', icon: 'bi-cup-hot-fill', roles: ['ADMIN', 'DOCTOR', 'NURSE'] },
     { id: 'mortuary', label: 'Mortuary & Death Desk', icon: 'bi-file-earmark-medical-fill', roles: ['ADMIN', 'DOCTOR', 'NURSE'] },
+    { id: 'bmw', label: 'Bio-Medical Waste (BMW)', icon: 'bi-trash3-fill', roles: ['ADMIN', 'DOCTOR', 'NURSE'] },
   ];
 
   const dashboardSubMenus = [
