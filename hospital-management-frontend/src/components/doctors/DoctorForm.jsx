@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import DoctorService from '../../services/DoctorService';
 import { toast } from 'react-toastify';
+import { springSmooth, springSnappy } from '../../animations/motionConfig';
 
 function DoctorForm({ onDoctorAdded }) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -161,8 +163,15 @@ function DoctorForm({ onDoctorAdded }) {
         {/* =========================================
             FORM
         ========================================== */}
-        {isExpanded && (
-          <div className="doctor-form-body">
+        <AnimatePresence>
+          {isExpanded && (
+            <motion.div 
+              className="doctor-form-body overflow-hidden"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={springSmooth}
+            >
 
             <form onSubmit={handleSubmit}>
 
@@ -531,8 +540,9 @@ function DoctorForm({ onDoctorAdded }) {
 
             </form>
 
-          </div>
-        )}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
       </div>
 

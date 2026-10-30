@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import DoctorService from '../../services/DoctorService';
 import Pagination from '../common/Pagination';
 import { toast } from 'react-toastify';
+import { staggerContainer, staggerItem, springSmooth, springBouncy, springSnappy } from '../../animations/motionConfig';
 
 function DoctorList({ doctors, onDoctorUpdated, searchQuery = '' }) {
   const [searchTerm, setSearchTerm] = useState('');
@@ -1534,7 +1535,12 @@ function DoctorList({ doctors, onDoctorUpdated, searchQuery = '' }) {
 
             <div className="doctor-grid">
 
-              <div className="row g-4">
+              <motion.div 
+                className="row g-4"
+                variants={staggerContainer(0.04)}
+                initial="initial"
+                animate="animate"
+              >
 
                 {paginatedDoctors.map((d) => {
 
@@ -1546,9 +1552,11 @@ function DoctorList({ doctors, onDoctorUpdated, searchQuery = '' }) {
 
                   return (
 
-                    <div
+                    <motion.div
                       key={d.id}
                       className="col-12 col-md-6 col-xl-4 col-xxl-3"
+                      variants={staggerItem}
+                      whileHover={{ y: -5, transition: springSmooth }}
                     >
 
                       <div className="doctor-card">
@@ -1702,12 +1710,12 @@ function DoctorList({ doctors, onDoctorUpdated, searchQuery = '' }) {
 
                       </div>
 
-                    </div>
+                    </motion.div>
 
                   );
                 })}
 
-              </div>
+              </motion.div>
 
             </div>
 

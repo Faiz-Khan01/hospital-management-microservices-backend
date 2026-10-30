@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import AuthService from '../services/AuthService';
 import NotificationService from '../services/NotificationService';
 import RealtimeNotificationHub, { playHospitalAlertChime } from '../services/RealtimeNotificationHub';
 import EmergencyTriageModal from './emergency/EmergencyTriageModal';
 import { toast } from 'react-toastify';
+import { springSmooth, springSnappy, springBouncy, fadeDown, scaleIn, buttonPress } from '../animations/motionConfig';
 
 function Navbar({ toggleSidebar, activeTab, setActiveTab, onSearch, darkMode, toggleDarkMode, beds = [], doctors = [], onDataRefresh }) {
   const username = AuthService.getUsername() || 'Admin User';
@@ -354,9 +355,15 @@ function Navbar({ toggleSidebar, activeTab, setActiveTab, onSearch, darkMode, to
       <header className="hs-navbar">
         {/* LEFT */}
         <div className="hs-nav-left">
-          <button className="hs-menu-btn" onClick={toggleSidebar} aria-label="Menu">
+          <motion.button 
+            className="hs-menu-btn" 
+            onClick={toggleSidebar} 
+            aria-label="Menu"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
             <i className="bi bi-list" style={{ fontSize: '1.2rem' }} />
-          </button>
+          </motion.button>
 
           <div className="hs-search">
             <i className="bi bi-search" style={{ fontSize: '.85rem', color: '#94a3b8', flexShrink: 0 }} />
@@ -386,7 +393,7 @@ function Navbar({ toggleSidebar, activeTab, setActiveTab, onSearch, darkMode, to
         <div className="hs-nav-right">
           {/* Emergency Code Red ER Quick Action */}
           {role !== 'PATIENT' && (
-            <button
+            <motion.button
               type="button"
               className="btn btn-sm btn-danger fw-bold d-inline-flex align-items-center gap-1 shadow-sm px-2 px-md-3 py-1 rounded-pill me-1"
               style={{
@@ -397,20 +404,34 @@ function Navbar({ toggleSidebar, activeTab, setActiveTab, onSearch, darkMode, to
               }}
               title="Immediate Emergency Trauma Triage (Code Red)"
               onClick={() => setShowEmergencyModal(true)}
+              whileHover={{ scale: 1.05, boxShadow: '0 6px 18px rgba(220, 38, 38, 0.5)' }}
+              whileTap={{ scale: 0.95 }}
             >
               <i className="bi bi-broadcast-pin text-white animate-pulse"></i>
               <span className="d-none d-sm-inline">Code Red ER</span>
-            </button>
+            </motion.button>
           )}
 
           {/* Dark mode */}
-          <button className={`hs-icon-btn ${darkMode ? 'active-dark' : ''}`} onClick={toggleDarkMode} title={darkMode ? 'Light Mode' : 'Dark Mode'}>
+          <motion.button 
+            className={`hs-icon-btn ${darkMode ? 'active-dark' : ''}`} 
+            onClick={toggleDarkMode} 
+            title={darkMode ? 'Light Mode' : 'Dark Mode'}
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.92 }}
+          >
             <i className={`bi ${darkMode ? 'bi-sun-fill' : 'bi-moon-stars'}`} style={{ fontSize: '1rem' }} />
-          </button>
+          </motion.button>
 
           {/* Notifications */}
           <div style={{ position: 'relative' }}>
-            <button className="hs-icon-btn" onClick={() => { setShowNotifications(p => !p); setShowProfileMenu(false); }} title="Notifications">
+            <motion.button 
+              className="hs-icon-btn" 
+              onClick={() => { setShowNotifications(p => !p); setShowProfileMenu(false); }} 
+              title="Notifications"
+              whileHover={{ scale: 1.08 }}
+              whileTap={{ scale: 0.92 }}
+            >
               <motion.i
                 animate={isRinging ? { rotate: [0, -22, 22, -18, 18, -10, 10, 0], scale: [1, 1.25, 1.25, 1] } : { rotate: 0, scale: 1 }}
                 transition={{ duration: 0.75, ease: 'easeInOut' }}
@@ -418,13 +439,27 @@ function Navbar({ toggleSidebar, activeTab, setActiveTab, onSearch, darkMode, to
                 style={{ fontSize: '1.1rem', color: unreadCount > 0 ? '#2563eb' : 'inherit', display: 'inline-block' }}
               />
               {unreadCount > 0 && <span className="hs-notif-badge">{unreadCount > 9 ? '9+' : unreadCount}</span>}
-            </button>
+            </motion.button>
 
-            {showNotifications && (
-              <>
-                <div style={{ position: 'fixed', inset: 0, zIndex: 1050 }} onClick={() => setShowNotifications(false)} />
-                <div className="hs-notif-panel" style={{ position: 'absolute' }}>
-                  <div className="hs-notif-head">
+            <AnimatePresence>
+              {showNotifications && (
+                <>
+                  <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    style={{ position: 'fixed', inset: 0, zIndex: 1050 }} 
+                    onClick={() => setShowNotifications(false)} 
+                  />
+                  <motion.div 
+                    className="hs-notif-panel" 
+                    style={{ position: 'absolute' }}
+                    variants={fadeDown}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                  >
+                    <div className="hs-notif-head">
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 700 }}>
@@ -443,7 +478,14 @@ function Navbar({ toggleSidebar, activeTab, setActiveTab, onSearch, darkMode, to
                     {notifications.length > 0 ? notifications.map(n => {
                       const ni = notifIcon(n.type);
                       return (
-                        <div key={n.id} className={`hs-notif-item ${!n.read ? 'unread' : ''}`}>
+                        <motion.div 
+                          key={n.id} 
+                          className={`hs-notif-item ${!n.read ? 'unread' : ''}`}
+                          initial={{ opacity: 0, x: 8 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          whileHover={{ x: 3 }}
+                          transition={{ duration: 0.15 }}
+                        >
                           <div style={{ display: 'flex', gap: 10 }}>
                             <div className="hs-notif-icon" style={{ background: ni.bg, color: ni.color }}>
                               <i className={`bi ${ni.icon}`} style={{ fontSize: '.9rem' }} />
@@ -454,7 +496,7 @@ function Navbar({ toggleSidebar, activeTab, setActiveTab, onSearch, darkMode, to
                             </div>
                             {!n.read && <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#2563eb', flexShrink: 0, marginTop: 5 }} />}
                           </div>
-                        </div>
+                        </motion.div>
                       );
                     }) : (
                       <div style={{ textAlign: 'center', padding: '32px 16px' }}>
@@ -477,9 +519,10 @@ function Navbar({ toggleSidebar, activeTab, setActiveTab, onSearch, darkMode, to
                       Dismiss all <i className="bi bi-check2-all ms-1" />
                     </button>
                   </div>
-                </div>
+                </motion.div>
               </>
             )}
+          </AnimatePresence>
           </div>
 
           <div className="hs-divider" />
@@ -493,43 +536,51 @@ function Navbar({ toggleSidebar, activeTab, setActiveTab, onSearch, darkMode, to
             </div>
             <i className="bi bi-chevron-down" style={{ fontSize: '.6rem', color: '#94a3b8' }} />
 
-            {showProfileMenu && (
-              <div className="hs-profile-dropdown">
-                <div style={{ padding: '12px 16px 8px', borderBottom: `1px solid ${darkMode ? 'rgba(255,255,255,0.08)' : '#f1f5f9'}` }}>
-                  <div style={{ fontSize: '.82rem', fontWeight: 700, color: darkMode ? '#e2e8f0' : '#0f172a' }}>{displayName}</div>
-                  <div style={{ fontSize: '.7rem', color: '#94a3b8', marginTop: 2 }}>{role}</div>
-                </div>
+            <AnimatePresence>
+              {showProfileMenu && (
+                <motion.div 
+                  className="hs-profile-dropdown"
+                  variants={scaleIn}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                >
+                  <div style={{ padding: '12px 16px 8px', borderBottom: `1px solid ${darkMode ? 'rgba(255,255,255,0.08)' : '#f1f5f9'}` }}>
+                    <div style={{ fontSize: '.82rem', fontWeight: 700, color: darkMode ? '#e2e8f0' : '#0f172a' }}>{displayName}</div>
+                    <div style={{ fontSize: '.7rem', color: '#94a3b8', marginTop: 2 }}>{role}</div>
+                  </div>
 
-                <button className="hs-dropdown-item" onClick={() => {
-                  setShowProfileMenu(false);
-                  if (setActiveTab) setActiveTab('profile');
-                }}>
-                  <i className="bi bi-person-circle" style={{ color: '#64748b' }} /> My Profile
-                </button>
-
-                {role === 'ADMIN' && (
                   <button className="hs-dropdown-item" onClick={() => {
                     setShowProfileMenu(false);
-                    if (setActiveTab) setActiveTab('settings');
+                    if (setActiveTab) setActiveTab('profile');
                   }}>
-                    <i className="bi bi-gear" style={{ color: '#64748b' }} /> Settings
+                    <i className="bi bi-person-circle" style={{ color: '#64748b' }} /> My Profile
                   </button>
-                )}
 
-                <button className="hs-dropdown-item" onClick={() => {
-                  setShowProfileMenu(false);
-                  if (setActiveTab) setActiveTab('help');
-                }}>
-                  <i className="bi bi-question-circle" style={{ color: '#64748b' }} /> Help & Support
-                </button>
+                  {role === 'ADMIN' && (
+                    <button className="hs-dropdown-item" onClick={() => {
+                      setShowProfileMenu(false);
+                      if (setActiveTab) setActiveTab('settings');
+                    }}>
+                      <i className="bi bi-gear" style={{ color: '#64748b' }} /> Settings
+                    </button>
+                  )}
 
-                <div className="hs-dropdown-divider" />
+                  <button className="hs-dropdown-item" onClick={() => {
+                    setShowProfileMenu(false);
+                    if (setActiveTab) setActiveTab('help');
+                  }}>
+                    <i className="bi bi-question-circle" style={{ color: '#64748b' }} /> Help & Support
+                  </button>
 
-                <button className="hs-dropdown-item danger" onClick={() => AuthService.logout()}>
-                  <i className="bi bi-box-arrow-right" /> Sign Out
-                </button>
-              </div>
-            )}
+                  <div className="hs-dropdown-divider" />
+
+                  <button className="hs-dropdown-item danger" onClick={() => AuthService.logout()}>
+                    <i className="bi bi-box-arrow-right" /> Sign Out
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
       </header>

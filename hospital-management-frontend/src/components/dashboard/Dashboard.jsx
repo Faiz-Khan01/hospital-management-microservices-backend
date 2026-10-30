@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { motion } from 'motion/react';
 import UserService from '../../services/UserService';
+import { staggerContainer, staggerItem, springSmooth, springSnappy, cardHover } from '../../animations/motionConfig';
 
 const kpiContainerVariants = {
   hidden: { opacity: 0 },
@@ -696,14 +697,21 @@ function Dashboard({
             </div>
           </div>
 
-          <div className="row g-3">
+          <motion.div 
+            className="row g-3"
+            variants={staggerContainer(0.06)}
+            initial="initial"
+            animate="animate"
+          >
             {opsSnapshot.map(item => {
               const value = hasValue(item.value) ? item.value : '—';
 
               return (
-                <div
+                <motion.div
                   className="col-12 col-sm-6 col-xl-3"
                   key={item.label}
+                  variants={staggerItem}
+                  whileHover={{ y: -4, transition: springSmooth }}
                 >
                   <div
                     className="d-flex align-items-center justify-content-between p-3"
@@ -753,10 +761,10 @@ function Dashboard({
                       />
                     </div>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
-          </div>
+          </motion.div>
         </motion.div>
 
         {/* =====================================================

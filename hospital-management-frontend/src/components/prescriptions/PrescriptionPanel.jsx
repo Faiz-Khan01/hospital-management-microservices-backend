@@ -1,9 +1,11 @@
 import React, { useState, useMemo } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import PrescriptionService from '../../services/PrescriptionService';
 import AuthService from '../../services/AuthService';
 import PrintModal from '../common/PrintModal';
 import RealtimeNotificationHub from '../../services/RealtimeNotificationHub';
 import { toast } from 'react-toastify';
+import { springSmooth, springSnappy, staggerItem } from '../../animations/motionConfig';
 
 function PrescriptionPanel({
   role = 'ADMIN',
@@ -312,9 +314,15 @@ function PrescriptionPanel({
         </div>
 
 
-        {isExpanded && (
-
-          <div className="premium-form-container">
+        <AnimatePresence>
+          {isExpanded && (
+            <motion.div 
+              className="premium-form-container overflow-hidden"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={springSmooth}
+            >
 
             <form onSubmit={handleSubmit}>
 
@@ -743,9 +751,9 @@ function PrescriptionPanel({
 
             </form>
 
-          </div>
-
-        )}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
       </div>
       )}
@@ -832,7 +840,12 @@ function PrescriptionPanel({
 
                 safePrescriptions.map(rx => (
 
-                  <tr key={rx.id}>
+                  <motion.tr 
+                    key={rx.id}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
 
                     <td>
 
@@ -987,7 +1000,7 @@ function PrescriptionPanel({
 
                     </td>
 
-                  </tr>
+                  </motion.tr>
 
                 ))
 

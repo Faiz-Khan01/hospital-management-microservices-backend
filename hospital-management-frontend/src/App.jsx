@@ -2,6 +2,7 @@ import { lazy, Suspense, useState, useEffect, useCallback } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { motion, AnimatePresence } from 'motion/react';
+import { pageTransition } from './animations/motionConfig';
 
 import AuthService from './services/AuthService';
 import PatientService from './services/PatientService';
@@ -181,10 +182,10 @@ function App() {
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={activeTab}
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -6 }}
-                    transition={{ duration: 0.22, ease: [0.25, 0.1, 0.25, 1] }}
+                    variants={pageTransition}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
                   >
                   {activeTab === 'dashboard' && role !== 'PATIENT' && (
                     <Dashboard

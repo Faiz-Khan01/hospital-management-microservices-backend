@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import PaymentService from '../../services/PaymentService';
 import BillingService from '../../services/BillingService';
 import AuthService from '../../services/AuthService';
@@ -1489,7 +1490,12 @@ function PaymentsPanel({ role = 'ADMIN', patients = [], bills = [], onPaymentSuc
                       );
 
                     return (
-                      <tr key={payment.id}>
+                      <motion.tr 
+                        key={payment.id}
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.2 }}
+                      >
 
                         {/* Transaction */}
                         <td className="ps-4">
@@ -1647,7 +1653,7 @@ function PaymentsPanel({ role = 'ADMIN', patients = [], bills = [], onPaymentSuc
                           )}
                         </td>
 
-                      </tr>
+                      </motion.tr>
                     );
                   })}
                 </tbody>

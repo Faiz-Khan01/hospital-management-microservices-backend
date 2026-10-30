@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import AuthService from '../services/AuthService';
+import { springSmooth, springSnappy, springBouncy, iconHover } from '../animations/motionConfig';
 
 function Sidebar({
   activeTab,
@@ -326,9 +327,18 @@ function Sidebar({
         }
       `}</style>
 
-      {isOpen && (
-        <div className="aura-overlay d-md-none" onClick={toggleSidebar}></div>
-      )}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            className="aura-overlay d-md-none"
+            onClick={toggleSidebar}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          />
+        )}
+      </AnimatePresence>
 
       <aside className={`aura-sidebar ${isOpen ? 'open' : ''}`}>
         <div className="aura-sidebar-content">
@@ -336,9 +346,13 @@ function Sidebar({
           {/* BRAND HEADER */}
           <div className="aura-brand">
             <div className="aura-brand-main">
-              <div className="aura-logo">
+              <motion.div 
+                className="aura-logo"
+                whileHover={{ rotate: 8, scale: 1.08 }}
+                transition={springBouncy}
+              >
                 <i className="bi bi-hospital fs-5"></i>
-              </div>
+              </motion.div>
               <div className="aura-brand-name">
                 Hos<span>Ptal</span>
               </div>
@@ -433,14 +447,16 @@ function Sidebar({
                   key={item.id}
                   className={`aura-nav-btn ${activeTab === item.id ? 'active' : ''}`}
                   onClick={() => handleNavigation(item.id)}
-                  whileHover={{ x: 3 }}
+                  whileHover={{ x: 4, transition: springSnappy }}
                   whileTap={{ scale: 0.98 }}
-                  transition={{ duration: 0.15 }}
                 >
                   <div className="aura-nav-left">
-                    <div className="aura-icon">
+                    <motion.div 
+                      className="aura-icon"
+                      whileHover={{ scale: 1.15, rotate: 3, transition: springBouncy }}
+                    >
                       <i className={`bi ${item.icon}`}></i>
-                    </div>
+                    </motion.div>
                     <span>{displayLabel}</span>
                   </div>
 

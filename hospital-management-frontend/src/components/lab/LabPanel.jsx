@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import LabService from '../../services/LabService';
 import AuthService from '../../services/AuthService';
 import PrintModal from '../common/PrintModal';
 import LabReportPrintSlip from './LabReportPrintSlip';
 import RealtimeNotificationHub, { playHospitalAlertChime } from '../../services/RealtimeNotificationHub';
 import { toast } from 'react-toastify';
+import { springSmooth } from '../../animations/motionConfig';
 
 const FALLBACK_TESTS = [
   { id: 1, name: 'Complete Blood Count (CBC) with ESR', code: 'HEM-CBC-01', category: 'Hematology', normalRange: 'Hb: 13.0 - 17.0 g/dL, TLC: 4-11k', price: 450, description: 'Automated 6-part differential hematology analysis' },
@@ -1197,8 +1199,15 @@ function LabPanel({ role = 'ADMIN', patients = [] }) {
             </div>
 
             {/* TEST FORM */}
-            {showTestForm && (
-              <div className="form-card">
+            <AnimatePresence>
+              {showTestForm && (
+                <motion.div 
+                  className="form-card overflow-hidden"
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={springSmooth}
+                >
 
                 <div className="form-heading">
                   <div className="form-heading-icon">
@@ -1362,8 +1371,9 @@ function LabPanel({ role = 'ADMIN', patients = [] }) {
 
                 </form>
 
-              </div>
-            )}
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* TEST TABLE */}
             {loadingTests ? (
@@ -1531,8 +1541,15 @@ function LabPanel({ role = 'ADMIN', patients = [] }) {
             </div>
 
             {/* REPORT FORM */}
-            {showReportForm && (
-              <div className="form-card">
+            <AnimatePresence>
+              {showReportForm && (
+                <motion.div 
+                  className="form-card overflow-hidden"
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={springSmooth}
+                >
 
                 <div className="form-heading">
 
@@ -1730,8 +1747,9 @@ function LabPanel({ role = 'ADMIN', patients = [] }) {
 
                 </form>
 
-              </div>
-            )}
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* REPORTS */}
             {loadingReports ? (

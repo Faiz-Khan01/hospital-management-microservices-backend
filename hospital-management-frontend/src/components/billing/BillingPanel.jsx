@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import BillingService from '../../services/BillingService';
 import PaymentService from '../../services/PaymentService';
 import AuthService from '../../services/AuthService';
@@ -6,6 +7,7 @@ import PrintModal from '../common/PrintModal';
 import HospitalTaxInvoiceSlip from './HospitalTaxInvoiceSlip';
 import RealtimeNotificationHub, { playHospitalAlertChime } from '../../services/RealtimeNotificationHub';
 import { toast } from 'react-toastify';
+import { springSmooth, springSnappy } from '../../animations/motionConfig';
 
 function BillingPanel({ role = 'ADMIN', bills, patients, onBillGenerated }) {
   const isPatient = role === 'PATIENT';
@@ -1417,8 +1419,15 @@ function BillingPanel({ role = 'ADMIN', bills, patients, onBillGenerated }) {
           </div>
         </div>
 
-        {isExpanded && (
-          <div className="invoice-form">
+        <AnimatePresence>
+          {isExpanded && (
+            <motion.div 
+              className="invoice-form overflow-hidden"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={springSmooth}
+            >
             <form onSubmit={handleSubmit}>
               <div className="row g-3">
                 {/* Patient */}
@@ -1675,8 +1684,9 @@ function BillingPanel({ role = 'ADMIN', bills, patients, onBillGenerated }) {
                 </div>
               </div>
             </form>
-          </div>
+          </motion.div>
         )}
+      </AnimatePresence>
       </div>
       )}
 
@@ -1762,7 +1772,12 @@ function BillingPanel({ role = 'ADMIN', bills, patients, onBillGenerated }) {
                     bill.paymentStatus === 'Paid';
 
                   return (
-                    <tr key={bill.id}>
+                    <motion.tr 
+                      key={bill.id}
+                      initial={{ opacity: 0, y: 6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
                       {/* Invoice */}
                       <td className="ps-4">
                         <div className="invoice-number">
@@ -1921,7 +1936,7 @@ function BillingPanel({ role = 'ADMIN', bills, patients, onBillGenerated }) {
                           )}
                         </div>
                       </td>
-                    </tr>
+                    </motion.tr>
                   );
                 })
               )}

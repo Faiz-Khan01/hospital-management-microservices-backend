@@ -1,10 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import BedService from '../../services/BedService';
 import RealtimeNotificationHub, { playHospitalAlertChime } from '../../services/RealtimeNotificationHub';
 import PrintModal from '../common/PrintModal';
 import AdmissionBedCardSlip from './AdmissionBedCardSlip';
 import DischargeGatepassSlip from './DischargeGatepassSlip';
 import { toast } from 'react-toastify';
+import { staggerContainer, staggerItem, springSmooth, springSnappy } from '../../animations/motionConfig';
 
 const DEMO_BEDS = [
   { id: 1, bedNumber: 'ICU-01', ward: 'Intensive Care Unit (ICU)', type: 'ICU', floor: '1st Floor', status: 'OCCUPIED', patientName: 'Robert Langdon', doctorName: 'Dr. Sarah Jenkins', admissionDate: '2026-10-27', diagnosis: 'Post-op monitoring' },
@@ -1356,7 +1358,12 @@ function BedsPanel({ initialBeds = [], patients = [], doctors = [], onBedsUpdate
 
       {!loading && !error && filteredBeds.length > 0 && (
 
-        <div className="row g-3">
+        <motion.div 
+          className="row g-3"
+          variants={staggerContainer(0.04)}
+          initial="initial"
+          animate="animate"
+        >
 
           {filteredBeds.map((bed, index) => {
             if (!bed) return null;
@@ -1374,9 +1381,11 @@ function BedsPanel({ initialBeds = [], patients = [], doctors = [], onBedsUpdate
 
             return (
 
-              <div
+              <motion.div
                 className="col-12 col-md-6 col-xl-4"
                 key={bed.id || index}
+                variants={staggerItem}
+                whileHover={{ y: -4, transition: springSmooth }}
               >
 
                 <div className="bed-card h-100">
@@ -1572,13 +1581,13 @@ function BedsPanel({ initialBeds = [], patients = [], doctors = [], onBedsUpdate
 
                 </div>
 
-              </div>
+              </motion.div>
 
             );
 
           })}
 
-        </div>
+        </motion.div>
 
       )}
 

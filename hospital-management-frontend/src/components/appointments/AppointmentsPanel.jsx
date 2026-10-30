@@ -1937,7 +1937,12 @@ function AppointmentsPanel({
 
                     return (
 
-                      <tr key={appt.id}>
+                      <motion.tr 
+                        key={appt.id}
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.2 }}
+                      >
 
                         {/* APPOINTMENT */}
 
@@ -2191,7 +2196,7 @@ function AppointmentsPanel({
 
                         </td>
 
-                      </tr>
+                      </motion.tr>
 
                     );
                   })
