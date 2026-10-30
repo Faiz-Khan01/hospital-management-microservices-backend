@@ -39,6 +39,7 @@ function Sidebar({
     { id: 'dietary', label: 'Dietary & Nutrition', icon: 'bi-cup-hot-fill', roles: ['ADMIN', 'DOCTOR', 'NURSE'] },
     { id: 'mortuary', label: 'Mortuary & Death Desk', icon: 'bi-file-earmark-medical-fill', roles: ['ADMIN', 'DOCTOR', 'NURSE'] },
     { id: 'bmw', label: 'Bio-Medical Waste (BMW)', icon: 'bi-trash3-fill', roles: ['ADMIN', 'DOCTOR', 'NURSE'] },
+    { id: 'abdm', label: 'ABDM & ABHA Gateway', icon: 'bi-qr-code', roles: ['ADMIN', 'RECEPTIONIST', 'DOCTOR'] },
   ];
 
   const dashboardSubMenus = [
