@@ -37,6 +37,7 @@ function Sidebar({
     { id: 'pacs', label: 'PACS Radiology Imaging', icon: 'bi-film', roles: ['ADMIN', 'DOCTOR', 'LAB_TECHNICIAN'] },
     { id: 'cssd', label: 'CSSD & Infection Control', icon: 'bi-virus', roles: ['ADMIN', 'DOCTOR', 'NURSE'] },
     { id: 'dietary', label: 'Dietary & Nutrition', icon: 'bi-cup-hot-fill', roles: ['ADMIN', 'DOCTOR', 'NURSE'] },
+    { id: 'mortuary', label: 'Mortuary & Death Desk', icon: 'bi-file-earmark-medical-fill', roles: ['ADMIN', 'DOCTOR', 'NURSE'] },
   ];
 
   const dashboardSubMenus = [
