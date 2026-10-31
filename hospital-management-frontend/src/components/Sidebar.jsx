@@ -45,6 +45,7 @@ function Sidebar({
     { id: 'laundry', label: 'Laundry & Linen Desk', icon: 'bi-tag-fill', roles: ['ADMIN', 'DOCTOR', 'NURSE'] },
     { id: 'chemo', label: 'Daycare Chemotherapy', icon: 'bi-droplet-half', roles: ['ADMIN', 'DOCTOR', 'NURSE'] },
     { id: 'analytics', label: 'Executive Operations & Revenue', icon: 'bi-graph-up-arrow', roles: ['ADMIN'] },
+    { id: 'showcase', label: '3D Microservices Showcase', icon: 'bi-cpu-fill', roles: ['ADMIN', 'DOCTOR', 'NURSE', 'RECEPTIONIST', 'LAB_TECHNICIAN', 'PHARMACIST', 'ACCOUNTANT', 'PATIENT'] },
   ];
 
   const dashboardSubMenus = [

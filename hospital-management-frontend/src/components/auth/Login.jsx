@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import AuthService from '../../services/AuthService';
 import { toast } from 'react-toastify';
 
-function Login({ onLogin }) {
+function Login({ onLogin, onExploreShowcase }) {
   const [authMode, setAuthMode] = useState('login');
   const [credentials, setCredentials] = useState({ username: '', password: '' });
   const [signupData, setSignupData] = useState({ name: '', username: '', email: '', password: '', confirmPassword: '', role: 'PATIENT' });
@@ -497,6 +497,33 @@ function Login({ onLogin }) {
               </div>
             ))}
           </div>
+
+          {onExploreShowcase && (
+            <div style={{ marginTop: '24px' }}>
+              <button
+                type="button"
+                onClick={onExploreShowcase}
+                style={{
+                  padding: '12px 20px',
+                  borderRadius: '10px',
+                  background: 'rgba(255, 255, 255, 0.12)',
+                  border: '1px solid rgba(255, 255, 255, 0.28)',
+                  color: '#fff',
+                  fontSize: '0.85rem',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+                }}
+              >
+                <i className="bi bi-diagram-3-fill text-info" />
+                <span>Explore 3D Microservices & Topology</span>
+                <i className="bi bi-arrow-right" />
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Right Form Panel */}
@@ -510,6 +537,34 @@ function Login({ onLogin }) {
                   : 'Register to access the healthcare platform'}
               </p>
             </div>
+
+            {onExploreShowcase && (
+              <div style={{ marginBottom: '18px' }}>
+                <button
+                  type="button"
+                  onClick={onExploreShowcase}
+                  style={{
+                    width: '100%',
+                    padding: '10px 14px',
+                    borderRadius: '10px',
+                    border: '1px solid rgba(14, 165, 233, 0.35)',
+                    background: 'linear-gradient(135deg, rgba(14, 165, 233, 0.08), rgba(168, 85, 247, 0.08))',
+                    color: '#0284c7',
+                    fontWeight: '600',
+                    fontSize: '0.82rem',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px'
+                  }}
+                >
+                  <i className="bi bi-badge-3d-fill" />
+                  <span>View Interactive 3D Platform Architecture</span>
+                  <i className="bi bi-arrow-right" />
+                </button>
+              </div>
+            )}
 
             <div className="hs-tab-row">
               <button className={`hs-tab ${authMode === 'login' ? 'active' : ''}`} onClick={() => setAuthMode('login')}>Sign In</button>

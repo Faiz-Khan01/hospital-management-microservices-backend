@@ -165,7 +165,7 @@ function Navbar({ toggleSidebar, activeTab, setActiveTab, onSearch, darkMode, to
     appointments: 'Appointments', prescriptions: 'Prescriptions', billing: 'Billing & Invoices',
     payments: 'Payments', 'medical-records': 'Medical Records', lab: 'Laboratory',
     pharmacy: 'Pharmacy', beds: 'Beds & Inpatient', settings: 'System Settings',
-    profile: 'My Profile', help: 'Help & Support'
+    profile: 'My Profile', help: 'Help & Support', showcase: '3D Microservices Showcase'
   };
 
   return (
@@ -391,6 +391,26 @@ function Navbar({ toggleSidebar, activeTab, setActiveTab, onSearch, darkMode, to
 
         {/* RIGHT */}
         <div className="hs-nav-right">
+          {/* 3D Showcase Quick Switch */}
+          <motion.button
+            type="button"
+            className="btn btn-sm d-inline-flex align-items-center gap-1 px-2 px-md-3 py-1 rounded-pill me-1"
+            style={{
+              fontSize: '0.75rem',
+              fontWeight: '600',
+              border: darkMode ? '1px solid rgba(56,189,248,0.3)' : '1px solid rgba(14,165,233,0.35)',
+              color: darkMode ? '#38bdf8' : '#0284c7',
+              background: activeTab === 'showcase' ? (darkMode ? 'rgba(56,189,248,0.2)' : 'rgba(14,165,233,0.15)') : 'transparent'
+            }}
+            title="3D Microservices & Topology Showcase"
+            onClick={() => setActiveTab('showcase')}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <i className="bi bi-cpu-fill" />
+            <span className="d-none d-md-inline">3D Topology</span>
+          </motion.button>
+
           {/* Emergency Code Red ER Quick Action */}
           {role !== 'PATIENT' && (
             <motion.button

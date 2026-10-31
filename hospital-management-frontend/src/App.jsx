@@ -50,9 +50,11 @@ const ProfilePanel = lazy(() => import('./components/settings/ProfilePanel'));
 const SettingsPanel = lazy(() => import('./components/settings/SettingsPanel'));
 const HelpSupportPanel = lazy(() => import('./components/settings/HelpSupportPanel'));
 const StaffApprovalsPanel = lazy(() => import('./components/settings/StaffApprovalsPanel'));
+const InteractiveShowcase = lazy(() => import('./components/showcase/InteractiveShowcase'));
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(AuthService.isAuthenticated());
+  const [showPublicShowcase, setShowPublicShowcase] = useState(false);
 
   const role = String(AuthService.getRole() || '').replace(/^ROLE_/, '').toUpperCase();
   const [activeTab, setActiveTab] = useState(() => (role === 'PATIENT' ? 'appointments' : 'dashboard'));
@@ -119,15 +121,31 @@ function App() {
 
   // ── Auth Guard ──
   if (!isAuthenticated) {
+    if (showPublicShowcase) {
+      return (
+        <div style={{ minHeight: '100vh', background: darkMode ? '#0f172a' : '#f8fafc' }}>
+          <Suspense fallback={<LoadingView label="Loading 3D Architecture Canvas..." />}>
+            <InteractiveShowcase
+              onLaunchApp={() => setShowPublicShowcase(false)}
+              darkMode={darkMode}
+            />
+          </Suspense>
+        </div>
+      );
+    }
+
     return (
       <div style={{ minHeight: '100vh' }}>
         <ToastContainer position="top-right" autoClose={3500} hideProgressBar={false} />
         <Suspense fallback={<LoadingView label="Loading..." />}>
-          <Login onLogin={() => {
-            const currentRole = String(AuthService.getRole() || '').replace(/^ROLE_/, '').toUpperCase();
-            setActiveTab(currentRole === 'PATIENT' ? 'appointments' : 'dashboard');
-            setIsAuthenticated(true);
-          }} />
+          <Login
+            onLogin={() => {
+              const currentRole = String(AuthService.getRole() || '').replace(/^ROLE_/, '').toUpperCase();
+              setActiveTab(currentRole === 'PATIENT' ? 'appointments' : 'dashboard');
+              setIsAuthenticated(true);
+            }}
+            onExploreShowcase={() => setShowPublicShowcase(true)}
+          />
         </Suspense>
       </div>
     );
@@ -374,6 +392,13 @@ function App() {
 
                   {activeTab === 'help' && (
                     <HelpSupportPanel role={role} darkMode={darkMode} />
+                  )}
+
+                  {activeTab === 'showcase' && (
+                    <InteractiveShowcase
+                      onLaunchApp={() => setActiveTab(role === 'PATIENT' ? 'appointments' : 'dashboard')}
+                      darkMode={darkMode}
+                    />
                   )}
                   </motion.div>
                 </AnimatePresence>
