@@ -22,7 +22,7 @@ public class JwtServiceFilter extends OncePerRequestFilter {
 
     private final SecretKey secretKey;
 
-    public JwtServiceFilter(@Value("${jwt.secret}") String secret) {
+    public JwtServiceFilter(@Value("${jwt.secret:HospitalSyncSecretKey2026SecureJwtSigningKeyString}") String secret) {
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 

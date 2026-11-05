@@ -16,7 +16,7 @@ import java.nio.charset.StandardCharsets;
 @Component
 public class JwtServiceFilter extends OncePerRequestFilter {
     private final SecretKey secretKey;
-    public JwtServiceFilter(@Value("${jwt.secret}") String secret) { secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)); }
+    public JwtServiceFilter(@Value("${jwt.secret:HospitalSyncSecretKey2026SecureJwtSigningKeyString}") String secret) { secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)); }
     @Override protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         if (request.getRequestURI().startsWith("/actuator")) { chain.doFilter(request, response); return; }
         String header = request.getHeader("Authorization");
