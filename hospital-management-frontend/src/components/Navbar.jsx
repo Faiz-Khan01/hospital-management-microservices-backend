@@ -5,7 +5,7 @@ import NotificationService from '../services/NotificationService';
 import RealtimeNotificationHub, { playHospitalAlertChime } from '../services/RealtimeNotificationHub';
 import EmergencyTriageModal from './emergency/EmergencyTriageModal';
 import { toast } from 'react-toastify';
-import { springSmooth, springSnappy, springBouncy, fadeDown, scaleIn, buttonPress } from '../animations/motionConfig';
+import { springSnappy, fadeDown, scaleIn } from '../animations/motionConfig';
 
 function Navbar({ toggleSidebar, activeTab, setActiveTab, onSearch, darkMode, toggleDarkMode, beds = [], doctors = [], onDataRefresh }) {
   const username = AuthService.getUsername() || 'Admin User';
@@ -427,8 +427,9 @@ function Navbar({ toggleSidebar, activeTab, setActiveTab, onSearch, darkMode, to
               className="hs-icon-btn" 
               onClick={() => { setShowNotifications(p => !p); setShowProfileMenu(false); }} 
               title="Notifications"
-              whileHover={{ scale: 1.08 }}
+              whileHover={{ scale: 1.1, rotate: [0, -6, 6, 0] }}
               whileTap={{ scale: 0.92 }}
+              transition={springSnappy}
             >
               <motion.i
                 animate={isRinging ? { rotate: [0, -22, 22, -18, 18, -10, 10, 0], scale: [1, 1.25, 1.25, 1] } : { rotate: 0, scale: 1 }}
@@ -436,7 +437,20 @@ function Navbar({ toggleSidebar, activeTab, setActiveTab, onSearch, darkMode, to
                 className={`bi ${unreadCount > 0 ? 'bi-bell-fill' : 'bi-bell'}`}
                 style={{ fontSize: '1.1rem', color: unreadCount > 0 ? '#2563eb' : 'inherit', display: 'inline-block' }}
               />
-              {unreadCount > 0 && <span className="hs-notif-badge">{unreadCount > 9 ? '9+' : unreadCount}</span>}
+              <AnimatePresence>
+                {unreadCount > 0 && (
+                  <motion.span
+                    key="unread-badge"
+                    className="hs-notif-badge"
+                    initial={{ scale: 0, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0, opacity: 0 }}
+                    transition={springSnappy}
+                  >
+                    {unreadCount > 9 ? '9+' : unreadCount}
+                  </motion.span>
+                )}
+              </AnimatePresence>
             </motion.button>
 
             <AnimatePresence>
@@ -446,6 +460,7 @@ function Navbar({ toggleSidebar, activeTab, setActiveTab, onSearch, darkMode, to
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
+                    transition={{ duration: 0.18 }}
                     style={{ position: 'fixed', inset: 0, zIndex: 1050 }} 
                     onClick={() => setShowNotifications(false)} 
                   />
@@ -458,81 +473,106 @@ function Navbar({ toggleSidebar, activeTab, setActiveTab, onSearch, darkMode, to
                     exit="exit"
                   >
                     <div className="hs-notif-head">
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 700 }}>
-                          <i className="bi bi-bell-fill" /> Notifications
-                        </div>
-                        <div style={{ fontSize: '.7rem', opacity: .6, marginTop: 2 }}>Hospital activity updates</div>
-                      </div>
-                      {unreadCount > 0 && (
-                        <span style={{ background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 20, padding: '2px 10px', fontSize: '.72rem', fontWeight: 700 }}>
-                          {unreadCount} New
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  <div style={{ maxHeight: 300, overflowY: 'auto' }}>
-                    {notifications.length > 0 ? notifications.map(n => {
-                      const ni = notifIcon(n.type);
-                      return (
-                        <motion.div 
-                          key={n.id} 
-                          className={`hs-notif-item ${!n.read ? 'unread' : ''}`}
-                          initial={{ opacity: 0, x: 8 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          whileHover={{ x: 3 }}
-                          transition={{ duration: 0.15 }}
-                        >
-                          <div style={{ display: 'flex', gap: 10 }}>
-                            <div className="hs-notif-icon" style={{ background: ni.bg, color: ni.color }}>
-                              <i className={`bi ${ni.icon}`} style={{ fontSize: '.9rem' }} />
-                            </div>
-                            <div style={{ flex: 1, minWidth: 0 }}>
-                              <div style={{ fontSize: '.78rem', fontWeight: n.read ? 500 : 700, color: darkMode ? '#e2e8f0' : '#0f172a', lineHeight: 1.4 }}>{n.message}</div>
-                              <div style={{ fontSize: '.67rem', color: '#94a3b8', marginTop: 3 }}>{formatTime(n.createdAt)}</div>
-                            </div>
-                            {!n.read && <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#2563eb', flexShrink: 0, marginTop: 5 }} />}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 700 }}>
+                            <i className="bi bi-bell-fill" /> Notifications
                           </div>
-                        </motion.div>
-                      );
-                    }) : (
-                      <div style={{ textAlign: 'center', padding: '32px 16px' }}>
-                        <i className="bi bi-bell-slash" style={{ fontSize: '1.8rem', color: '#94a3b8', display: 'block', marginBottom: 8 }} />
-                        <div style={{ fontWeight: 600, fontSize: '.85rem', color: darkMode ? '#e2e8f0' : '#374151' }}>All caught up!</div>
-                        <div style={{ fontSize: '.75rem', color: '#94a3b8', marginTop: 4 }}>No new notifications</div>
+                          <div style={{ fontSize: '.7rem', opacity: .6, marginTop: 2 }}>Hospital activity updates</div>
+                        </div>
+                        {unreadCount > 0 && (
+                          <motion.span 
+                            initial={{ scale: 0.8, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            style={{ background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 20, padding: '2px 10px', fontSize: '.72rem', fontWeight: 700 }}
+                          >
+                            {unreadCount} New
+                          </motion.span>
+                        )}
                       </div>
-                    )}
-                  </div>
-                  <div style={{ padding: '8px 12px', borderTop: `1px solid ${darkMode ? 'rgba(255,255,255,0.08)' : '#f1f5f9'}` }}>
-                    <button
-                      onClick={() => {
-                        RealtimeNotificationHub.markAllAsRead();
-                        setNotifications(prev => prev.map(n => ({ ...n, read: true })));
-                        setUnreadCount(0);
-                        setShowNotifications(false);
-                      }}
-                      style={{ width: '100%', background: 'none', border: 'none', color: '#2563eb', fontWeight: 700, fontSize: '.78rem', cursor: 'pointer', padding: '6px', borderRadius: 8, fontFamily: 'inherit' }}
-                    >
-                      Dismiss all <i className="bi bi-check2-all ms-1" />
-                    </button>
-                  </div>
-                </motion.div>
-              </>
-            )}
-          </AnimatePresence>
+                    </div>
+                    <div style={{ maxHeight: 300, overflowY: 'auto' }}>
+                      <AnimatePresence mode="popLayout">
+                        {notifications.length > 0 ? notifications.map(n => {
+                          const ni = notifIcon(n.type);
+                          return (
+                            <motion.div 
+                              key={n.id || n.message} 
+                              layout
+                              className={`hs-notif-item ${!n.read ? 'unread' : ''}`}
+                              initial={{ opacity: 0, y: 8 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 0, scale: 0.95 }}
+                              whileHover={{ x: 4, transition: springSnappy }}
+                              transition={{ duration: 0.16 }}
+                            >
+                              <div style={{ display: 'flex', gap: 10 }}>
+                                <div className="hs-notif-icon" style={{ background: ni.bg, color: ni.color }}>
+                                  <i className={`bi ${ni.icon}`} style={{ fontSize: '.9rem' }} />
+                                </div>
+                                <div style={{ flex: 1, minWidth: 0 }}>
+                                  <div style={{ fontSize: '.78rem', fontWeight: n.read ? 500 : 700, color: darkMode ? '#e2e8f0' : '#0f172a', lineHeight: 1.4 }}>{n.message}</div>
+                                  <div style={{ fontSize: '.67rem', color: '#94a3b8', marginTop: 3 }}>{formatTime(n.createdAt)}</div>
+                                </div>
+                                {!n.read && <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#2563eb', flexShrink: 0, marginTop: 5 }} />}
+                              </div>
+                            </motion.div>
+                          );
+                        }) : (
+                          <motion.div 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            style={{ textAlign: 'center', padding: '32px 16px' }}
+                          >
+                            <i className="bi bi-bell-slash" style={{ fontSize: '1.8rem', color: '#94a3b8', display: 'block', marginBottom: 8 }} />
+                            <div style={{ fontWeight: 600, fontSize: '.85rem', color: darkMode ? '#e2e8f0' : '#374151' }}>All caught up!</div>
+                            <div style={{ fontSize: '.75rem', color: '#94a3b8', marginTop: 4 }}>No new notifications</div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                    <div style={{ padding: '8px 12px', borderTop: `1px solid ${darkMode ? 'rgba(255,255,255,0.08)' : '#f1f5f9'}` }}>
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => {
+                          RealtimeNotificationHub.markAllAsRead();
+                          setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+                          setUnreadCount(0);
+                          setShowNotifications(false);
+                        }}
+                        style={{ width: '100%', background: 'none', border: 'none', color: '#2563eb', fontWeight: 700, fontSize: '.78rem', cursor: 'pointer', padding: '6px', borderRadius: 8, fontFamily: 'inherit' }}
+                      >
+                        Dismiss all <i className="bi bi-check2-all ms-1" />
+                      </motion.button>
+                    </div>
+                  </motion.div>
+                </>
+              )}
+            </AnimatePresence>
           </div>
 
           <div className="hs-divider" />
 
           {/* Profile */}
-          <div className="hs-profile-pill" ref={profileRef} onClick={() => { setShowProfileMenu(p => !p); setShowNotifications(false); }}>
+          <motion.div 
+            className="hs-profile-pill" 
+            ref={profileRef} 
+            onClick={() => { setShowProfileMenu(p => !p); setShowNotifications(false); }}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
             <div className="hs-avatar">{avatarLetter}</div>
             <div className="hs-profile-name" style={{ display: 'flex', flexDirection: 'column' }}>
               <span className="hs-profile-name">{displayName.length > 14 ? displayName.slice(0, 14) + '…' : displayName}</span>
               <span className="hs-profile-role">{role}</span>
             </div>
-            <i className="bi bi-chevron-down" style={{ fontSize: '.6rem', color: '#94a3b8' }} />
+            <motion.i 
+              className="bi bi-chevron-down" 
+              animate={{ rotate: showProfileMenu ? 180 : 0 }}
+              transition={springSnappy}
+              style={{ fontSize: '.6rem', color: '#94a3b8' }} 
+            />
 
             <AnimatePresence>
               {showProfileMenu && (
@@ -548,38 +588,54 @@ function Navbar({ toggleSidebar, activeTab, setActiveTab, onSearch, darkMode, to
                     <div style={{ fontSize: '.7rem', color: '#94a3b8', marginTop: 2 }}>{role}</div>
                   </div>
 
-                  <button className="hs-dropdown-item" onClick={() => {
-                    setShowProfileMenu(false);
-                    if (setActiveTab) setActiveTab('profile');
-                  }}>
+                  <motion.button 
+                    whileHover={{ x: 3 }} 
+                    className="hs-dropdown-item" 
+                    onClick={() => {
+                      setShowProfileMenu(false);
+                      if (setActiveTab) setActiveTab('profile');
+                    }}
+                  >
                     <i className="bi bi-person-circle" style={{ color: '#64748b' }} /> My Profile
-                  </button>
+                  </motion.button>
 
                   {role === 'ADMIN' && (
-                    <button className="hs-dropdown-item" onClick={() => {
-                      setShowProfileMenu(false);
-                      if (setActiveTab) setActiveTab('settings');
-                    }}>
+                    <motion.button 
+                      whileHover={{ x: 3 }} 
+                      className="hs-dropdown-item" 
+                      onClick={() => {
+                        setShowProfileMenu(false);
+                        if (setActiveTab) setActiveTab('settings');
+                      }}
+                    >
                       <i className="bi bi-gear" style={{ color: '#64748b' }} /> Settings
-                    </button>
+                    </motion.button>
                   )}
 
-                  <button className="hs-dropdown-item" onClick={() => {
-                    setShowProfileMenu(false);
-                    if (setActiveTab) setActiveTab('help');
-                  }}>
+                  <motion.button 
+                    whileHover={{ x: 3 }} 
+                    className="hs-dropdown-item" 
+                    onClick={() => {
+                      setShowProfileMenu(false);
+                      if (setActiveTab) setActiveTab('help');
+                    }}
+                  >
                     <i className="bi bi-question-circle" style={{ color: '#64748b' }} /> Help & Support
-                  </button>
+                  </motion.button>
 
                   <div className="hs-dropdown-divider" />
 
-                  <button className="hs-dropdown-item danger" onClick={() => AuthService.logout()}>
+                  <motion.button 
+                    whileHover={{ x: 3 }} 
+                    className="hs-dropdown-item danger" 
+                    onClick={() => AuthService.logout()}
+                  >
                     <i className="bi bi-box-arrow-right" /> Sign Out
-                  </button>
+                  </motion.button>
                 </motion.div>
               )}
             </AnimatePresence>
-          </div>
+          </motion.div>
         </div>
       </header>
 

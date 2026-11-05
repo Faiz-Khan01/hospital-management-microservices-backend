@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import AuthService from '../services/AuthService';
-import { springSmooth, springSnappy, springBouncy, iconHover } from '../animations/motionConfig';
+import { springSmooth, springSnappy, springBouncy, iconHover, tabIndicator } from '../animations/motionConfig';
 
 function Sidebar({
   activeTab,
@@ -124,6 +124,7 @@ function Sidebar({
           color: white;
           background: linear-gradient(135deg, #0ea5e9 0%, #a855f7 100%);
           box-shadow: 0 6px 16px rgba(14, 165, 233, 0.3);
+          cursor: pointer;
         }
 
         .aura-brand-name {
@@ -170,27 +171,44 @@ function Sidebar({
           cursor: pointer;
           font-size: 0.86rem;
           font-weight: 500;
-          transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+          position: relative;
+          overflow: hidden;
+          transition: color 0.18s ease;
         }
 
         .aura-nav-btn:hover {
           color: #0284c7;
-          background: rgba(241, 245, 249, 0.8);
-          transform: translateX(2px);
         }
 
         .aura-nav-btn.active {
           color: #0284c7;
-          background: linear-gradient(135deg, rgba(224, 242, 254, 0.9), rgba(243, 232, 255, 0.7));
-          border-color: rgba(255, 255, 255, 0.9);
           font-weight: 700;
-          box-shadow: 0 6px 18px rgba(14, 165, 233, 0.12);
+        }
+
+        .aura-active-pill {
+          position: absolute;
+          inset: 0;
+          border-radius: 12px;
+          background: linear-gradient(135deg, rgba(224, 242, 254, 0.92), rgba(243, 232, 255, 0.72));
+          border: 1px solid rgba(255, 255, 255, 0.95);
+          box-shadow: 0 4px 16px rgba(14, 165, 233, 0.14);
+          z-index: 0;
         }
 
         .aura-nav-left {
           display: flex;
           align-items: center;
           gap: 12px;
+          position: relative;
+          z-index: 1;
+        }
+
+        .aura-nav-right {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          position: relative;
+          z-index: 1;
         }
 
         .aura-icon {
@@ -220,6 +238,7 @@ function Sidebar({
           color: #475569;
           background: rgba(241, 245, 249, 0.9);
           border: 1px solid rgba(226, 232, 240, 0.8);
+          transition: all 0.2s ease;
         }
 
         .aura-nav-btn.active .aura-count {
@@ -244,7 +263,9 @@ function Sidebar({
           font-weight: 500;
           text-align: left;
           cursor: pointer;
-          transition: all 0.15s ease;
+          position: relative;
+          overflow: hidden;
+          transition: color 0.15s ease;
           display: flex;
           align-items: center;
           gap: 8px;
@@ -252,13 +273,20 @@ function Sidebar({
 
         .aura-sub-btn:hover {
           color: #0284c7;
-          background: rgba(241, 245, 249, 0.7);
         }
 
         .aura-sub-btn.active {
           color: #0284c7;
-          background: rgba(224, 242, 254, 0.8);
           font-weight: 700;
+        }
+
+        .aura-sub-active-pill {
+          position: absolute;
+          inset: 0;
+          border-radius: 8px;
+          background: rgba(224, 242, 254, 0.85);
+          border: 1px solid rgba(186, 230, 253, 0.8);
+          z-index: 0;
         }
 
         .aura-footer {
@@ -312,21 +340,22 @@ function Sidebar({
             position: fixed !important;
             top: 0; left: 0; bottom: 0;
             transform: translateX(-105%);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
           }
           .aura-sidebar.open {
-            transform: translateX(0);
+            transform: translateX(0) !important;
           }
           .aura-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(15, 23, 42, 0.4);
+            background: rgba(15, 23, 42, 0.45);
             backdrop-filter: blur(4px);
             z-index: 1035;
           }
         }
       `}</style>
 
+      {/* Mobile Backdrop Overlay */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -349,6 +378,7 @@ function Sidebar({
               <motion.div 
                 className="aura-logo"
                 whileHover={{ rotate: 8, scale: 1.08 }}
+                whileTap={{ scale: 0.95 }}
                 transition={springBouncy}
               >
                 <i className="bi bi-hospital fs-5"></i>
@@ -356,17 +386,19 @@ function Sidebar({
               <div className="aura-brand-name">
                 Hos<span>Ptal</span>
               </div>
-              <button
+              <motion.button
                 type="button"
                 className="btn btn-sm text-muted d-md-none ms-auto border-0 p-0"
                 onClick={toggleSidebar}
+                whileHover={{ scale: 1.15, rotate: 90 }}
+                whileTap={{ scale: 0.9 }}
+                aria-label="Close sidebar"
               >
                 <i className="bi bi-x-lg fs-6"></i>
-              </button>
+              </motion.button>
             </div>
           </div>
 
-          {/* NAVIGATION CONTAINER */}
           {/* NAVIGATION CONTAINER */}
           <div className="aura-nav">
 
@@ -385,13 +417,30 @@ function Sidebar({
                   whileTap={{ scale: 0.98 }}
                   transition={{ duration: 0.15 }}
                 >
+                  {activeTab === 'dashboard' && (
+                    <motion.div
+                      layoutId="sidebarActiveIndicator"
+                      className="aura-active-pill"
+                      transition={tabIndicator}
+                    />
+                  )}
                   <div className="aura-nav-left">
-                    <div className="aura-icon">
+                    <motion.div 
+                      className="aura-icon"
+                      whileHover={{ scale: 1.12, rotate: 4 }}
+                      transition={springBouncy}
+                    >
                       <i className="bi bi-grid-1x2-fill"></i>
-                    </div>
+                    </motion.div>
                     <span className="fw-semibold">Dashboard</span>
                   </div>
-                  <i className={`bi bi-chevron-${dashboardOpen ? 'down' : 'right'} small text-muted`}></i>
+                  <div className="aura-nav-right">
+                    <motion.i
+                      className="bi bi-chevron-down small text-muted"
+                      animate={{ rotate: dashboardOpen ? 180 : 0 }}
+                      transition={springSnappy}
+                    />
+                  </div>
                 </motion.button>
 
                 <AnimatePresence>
@@ -401,24 +450,36 @@ function Sidebar({
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: 'auto' }}
                       exit={{ opacity: 0, height: 0 }}
-                      transition={{ duration: 0.2, ease: 'easeInOut' }}
+                      transition={{ duration: 0.22, ease: 'easeInOut' }}
                     >
-                      {dashboardSubMenus.filter((sub) => sub.roles.includes(role)).map((sub) => (
-                        <motion.button
-                          type="button"
-                          key={sub.tabId}
-                          className={`aura-sub-btn ${activeTab === sub.tabId && activeDashboardSubTab === sub.name ? 'active' : ''}`}
-                          onClick={() => {
-                            setActiveDashboardSubTab(sub.name);
-                            handleNavigation(sub.tabId);
-                          }}
-                          whileHover={{ x: 3 }}
-                          whileTap={{ scale: 0.98 }}
-                        >
-                          <i className="bi bi-dot fs-5"></i>
-                          {sub.name}
-                        </motion.button>
-                      ))}
+                      {dashboardSubMenus.filter((sub) => sub.roles.includes(role)).map((sub) => {
+                        const isSubActive = activeTab === sub.tabId && activeDashboardSubTab === sub.name;
+                        return (
+                          <motion.button
+                            type="button"
+                            key={sub.name}
+                            className={`aura-sub-btn ${isSubActive ? 'active' : ''}`}
+                            onClick={() => {
+                              setActiveDashboardSubTab(sub.name);
+                              handleNavigation(sub.tabId);
+                            }}
+                            whileHover={{ x: 3 }}
+                            whileTap={{ scale: 0.98 }}
+                          >
+                            {isSubActive && (
+                              <motion.div
+                                layoutId="sidebarSubActiveIndicator"
+                                className="aura-sub-active-pill"
+                                transition={tabIndicator}
+                              />
+                            )}
+                            <span style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', gap: 4 }}>
+                              <i className="bi bi-dot fs-5"></i>
+                              {sub.name}
+                            </span>
+                          </motion.button>
+                        );
+                      })}
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -440,27 +501,37 @@ function Sidebar({
                 payments: 'My Payments'
               };
               const displayLabel = role === 'PATIENT' && patientLabels[item.id] ? patientLabels[item.id] : item.label;
+              const isActive = activeTab === item.id;
 
               return (
                 <motion.button
                   type="button"
                   key={item.id}
-                  className={`aura-nav-btn ${activeTab === item.id ? 'active' : ''}`}
+                  className={`aura-nav-btn ${isActive ? 'active' : ''}`}
                   onClick={() => handleNavigation(item.id)}
                   whileHover={{ x: 4, transition: springSnappy }}
                   whileTap={{ scale: 0.98 }}
                 >
+                  {isActive && (
+                    <motion.div
+                      layoutId="sidebarActiveIndicator"
+                      className="aura-active-pill"
+                      transition={tabIndicator}
+                    />
+                  )}
+
                   <div className="aura-nav-left">
                     <motion.div 
                       className="aura-icon"
-                      whileHover={{ scale: 1.15, rotate: 3, transition: springBouncy }}
+                      whileHover={{ scale: 1.15, rotate: 4 }}
+                      transition={springBouncy}
                     >
                       <i className={`bi ${item.icon}`}></i>
                     </motion.div>
                     <span>{displayLabel}</span>
                   </div>
 
-                  <div className="d-flex align-items-center gap-2">
+                  <div className="aura-nav-right">
                     {role !== 'PATIENT' && item.count !== undefined && item.count !== null && (
                       <span className="aura-count">{item.count}</span>
                     )}
@@ -484,12 +555,22 @@ function Sidebar({
               transition={{ duration: 0.15 }}
             >
               <div className="aura-nav-left">
-                <div className="aura-icon">
+                <motion.div 
+                  className="aura-icon"
+                  whileHover={{ scale: 1.12, rotate: 4 }}
+                  transition={springBouncy}
+                >
                   <i className="bi bi-gear-fill text-primary"></i>
-                </div>
+                </motion.div>
                 <span>Settings & Support</span>
               </div>
-              <i className={`bi bi-chevron-${settingsOpen ? 'down' : 'right'} small text-muted`}></i>
+              <div className="aura-nav-right">
+                <motion.i
+                  className="bi bi-chevron-down small text-muted"
+                  animate={{ rotate: settingsOpen ? 180 : 0 }}
+                  transition={springSnappy}
+                />
+              </div>
             </motion.button>
 
             <AnimatePresence>
@@ -499,21 +580,33 @@ function Sidebar({
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.2, ease: 'easeInOut' }}
+                  transition={{ duration: 0.22, ease: 'easeInOut' }}
                 >
-                  {settingsItems.filter((item) => item.roles.includes(role)).map((item) => (
-                    <motion.button
-                      type="button"
-                      key={item.id}
-                      className={`aura-sub-btn ${activeTab === item.tabId ? 'active' : ''}`}
-                      onClick={() => handleNavigation(item.tabId)}
-                      whileHover={{ x: 3 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      <i className={`bi ${item.icon} small`}></i>
-                      {item.label}
-                    </motion.button>
-                  ))}
+                  {settingsItems.filter((item) => item.roles.includes(role)).map((item) => {
+                    const isSettingsActive = activeTab === item.tabId;
+                    return (
+                      <motion.button
+                        type="button"
+                        key={item.id}
+                        className={`aura-sub-btn ${isSettingsActive ? 'active' : ''}`}
+                        onClick={() => handleNavigation(item.tabId)}
+                        whileHover={{ x: 3 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        {isSettingsActive && (
+                          <motion.div
+                            layoutId="sidebarSubActiveIndicator"
+                            className="aura-sub-active-pill"
+                            transition={tabIndicator}
+                          />
+                        )}
+                        <span style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', gap: 8 }}>
+                          <i className={`bi ${item.icon} small`}></i>
+                          {item.label}
+                        </span>
+                      </motion.button>
+                    );
+                  })}
                 </motion.div>
               )}
             </AnimatePresence>
@@ -525,7 +618,8 @@ function Sidebar({
             <div className="aura-profile">
               <motion.div
                 className="aura-avatar"
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ scale: 1.06 }}
+                transition={springSnappy}
               >
                 {getInitials(username)}
               </motion.div>
@@ -538,8 +632,9 @@ function Sidebar({
                 className="aura-logout"
                 onClick={AuthService.logout}
                 title="Sign Out"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.1, rotate: -4 }}
+                whileTap={{ scale: 0.92 }}
+                transition={springSnappy}
               >
                 <i className="bi bi-box-arrow-right"></i>
               </motion.button>

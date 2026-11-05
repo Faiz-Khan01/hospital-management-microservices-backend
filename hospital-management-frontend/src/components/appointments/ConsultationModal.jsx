@@ -5,6 +5,7 @@ import PrescriptionService from '../../services/PrescriptionService';
 import AppointmentService from '../../services/AppointmentService';
 import RealtimeNotificationHub from '../../services/RealtimeNotificationHub';
 import { toast } from 'react-toastify';
+import { modalBackdrop, modalDialog, springSnappy, tabIndicator } from '../../animations/motionConfig';
 
 const COMMON_DIAGNOSES = [
   'Viral Upper Respiratory Infection',
@@ -40,6 +41,16 @@ const DEFAULT_MEDICINE_LIST = [
 
 function ConsultationModal({ show, appointment, patient, doctor, onClose, onComplete }) {
   if (!show || !appointment) return null;
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && show && !submitting) {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [show, submitting, onClose]);
 
   const [activeTab, setActiveTab] = useState('vitals'); // 'vitals' | 'rx' | 'advice'
   const [submitting, setSubmitting] = useState(false);
@@ -236,7 +247,12 @@ function ConsultationModal({ show, appointment, patient, doctor, onClose, onComp
   };
 
   return (
-    <div
+    <motion.div
+      variants={modalBackdrop}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      onClick={onClose}
       className="modal fade show d-block"
       tabIndex="-1"
       style={{
@@ -246,13 +262,13 @@ function ConsultationModal({ show, appointment, patient, doctor, onClose, onComp
         overflowY: 'auto'
       }}
     >
-      <div className="modal-dialog modal-xl modal-dialog-centered my-4">
+      <div className="modal-dialog modal-xl modal-dialog-centered my-4" onClick={(e) => e.stopPropagation()}>
         <motion.div
           className="modal-content border-0 shadow-2xl rounded-4 overflow-hidden"
-          initial={{ opacity: 0, scale: 0.95, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          transition={{ duration: 0.25, ease: 'easeOut' }}
+          variants={modalDialog}
+          initial="initial"
+          animate="animate"
+          exit="exit"
           style={{ background: '#ffffff' }}
         >
           {/* MODAL HEADER */}
@@ -282,10 +298,13 @@ function ConsultationModal({ show, appointment, patient, doctor, onClose, onComp
               </div>
             </div>
 
-            <button
+            <motion.button
               type="button"
               className="btn-close btn-close-white"
               onClick={onClose}
+              whileHover={{ scale: 1.15, rotate: 90 }}
+              whileTap={{ scale: 0.9 }}
+              transition={springSnappy}
               disabled={submitting}
             />
           </div>
@@ -840,7 +859,7 @@ function ConsultationModal({ show, appointment, patient, doctor, onClose, onComp
           </form>
         </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

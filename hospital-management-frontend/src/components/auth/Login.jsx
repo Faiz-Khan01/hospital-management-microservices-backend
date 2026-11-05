@@ -5,12 +5,9 @@ import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import {
   springSmooth,
   springSnappy,
-  springBouncy,
-  fadeUp,
-  fadeIn,
-  scaleIn,
   staggerContainer,
-  staggerItem
+  staggerItem,
+  tabIndicator
 } from '../../animations/motionConfig';
 
 function Login({ onLogin, onExploreShowcase }) {
@@ -27,11 +24,18 @@ function Login({ onLogin, onExploreShowcase }) {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const shouldReduceMotion = useReducedMotion();
+
+  const triggerErrorShake = () => {
+    setHasError(true);
+    setTimeout(() => setHasError(false), 500);
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
     if (!credentials.username.trim() || !credentials.password) {
+      triggerErrorShake();
       toast.warning('Please enter your username and password.');
       return;
     }
@@ -41,6 +45,7 @@ function Login({ onLogin, onExploreShowcase }) {
       toast.success('Welcome back! Redirecting to dashboard...');
       onLogin();
     } catch (err) {
+      triggerErrorShake();
       const message = err.response?.data?.message || 'Invalid username or password. Please try again.';
       toast.error(message);
     } finally {
@@ -51,14 +56,17 @@ function Login({ onLogin, onExploreShowcase }) {
   const handleSignUp = async (e) => {
     e.preventDefault();
     if (!signupData.username.trim() || !signupData.email.trim() || !signupData.password) {
+      triggerErrorShake();
       toast.warning('Please fill in all required fields.');
       return;
     }
     if (signupData.password.length < 6) {
+      triggerErrorShake();
       toast.warning('Password must be at least 6 characters.');
       return;
     }
     if (signupData.password !== signupData.confirmPassword) {
+      triggerErrorShake();
       toast.error('Passwords do not match.');
       return;
     }
@@ -73,6 +81,7 @@ function Login({ onLogin, onExploreShowcase }) {
       setAuthMode('login');
       setCredentials({ username: signupData.username, password: '' });
     } catch (err) {
+      triggerErrorShake();
       const message = err.response?.data?.message || 'Registration failed. Please try again.';
       toast.error(message);
     } finally {
@@ -906,7 +915,7 @@ function Login({ onLogin, onExploreShowcase }) {
                       <motion.div
                         layoutId="hsAuthTabActive"
                         className="hs-tab-active-pill"
-                        transition={springSnappy}
+                        transition={tabIndicator}
                       />
                     )}
                     <span style={{ position: 'relative', zIndex: 3 }}>{label}</span>
@@ -923,9 +932,9 @@ function Login({ onLogin, onExploreShowcase }) {
                   onSubmit={handleLogin}
                   autoComplete="on"
                   initial={{ opacity: 0, x: -16 }}
-                  animate={{ opacity: 1, x: 0 }}
+                  animate={hasError && !shouldReduceMotion ? { x: [-8, 8, -6, 6, -3, 3, 0] } : { opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 16 }}
-                  transition={springSmooth}
+                  transition={hasError ? { duration: 0.45 } : springSmooth}
                 >
                   <div className="hs-field">
                     <label className="hs-label">Username / Email</label>
@@ -956,9 +965,19 @@ function Login({ onLogin, onExploreShowcase }) {
                         type="button"
                         className="hs-input-icon"
                         onClick={() => setShowPassword(p => !p)}
-                        whileTap={{ scale: 0.8 }}
+                        whileHover={{ scale: 1.15 }}
+                        whileTap={{ scale: 0.85 }}
+                        transition={springSnappy}
+                        aria-label={showPassword ? 'Hide password' : 'Show password'}
                       >
-                        <i className={`bi ${showPassword ? 'bi-eye-slash-fill' : 'bi-eye-fill'}`} style={{ fontSize: '1.05rem' }} />
+                        <motion.i
+                          key={showPassword ? 'eye-off' : 'eye-on'}
+                          initial={{ scale: 0.7, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          transition={springSnappy}
+                          className={`bi ${showPassword ? 'bi-eye-slash-fill text-primary' : 'bi-eye-fill'}`}
+                          style={{ fontSize: '1.05rem' }}
+                        />
                       </motion.button>
                     </div>
                   </div>
@@ -990,9 +1009,9 @@ function Login({ onLogin, onExploreShowcase }) {
                   onSubmit={handleSignUp}
                   autoComplete="on"
                   initial={{ opacity: 0, x: 16 }}
-                  animate={{ opacity: 1, x: 0 }}
+                  animate={hasError && !shouldReduceMotion ? { x: [-8, 8, -6, 6, -3, 3, 0] } : { opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -16 }}
-                  transition={springSmooth}
+                  transition={hasError ? { duration: 0.45 } : springSmooth}
                 >
                   <div className="hs-field">
                     <label className="hs-label">Full Name</label>
@@ -1083,9 +1102,19 @@ function Login({ onLogin, onExploreShowcase }) {
                         type="button"
                         className="hs-input-icon"
                         onClick={() => setShowConfirmPassword(p => !p)}
-                        whileTap={{ scale: 0.8 }}
+                        whileHover={{ scale: 1.15 }}
+                        whileTap={{ scale: 0.85 }}
+                        transition={springSnappy}
+                        aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
                       >
-                        <i className={`bi ${showConfirmPassword ? 'bi-eye-slash-fill' : 'bi-eye-fill'}`} style={{ fontSize: '1.05rem' }} />
+                        <motion.i
+                          key={showConfirmPassword ? 'conf-off' : 'conf-on'}
+                          initial={{ scale: 0.7, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          transition={springSnappy}
+                          className={`bi ${showConfirmPassword ? 'bi-eye-slash-fill text-primary' : 'bi-eye-fill'}`}
+                          style={{ fontSize: '1.05rem' }}
+                        />
                       </motion.button>
                     </div>
                   </div>

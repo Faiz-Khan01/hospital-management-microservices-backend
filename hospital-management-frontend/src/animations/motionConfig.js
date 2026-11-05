@@ -72,7 +72,7 @@ export const fadeDown = {
   }
 };
 
-// 4. Slide Left (panels, drawers entering from right)
+// 4. Slide Presets
 export const slideLeft = {
   initial: { x: '100%', opacity: 0 },
   animate: { 
@@ -87,7 +87,6 @@ export const slideLeft = {
   }
 };
 
-// 5. Slide Right (sidebars entering from left)
 export const slideRight = {
   initial: { x: '-100%', opacity: 0 },
   animate: { 
@@ -99,6 +98,39 @@ export const slideRight = {
     x: '-100%', 
     opacity: 0, 
     transition: { duration: 0.22, ease: easeInOutCubic } 
+  }
+};
+
+export const slideIn = (direction = 'right') => {
+  const directions = {
+    right: { x: '100%', y: 0 },
+    left: { x: '-100%', y: 0 },
+    up: { x: 0, y: 32 },
+    down: { x: 0, y: -32 }
+  };
+  const offset = directions[direction] || directions.right;
+  return {
+    initial: { ...offset, opacity: 0 },
+    animate: { x: 0, y: 0, opacity: 1, transition: springSmooth },
+    exit: { ...offset, opacity: 0, transition: { duration: 0.2, ease: easeInOutCubic } }
+  };
+};
+slideIn.initial = { x: 24, opacity: 0 };
+slideIn.animate = { x: 0, opacity: 1, transition: springSmooth };
+slideIn.exit = { x: -24, opacity: 0, transition: { duration: 0.2 } };
+
+// 5. Drawer Transitions (Mobile Sidebars / Side Drawers)
+export const drawerTransition = {
+  initial: { x: '-100%', opacity: 0.6 },
+  animate: { 
+    x: 0, 
+    opacity: 1, 
+    transition: { type: 'spring', stiffness: 320, damping: 32, mass: 0.9 } 
+  },
+  exit: { 
+    x: '-100%', 
+    opacity: 0, 
+    transition: { duration: 0.24, ease: easeInOutCubic } 
   }
 };
 
@@ -200,7 +232,7 @@ export const modalBackdrop = {
   }
 };
 
-export const modalAnimation = {
+export const modalDialog = {
   initial: { opacity: 0, scale: 0.94, y: 16 },
   animate: { 
     opacity: 1, 
@@ -216,10 +248,26 @@ export const modalAnimation = {
   }
 };
 
-// 11. Micro-Interactions
+// Backward-compatible alias for existing code
+export const modalAnimation = modalDialog;
+
+// 11. Tab Indicator Preset
+export const tabIndicator = {
+  type: 'spring',
+  stiffness: 450,
+  damping: 32,
+  mass: 0.6
+};
+
+// 12. Micro-Interactions
 export const buttonPress = {
   whileHover: { scale: 1.025, transition: springSnappy },
   whileTap: { scale: 0.97, transition: springSnappy }
+};
+
+export const hoverSpring = {
+  whileHover: { scale: 1.025, y: -2, transition: springSnappy },
+  whileTap: { scale: 0.975, transition: springSnappy }
 };
 
 export const iconHover = {
@@ -246,7 +294,7 @@ export const shakeError = {
   }
 };
 
-// 12. Accessibility & Reduced Motion Safeguards
+// 13. Accessibility & Reduced Motion Safeguards
 export const isReducedMotionPreferred = () => {
   if (typeof window === 'undefined' || !window.matchMedia) return false;
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -260,4 +308,3 @@ export const reducedMotionTransition = {
 export const getSafeTransition = (standardTransition) => {
   return isReducedMotionPreferred() ? reducedMotionTransition : standardTransition;
 };
-

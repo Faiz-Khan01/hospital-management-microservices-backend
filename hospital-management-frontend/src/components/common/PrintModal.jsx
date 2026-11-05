@@ -1,8 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { modalBackdrop, modalAnimation, buttonPress } from '../../animations/motionConfig';
+import { modalBackdrop, modalDialog, buttonPress, springSnappy } from '../../animations/motionConfig';
 
 function PrintModal({ show = true, onClose, title, children }) {
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && show) {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [show, onClose]);
+
   const handlePrint = () => {
     window.print();
   };
@@ -29,7 +39,7 @@ function PrintModal({ show = true, onClose, title, children }) {
             onClick={(e) => e.stopPropagation()}
           >
             <motion.div
-              variants={modalAnimation}
+              variants={modalDialog}
               initial="initial"
               animate="animate"
               exit="exit"
@@ -54,7 +64,15 @@ function PrintModal({ show = true, onClose, title, children }) {
                   >
                     <i className="bi bi-printer me-1" /> Print / Download PDF
                   </motion.button>
-                  <button type="button" className="btn-close" onClick={onClose} />
+                  <motion.button
+                    type="button"
+                    className="btn-close"
+                    onClick={onClose}
+                    whileHover={{ scale: 1.15, rotate: 90 }}
+                    whileTap={{ scale: 0.9 }}
+                    transition={springSnappy}
+                    aria-label="Close"
+                  />
                 </div>
               </div>
 
@@ -63,9 +81,15 @@ function PrintModal({ show = true, onClose, title, children }) {
               </div>
 
               <div className="modal-footer bg-light border-0 py-2 no-print">
-                <button type="button" className="btn btn-secondary btn-sm px-4" onClick={onClose}>
+                <motion.button
+                  type="button"
+                  className="btn btn-secondary btn-sm px-4"
+                  onClick={onClose}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
                   Close Preview
-                </button>
+                </motion.button>
               </div>
             </motion.div>
           </div>
