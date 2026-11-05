@@ -15,14 +15,14 @@ services:
     container_name: hospital-mysql
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: Password
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-Password}
     ports:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
       - ./docker/mysql/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pPassword"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_PASSWORD:-Password}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -97,7 +97,7 @@ services:
       - JWT_SECRET=${JWT_SECRET:-HospitalSyncSecretKey2026SecureJwtSigningKeyString}
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/hospital_auth_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
       - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=Password
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD:-Password}
       - ADMIN_USERNAME=${ADMIN_USERNAME:-admin}
       - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@hospital.com}
       - ADMIN_NAME=${ADMIN_NAME:-System Administrator}
@@ -123,7 +123,7 @@ services:
       - JWT_SECRET=${JWT_SECRET:-HospitalSyncSecretKey2026SecureJwtSigningKeyString}
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/patient_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
       - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=Password
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD:-Password}
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
     depends_on:
       mysql:
@@ -145,7 +145,7 @@ services:
       - JWT_SECRET=${JWT_SECRET:-HospitalSyncSecretKey2026SecureJwtSigningKeyString}
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/doctor_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
       - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=Password
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD:-Password}
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
     depends_on:
       mysql:
@@ -167,7 +167,7 @@ services:
       - JWT_SECRET=${JWT_SECRET:-HospitalSyncSecretKey2026SecureJwtSigningKeyString}
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/admission_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
       - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=Password
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD:-Password}
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
     depends_on:
       mysql:
@@ -189,7 +189,7 @@ services:
       - JWT_SECRET=${JWT_SECRET:-HospitalSyncSecretKey2026SecureJwtSigningKeyString}
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/appointment_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
       - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=Password
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD:-Password}
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
     depends_on:
       mysql:
@@ -211,7 +211,7 @@ services:
       - JWT_SECRET=${JWT_SECRET:-HospitalSyncSecretKey2026SecureJwtSigningKeyString}
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/billing_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
       - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=Password
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD:-Password}
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
     depends_on:
       mysql:
@@ -233,7 +233,7 @@ services:
       - JWT_SECRET=${JWT_SECRET:-HospitalSyncSecretKey2026SecureJwtSigningKeyString}
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/prescription_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
       - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=Password
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD:-Password}
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
     depends_on:
       mysql:
@@ -255,7 +255,7 @@ services:
       - JWT_SECRET=${JWT_SECRET:-HospitalSyncSecretKey2026SecureJwtSigningKeyString}
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/user_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
       - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=Password
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD:-Password}
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
       - SPRING_DATA_REDIS_HOST=redis
       - SPRING_DATA_REDIS_PORT=6379
@@ -280,7 +280,7 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/role_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
       - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=Password
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD:-Password}
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
     depends_on:
       mysql:
@@ -301,7 +301,7 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/department_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
       - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=Password
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD:-Password}
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
     depends_on:
       mysql:
@@ -322,7 +322,7 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/medical_record_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
       - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=Password
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD:-Password}
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
     depends_on:
       mysql:
@@ -343,7 +343,7 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/medicine_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
       - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=Password
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD:-Password}
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
     depends_on:
       mysql:
@@ -364,7 +364,7 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/lab_test_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
       - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=Password
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD:-Password}
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
     depends_on:
       mysql:
@@ -385,7 +385,7 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/lab_report_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
       - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=Password
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD:-Password}
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
     depends_on:
       mysql:
@@ -406,7 +406,7 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/payment_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
       - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=Password
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD:-Password}
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
       - RAZORPAY_KEY_ID=${RAZORPAY_KEY_ID:-rzp_test_HospitalSyncKey}
       - RAZORPAY_KEY_SECRET=${RAZORPAY_KEY_SECRET:-rzp_test_HospitalSyncSecret}
@@ -429,7 +429,7 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/notification_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
       - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=Password
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD:-Password}
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
     depends_on:
       mysql:

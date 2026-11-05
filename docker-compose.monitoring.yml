@@ -1,0 +1,52 @@
+# ==============================================================================
+# HospitalSync Pro Suite - Observability & Monitoring Stack
+# Run with: docker compose -f docker-compose.yml -f docker-compose.monitoring.yml up -d
+# ==============================================================================
+
+services:
+  # ==========================================
+  # METRICS: Prometheus
+  # ==========================================
+  prometheus:
+    image: prom/prometheus:v2.50.0
+    container_name: hospital-prometheus
+    restart: always
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    networks:
+      - hospital-network
+
+  # ==========================================
+  # DASHBOARDS: Grafana
+  # ==========================================
+  grafana:
+    image: grafana/grafana:10.3.3
+    container_name: hospital-grafana
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-AdminPass2026!}
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+    networks:
+      - hospital-network
+
+volumes:
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local

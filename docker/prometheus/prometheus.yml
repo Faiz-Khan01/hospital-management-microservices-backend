@@ -1,0 +1,82 @@
+# ==============================================================================
+# HospitalSync Pro Suite - Prometheus Observability Configuration
+# Scrapes Spring Boot 3 Actuator Micrometer Metrics
+# ==============================================================================
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  # ----------------------------------------------------------------------------
+  # 1. API Gateway Edge Metrics
+  # ----------------------------------------------------------------------------
+  - job_name: 'api-gateway'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['api-gateway:8080']
+        labels:
+          service: 'api-gateway'
+          tier: 'edge'
+
+  # ----------------------------------------------------------------------------
+  # 2. Auth & RBAC Security Metrics
+  # ----------------------------------------------------------------------------
+  - job_name: 'auth-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['auth-service:8086']
+        labels:
+          service: 'auth-service'
+          tier: 'security'
+
+  # ----------------------------------------------------------------------------
+  # 3. Core Clinical Domain Services
+  # ----------------------------------------------------------------------------
+  - job_name: 'patient-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['patient-service:8081']
+        labels:
+          service: 'patient-service'
+          tier: 'clinical'
+
+  - job_name: 'doctor-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['doctor-service:8082']
+        labels:
+          service: 'doctor-service'
+          tier: 'clinical'
+
+  - job_name: 'appointment-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['appointment-service:8083']
+        labels:
+          service: 'appointment-service'
+          tier: 'clinical'
+
+  - job_name: 'admission-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['admission-service:8087']
+        labels:
+          service: 'admission-service'
+          tier: 'inpatient'
+
+  - job_name: 'billing-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['billing-service:8085']
+        labels:
+          service: 'billing-service'
+          tier: 'financial'
+
+  - job_name: 'notification-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['notification-service:8088']
+        labels:
+          service: 'notification-service'
+          tier: 'async'

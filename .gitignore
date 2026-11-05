@@ -26,7 +26,18 @@
 
 # Environment & Sensitive configs
 .env
+.env.*
 !.env.example
+*.pem
+*.key
+*.crt
+*.p12
+*.jks
+*.keystore
+
+# Database Backups & Dumps
+*.sql.gz
+backups/
 
 # Logs & Temp files
 *.log
