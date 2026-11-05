@@ -245,3 +245,19 @@ export const shakeError = {
     transition: { duration: 0.4 }
   }
 };
+
+// 12. Accessibility & Reduced Motion Safeguards
+export const isReducedMotionPreferred = () => {
+  if (typeof window === 'undefined' || !window.matchMedia) return false;
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+};
+
+export const reducedMotionTransition = {
+  duration: 0.01,
+  ease: 'linear'
+};
+
+export const getSafeTransition = (standardTransition) => {
+  return isReducedMotionPreferred() ? reducedMotionTransition : standardTransition;
+};
+

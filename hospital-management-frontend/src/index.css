@@ -47,16 +47,24 @@ body {
 }
 
 /* =========================================================
-   Glassmorphism Card & Panel System
+   Glassmorphism Card & Panel System (GPU-Optimized)
    ========================================================= */
-.card, .glass-panel, .modal-content {
-  background: rgba(255, 255, 255, 0.78) !important;
-  backdrop-filter: blur(16px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+.card {
+  background: rgba(255, 255, 255, 0.90) !important;
   border: 1px solid rgba(255, 255, 255, 0.85) !important;
   box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.02) !important;
   border-radius: 1.25rem !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transition: transform 0.25s ease, box-shadow 0.25s ease !important;
+}
+
+.glass-panel, .modal-content {
+  background: rgba(255, 255, 255, 0.82) !important;
+  backdrop-filter: blur(14px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(160%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.9) !important;
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.02) !important;
+  border-radius: 1.25rem !important;
+  transition: transform 0.25s ease, box-shadow 0.25s ease !important;
 }
 
 .card:hover, .glass-panel:hover {
@@ -224,6 +232,18 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(148, 163, 184, 0.9);
+}
+
+/* =========================================================
+   Universal Accessibility: prefers-reduced-motion
+   ========================================================= */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* =========================================================

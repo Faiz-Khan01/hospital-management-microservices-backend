@@ -134,6 +134,9 @@
 
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
+import { motion, AnimatePresence } from 'motion/react';
+import { springSmooth, springSnappy } from '../../animations/motionConfig';
+import AnimatedTabs from '../common/AnimatedTabs';
 
 const DEFAULT_CONFIG = {
   hospitalName: 'HospitalSync Medical Center',
@@ -160,6 +163,7 @@ function SettingsPanel() {
   });
 
   const [saving, setSaving] = useState(false);
+  const [activeSection, setActiveSection] = useState('all');
 
   const updateConfig = (key, value) => {
     setConfig(prev => ({
@@ -465,11 +469,14 @@ function SettingsPanel() {
               </span>
             </div>
 
-            <button
+            <motion.button
               type="button"
               className="btn btn-light save-button d-flex align-items-center gap-2"
               onClick={handleSave}
               disabled={saving}
+              whileHover={{ scale: 1.03, y: -2 }}
+              whileTap={{ scale: 0.97 }}
+              transition={springSnappy}
             >
               {saving ? (
                 <>
@@ -482,7 +489,7 @@ function SettingsPanel() {
                   Save Changes
                 </>
               )}
-            </button>
+            </motion.button>
           </div>
         </div>
       </div>
@@ -528,11 +535,35 @@ function SettingsPanel() {
         </div>
       </div>
 
+      {/* Settings Navigation Tabs */}
+      <div className="mb-4">
+        <AnimatedTabs
+          tabs={[
+            { id: 'all', label: 'All Settings', icon: 'bi-grid-fill' },
+            { id: 'general', label: 'General Hospital', icon: 'bi-building' },
+            { id: 'notifications', label: 'Notification Channels', icon: 'bi-bell-fill' },
+            { id: 'security', label: 'Security & Access', icon: 'bi-shield-lock-fill' },
+            { id: 'system', label: 'Infrastructure & System', icon: 'bi-hdd-network-fill' }
+          ]}
+          activeTab={activeSection}
+          onChange={setActiveSection}
+          layoutId="hsSettingsSectionTabs"
+        />
+      </div>
+
       <form onSubmit={handleSave}>
         <div className="row g-4">
 
           {/* General Settings */}
-          <div className="col-12 col-xl-6">
+          {(activeSection === 'all' || activeSection === 'general') && (
+          <motion.div
+            layout
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            transition={springSmooth}
+            className="col-12 col-xl-6"
+          >
             <div className="settings-card p-4 h-100">
               <div className="d-flex align-items-center gap-3 mb-4">
                 <div className="section-icon blue">
@@ -613,10 +644,19 @@ function SettingsPanel() {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
+          )}
 
           {/* Notification Settings */}
-          <div className="col-12 col-xl-6">
+          {(activeSection === 'all' || activeSection === 'notifications') && (
+          <motion.div
+            layout
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            transition={springSmooth}
+            className="col-12 col-xl-6"
+          >
             <div className="settings-card p-4 h-100">
               <div className="d-flex align-items-center justify-content-between mb-4">
                 <div className="d-flex align-items-center gap-3">
@@ -733,10 +773,19 @@ function SettingsPanel() {
 
               </div>
             </div>
-          </div>
+          </motion.div>
+          )}
 
           {/* SMTP Configuration */}
-          <div className="col-12">
+          {(activeSection === 'all' || activeSection === 'notifications' || activeSection === 'system') && (
+          <motion.div
+            layout
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            transition={springSmooth}
+            className="col-12"
+          >
             <div className="settings-card p-4">
               <div className="d-flex align-items-center gap-3 mb-4">
                 <div className="section-icon purple">
@@ -791,10 +840,19 @@ function SettingsPanel() {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
+          )}
 
           {/* Security */}
-          <div className="col-12">
+          {(activeSection === 'all' || activeSection === 'security' || activeSection === 'system') && (
+          <motion.div
+            layout
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            transition={springSmooth}
+            className="col-12"
+          >
             <div className="settings-card p-4">
               <div className="d-flex align-items-center justify-content-between mb-4">
                 <div className="d-flex align-items-center gap-3">
@@ -898,7 +956,8 @@ function SettingsPanel() {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
+          )}
 
         </div>
 
@@ -936,8 +995,10 @@ function SettingsPanel() {
               Reset
             </button>
 
-            <button
+            <motion.button
               type="submit"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               className="btn btn-primary save-button d-flex align-items-center gap-2"
               disabled={saving}
             >
@@ -952,7 +1013,7 @@ function SettingsPanel() {
                   Save Configuration
                 </>
               )}
-            </button>
+            </motion.button>
           </div>
         </div>
       </form>

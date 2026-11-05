@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import AuthService from '../../services/AuthService';
 import { toast } from 'react-toastify';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import {
   springSmooth,
   springSnappy,
@@ -27,6 +27,7 @@ function Login({ onLogin, onExploreShowcase }) {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const shouldReduceMotion = useReducedMotion();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -684,10 +685,10 @@ function Login({ onLogin, onExploreShowcase }) {
       <div className="hs-login-root">
         {/* Left Hero Panel with Ambient Motion */}
         <div className="hs-hero">
-          {/* Animated Glow Orbs */}
+          {/* Animated Glow Orbs (with reduced motion support) */}
           <motion.div
             className="hs-glow-orb orb-1"
-            animate={{
+            animate={shouldReduceMotion ? { opacity: 0.4 } : {
               x: [0, 40, -30, 0],
               y: [0, -35, 25, 0],
               scale: [1, 1.12, 0.92, 1],
@@ -697,7 +698,7 @@ function Login({ onLogin, onExploreShowcase }) {
           />
           <motion.div
             className="hs-glow-orb orb-2"
-            animate={{
+            animate={shouldReduceMotion ? { opacity: 0.3 } : {
               x: [0, -40, 30, 0],
               y: [0, 40, -30, 0],
               scale: [1, 0.88, 1.15, 1],
@@ -707,7 +708,7 @@ function Login({ onLogin, onExploreShowcase }) {
           />
           <motion.div
             className="hs-glow-orb orb-3"
-            animate={{
+            animate={shouldReduceMotion ? { opacity: 0.2 } : {
               scale: [1, 1.3, 1],
               opacity: [0.15, 0.3, 0.15]
             }}

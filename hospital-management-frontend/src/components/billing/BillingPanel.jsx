@@ -4,6 +4,7 @@ import BillingService from '../../services/BillingService';
 import PaymentService from '../../services/PaymentService';
 import AuthService from '../../services/AuthService';
 import PrintModal from '../common/PrintModal';
+import AnimatedCounter from '../common/AnimatedCounter';
 import HospitalTaxInvoiceSlip from './HospitalTaxInvoiceSlip';
 import RealtimeNotificationHub, { playHospitalAlertChime } from '../../services/RealtimeNotificationHub';
 import { toast } from 'react-toastify';
@@ -1278,7 +1279,7 @@ function BillingPanel({ role = 'ADMIN', bills, patients, onBillGenerated }) {
                 </div>
 
                 <div className="metric-value">
-                  {formatCurrency(totalBilled)}
+                  <AnimatedCounter value={totalBilled} formatter={formatCurrency} />
                 </div>
 
                 <div className="metric-caption">
@@ -1314,7 +1315,7 @@ function BillingPanel({ role = 'ADMIN', bills, patients, onBillGenerated }) {
                 </div>
 
                 <div className="metric-value">
-                  {formatCurrency(settledRevenue)}
+                  <AnimatedCounter value={settledRevenue} formatter={formatCurrency} />
                 </div>
 
                 <div className="metric-caption">
@@ -1349,7 +1350,7 @@ function BillingPanel({ role = 'ADMIN', bills, patients, onBillGenerated }) {
                 </div>
 
                 <div className="metric-value">
-                  {formatCurrency(pendingRevenue)}
+                  <AnimatedCounter value={pendingRevenue} formatter={formatCurrency} />
                 </div>
 
                 <div className="metric-caption">

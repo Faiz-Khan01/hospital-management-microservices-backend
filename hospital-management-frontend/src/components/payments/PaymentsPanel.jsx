@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import AnimatedCounter from '../common/AnimatedCounter';
 import PaymentService from '../../services/PaymentService';
 import BillingService from '../../services/BillingService';
 import AuthService from '../../services/AuthService';
@@ -1171,7 +1172,7 @@ function PaymentsPanel({ role = 'ADMIN', patients = [], bills = [], onPaymentSuc
                     </div>
 
                     <div className="payment-stat-value">
-                      {stat.value}
+                      <AnimatedCounter value={stat.value} />
                     </div>
 
                     <div className="payment-stat-description">

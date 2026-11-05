@@ -518,6 +518,10 @@
 }
 
 @media (max-width: 767px) {
+  .desk-premium-page::before,
+  .desk-premium-page::after {
+    display: none;
+  }
   .desk-hero {
     padding: 19px;
     border-radius: 19px;

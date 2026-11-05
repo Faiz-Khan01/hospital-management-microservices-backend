@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { motion } from 'motion/react';
 import UserService from '../../services/UserService';
+import AnimatedCounter from '../common/AnimatedCounter';
 import { staggerContainer, staggerItem, springSmooth, springSnappy, cardHover } from '../../animations/motionConfig';
 
 const kpiContainerVariants = {
@@ -598,7 +599,7 @@ function Dashboard({
                         color: '#0f172a'
                       }}
                     >
-                      {card.value}
+                      <AnimatedCounter value={card.value} />
                     </div>
                   </div>
 

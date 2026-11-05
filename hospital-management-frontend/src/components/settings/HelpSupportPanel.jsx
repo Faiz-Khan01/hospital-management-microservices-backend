@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
+import { motion, AnimatePresence } from 'motion/react';
+import { springSmooth } from '../../animations/motionConfig';
 
 function HelpSupportPanel() {
   const [ticket, setTicket] = useState({
@@ -377,19 +379,29 @@ function HelpSupportPanel() {
                         </div>
                       </button>
 
-                      {isOpen && (
-                        <div
-                          className="px-4 pb-4"
-                          style={{
-                            paddingLeft: '65px !important',
-                            color: '#64748b',
-                            fontSize: '0.82rem',
-                            lineHeight: 1.7
-                          }}
-                        >
-                          {faq.a}
-                        </div>
-                      )}
+                      <AnimatePresence initial={false}>
+                        {isOpen && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
+                            style={{ overflow: 'hidden' }}
+                          >
+                            <div
+                              className="px-4 pb-4"
+                              style={{
+                                paddingLeft: '65px',
+                                color: '#64748b',
+                                fontSize: '0.85rem',
+                                lineHeight: 1.7
+                              }}
+                            >
+                              {faq.a}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
                   );
                 })}
