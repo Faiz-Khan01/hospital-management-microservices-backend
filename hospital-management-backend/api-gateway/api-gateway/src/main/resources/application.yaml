@@ -20,11 +20,16 @@ spring:
         add-to-simple-url-handler-mapping: true
         cors-configurations:
           '[/**]':
-            allowedOrigins: "http://localhost:5173"  # Frontend (React/Vite)
+            allowedOriginPatterns:
+              - "http://localhost:*"
+              - "https://*.vercel.app"
+              - "https://*.trycloudflare.com"
+              - "*"
             allowedMethods:
               - GET
               - POST
               - PUT
+              - PATCH
               - DELETE
               - OPTIONS
             allowedHeaders: "*"
