@@ -5,10 +5,11 @@ describe('AuthService & RBAC Engine', () => {
   beforeEach(() => {
     localStorage.clear();
     vi.restoreAllMocks();
-    Object.defineProperty(window, 'location', {
-      writable: true,
-      value: { reload: vi.fn(), href: '' },
-    });
+    try {
+      window.location.reload = vi.fn();
+    } catch {
+      // In environments where location.reload is read-only
+    }
   });
 
   describe('Session State', () => {
@@ -38,7 +39,11 @@ describe('AuthService & RBAC Engine', () => {
       localStorage.setItem('role', 'ADMIN');
       localStorage.setItem('userId', '1');
 
-      AuthService.logout();
+      try {
+        AuthService.logout();
+      } catch {
+        // Navigation not implemented in jsdom
+      }
 
       expect(localStorage.getItem('token')).toBeNull();
       expect(localStorage.getItem('username')).toBeNull();
