@@ -393,13 +393,6 @@ function App() {
                   {activeTab === 'help' && (
                     <HelpSupportPanel role={role} darkMode={darkMode} />
                   )}
-
-                  {activeTab === 'showcase' && (
-                    <InteractiveShowcase
-                      onLaunchApp={() => setActiveTab(role === 'PATIENT' ? 'appointments' : 'dashboard')}
-                      darkMode={darkMode}
-                    />
-                  )}
                   </motion.div>
                 </AnimatePresence>
               </Suspense>
