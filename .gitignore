@@ -39,6 +39,11 @@
 *.sql.gz
 backups/
 
+# Binaries & Downloaded Tools
+tools/
+*.exe
+
+
 # Logs & Temp files
 *.log
 **/logs/
