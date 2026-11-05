@@ -435,7 +435,7 @@ function Sidebar({
                 appointments: 'My Appointments',
                 prescriptions: 'My Prescriptions',
                 billing: 'My Bills & Invoices',
-                'medical-records': 'My Medical Records',
+                'medical-records': '📋 My Medical Records',
                 lab: 'My Lab Reports',
                 payments: 'My Payments'
               };
