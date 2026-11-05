@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { getHospitalName } from '../../services/hospitalConfig';
 import ExecutiveBriefingSlip from './ExecutiveBriefingSlip';
 import { toast } from 'react-toastify';
+import '../../styles/clinicalDesksPremium.css';
 
 export default function ExecutiveAnalyticsPanel({ patients = [], doctors = [], appointments = [], bills = [], beds = [] }) {
   const [activeSlipMetrics, setActiveSlipMetrics] = useState(null);
@@ -57,89 +58,82 @@ export default function ExecutiveAnalyticsPanel({ patients = [], doctors = [], a
   }, [borPercentage, totalAppointmentsCount, grossBilledTotal, realizedCollectedTotal, pendingReceivablesTotal]);
 
   return (
-    <div className="container-fluid py-3">
-      {/* Top Header */}
-      <div className="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom">
-        <div>
-          <h3 className="fw-bold text-dark mb-1 d-flex align-items-center">
-            <i className="bi bi-graph-up-arrow text-primary me-2 fs-2"></i>
-            Executive CEO & Medical Superintendent Operations Analytics Desk
-          </h3>
-          <p className="text-muted small mb-0">
-            {getHospitalName()} • Real-Time Bed Occupancy, Revenue Streams & Clinical Quality Governance
-          </p>
-        </div>
-        <div className="d-flex gap-2 mt-2 mt-sm-0">
-          <button
-            type="button"
-            className="btn btn-dark btn-sm fw-bold px-3 shadow-sm"
-            onClick={() => setActiveSlipMetrics(metricsData)}
-          >
-            <i className="bi bi-printer-fill me-1"></i> Print Daily Executive Briefing
-          </button>
+    <div className="desk-premium-page">
+      {/* HERO BANNER */}
+      <div className="desk-hero">
+        <div className="hero-content">
+          <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div className="d-flex align-items-center gap-3">
+              <div className="hero-icon blue">
+                <i className="bi bi-graph-up-arrow"></i>
+              </div>
+              <div>
+                <h4 className="hero-title">
+                  Executive CEO & Medical Superintendent Operations Analytics Desk
+                </h4>
+                <p className="hero-subtitle">
+                  {getHospitalName()} &bull; Real-Time Bed Occupancy, Revenue Streams & Clinical Quality Governance
+                </p>
+              </div>
+            </div>
+
+            <div className="d-flex align-items-center gap-2 flex-wrap">
+              <span className="hero-chip">
+                <i className="bi bi-activity text-primary"></i>
+                Real-Time Telemetry
+              </span>
+              <span className="hero-chip">
+                <i className="bi bi-shield-check text-success"></i>
+                Executive Dashboard
+              </span>
+              <button
+                type="button"
+                className="premium-btn blue"
+                onClick={() => setActiveSlipMetrics(metricsData)}
+              >
+                <i className="bi bi-printer-fill me-1"></i> Print Executive Briefing
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Primary KPI Ribbon */}
-      <div className="row g-3 mb-4">
-        <div className="col-lg-3 col-md-6">
-          <div className="card shadow-sm border-0 border-start border-primary border-4 h-100">
-            <div className="card-body">
-              <span className="text-muted small fw-semibold text-uppercase">Bed Occupancy Rate (BOR)</span>
-              <div className="d-flex align-items-center justify-content-between mt-2">
-                <h2 className="fw-bold mb-0 text-primary">{borPercentage}%</h2>
-                <i className="bi bi-hospital fs-1 text-primary opacity-25"></i>
-              </div>
-              <small className="text-muted">
-                {occupiedBedsCount} of {totalBedsCount} Beds Currently Occupied
-              </small>
-            </div>
+      {/* METRIC GRID */}
+      <div className="metric-grid">
+        <div className="metric-card metric-blue">
+          <div className="metric-icon">
+            <i className="bi bi-hospital"></i>
           </div>
+          <div className="metric-label">Bed Occupancy Rate (BOR)</div>
+          <div className="metric-value">{borPercentage}%</div>
+          <div className="metric-subtext">{occupiedBedsCount} of {totalBedsCount} Beds Currently Occupied</div>
         </div>
 
-        <div className="col-lg-3 col-md-6">
-          <div className="card shadow-sm border-0 border-start border-success border-4 h-100">
-            <div className="card-body">
-              <span className="text-muted small fw-semibold text-uppercase">Total Gross Billed</span>
-              <div className="d-flex align-items-center justify-content-between mt-2">
-                <h2 className="fw-bold mb-0 text-success">
-                  ₹{(grossBilledTotal / 100000).toFixed(1)}L
-                </h2>
-                <i className="bi bi-currency-rupee fs-1 text-success opacity-25"></i>
-              </div>
-              <small className="text-muted">IPD, OPD, Pharmacy & Diagnostics</small>
-            </div>
+        <div className="metric-card metric-green">
+          <div className="metric-icon">
+            <i className="bi bi-currency-rupee"></i>
           </div>
+          <div className="metric-label">Total Gross Billed</div>
+          <div className="metric-value">₹{(grossBilledTotal / 100000).toFixed(1)}L</div>
+          <div className="metric-subtext">IPD, OPD, Pharmacy & Diagnostics</div>
         </div>
 
-        <div className="col-lg-3 col-md-6">
-          <div className="card shadow-sm border-0 border-start border-info border-4 h-100">
-            <div className="card-body">
-              <span className="text-muted small fw-semibold text-uppercase">Cash & UPI Realized</span>
-              <div className="d-flex align-items-center justify-content-between mt-2">
-                <h2 className="fw-bold mb-0 text-info">
-                  ₹{(realizedCollectedTotal / 100000).toFixed(1)}L
-                </h2>
-                <i className="bi bi-wallet2 fs-1 text-info opacity-25"></i>
-              </div>
-              <small className="text-muted">Realized Revenue in Hospital Bank</small>
-            </div>
+        <div className="metric-card metric-cyan">
+          <div className="metric-icon">
+            <i className="bi bi-wallet2"></i>
           </div>
+          <div className="metric-label">Cash & UPI Realized</div>
+          <div className="metric-value">₹{(realizedCollectedTotal / 100000).toFixed(1)}L</div>
+          <div className="metric-subtext">Realized Revenue in Hospital Bank</div>
         </div>
 
-        <div className="col-lg-3 col-md-6">
-          <div className="card shadow-sm border-0 border-start border-danger border-4 h-100">
-            <div className="card-body">
-              <span className="text-muted small fw-semibold text-uppercase">TPA / Insurance Receivables</span>
-              <div className="d-flex align-items-center justify-content-between mt-2">
-                <h2 className="fw-bold mb-0 text-danger">
-                  ₹{(pendingReceivablesTotal / 100000).toFixed(1)}L
-                </h2>
-                <i className="bi bi-hourglass-split fs-1 text-danger opacity-25"></i>
-              </div>
-              <small className="text-muted">Pending claim adjudication</small>
-            </div>
+        <div className="metric-card metric-red">
+          <div className="metric-icon">
+            <i className="bi bi-hourglass-split"></i>
           </div>
+          <div className="metric-label">TPA / Insurance Receivables</div>
+          <div className="metric-value">₹{(pendingReceivablesTotal / 100000).toFixed(1)}L</div>
+          <div className="metric-subtext">Pending claim adjudication</div>
         </div>
       </div>
 
@@ -147,18 +141,18 @@ export default function ExecutiveAnalyticsPanel({ patients = [], doctors = [], a
       <div className="row g-3 mb-4">
         {/* Clinical Census */}
         <div className="col-lg-6 col-12">
-          <div className="card shadow-sm border-0 h-100">
-            <div className="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-              <h5 className="fw-bold mb-0 text-dark">
-                <i className="bi bi-activity text-danger me-2"></i>
-                Clinical Workload & Inpatient Capacity Census
-              </h5>
-              <span className="badge bg-success-subtle text-success border border-success">
+          <div className="premium-panel h-100 p-0">
+            <div className="panel-toolbar">
+              <div className="d-flex align-items-center gap-2">
+                <i className="bi bi-activity text-danger fs-5"></i>
+                <h5 className="panel-title mb-0">Clinical Workload & Inpatient Capacity Census</h5>
+              </div>
+              <span className="hero-chip">
                 Active Hospital Census
               </span>
             </div>
 
-            <div className="card-body p-3">
+            <div className="p-3">
               <div className="row g-2 text-center mb-3">
                 <div className="col-3">
                   <div className="p-2 border rounded bg-light">
@@ -222,18 +216,18 @@ export default function ExecutiveAnalyticsPanel({ patients = [], doctors = [], a
 
         {/* Revenue Contribution Streams */}
         <div className="col-lg-6 col-12">
-          <div className="card shadow-sm border-0 h-100">
-            <div className="card-header bg-white py-3">
-              <h5 className="fw-bold mb-0 text-dark">
-                <i className="bi bi-pie-chart-fill text-primary me-2"></i>
-                Departmental Revenue Contribution Breakdown
-              </h5>
+          <div className="premium-panel h-100 p-0">
+            <div className="panel-toolbar">
+              <div className="d-flex align-items-center gap-2">
+                <i className="bi bi-pie-chart-fill text-primary fs-5"></i>
+                <h5 className="panel-title mb-0">Departmental Revenue Contribution Breakdown</h5>
+              </div>
             </div>
 
-            <div className="card-body p-3">
+            <div className="p-3">
               <div className="table-responsive">
-                <table className="table table-sm table-hover align-middle mb-0 small">
-                  <thead className="table-light text-secondary">
+                <table className="premium-table">
+                  <thead>
                     <tr>
                       <th>Clinical Revenue Domain</th>
                       <th>Gross Billing</th>
@@ -244,39 +238,39 @@ export default function ExecutiveAnalyticsPanel({ patients = [], doctors = [], a
                   <tbody>
                     <tr>
                       <td className="fw-semibold">
-                        <i className="bi bi-circle-fill text-primary me-1" style={{ fontSize: '0.6rem' }}></i>
+                        <i className="bi bi-circle-fill text-primary me-2" style={{ fontSize: '0.6rem' }}></i>
                         Inpatient & Critical Care (IPD/ICU)
                       </td>
                       <td className="font-monospace fw-bold">₹{metricsData.ipdGross}</td>
                       <td><span className="badge bg-light text-dark border">60.0%</span></td>
-                      <td><span className="badge bg-success">77% Realized</span></td>
+                      <td><span className="premium-status completed">77% Realized</span></td>
                     </tr>
                     <tr>
                       <td className="fw-semibold">
-                        <i className="bi bi-circle-fill text-warning me-1" style={{ fontSize: '0.6rem' }}></i>
-                        Pharmacy & Surgical Consumables
+                        <i className="bi bi-circle-fill text-warning me-2" style={{ fontSize: '0.6rem' }}></i>
+                        Pharmacy & Consumables
                       </td>
                       <td className="font-monospace fw-bold">₹{metricsData.pharmaGross}</td>
                       <td><span className="badge bg-light text-dark border">18.8%</span></td>
-                      <td><span className="badge bg-success">92% Realized</span></td>
+                      <td><span className="premium-status completed">92% Realized</span></td>
                     </tr>
                     <tr>
                       <td className="fw-semibold">
-                        <i className="bi bi-circle-fill text-info me-1" style={{ fontSize: '0.6rem' }}></i>
-                        Diagnostic Pathology & Imaging (PACS)
+                        <i className="bi bi-circle-fill text-info me-2" style={{ fontSize: '0.6rem' }}></i>
+                        Diagnostic Pathology & Imaging
                       </td>
                       <td className="font-monospace fw-bold">₹{metricsData.diagGross}</td>
                       <td><span className="badge bg-light text-dark border">13.3%</span></td>
-                      <td><span className="badge bg-success">94% Realized</span></td>
+                      <td><span className="premium-status completed">94% Realized</span></td>
                     </tr>
                     <tr>
                       <td className="fw-semibold">
-                        <i className="bi bi-circle-fill text-success me-1" style={{ fontSize: '0.6rem' }}></i>
+                        <i className="bi bi-circle-fill text-success me-2" style={{ fontSize: '0.6rem' }}></i>
                         Outpatient Consultations (OPD)
                       </td>
                       <td className="font-monospace fw-bold">₹{metricsData.opdGross}</td>
                       <td><span className="badge bg-light text-dark border">7.9%</span></td>
-                      <td><span className="badge bg-success">100% Realized</span></td>
+                      <td><span className="premium-status completed">100% Realized</span></td>
                     </tr>
                   </tbody>
                 </table>

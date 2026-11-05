@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { getHospitalName, formatDoctorName } from '../../services/hospitalConfig';
 import ChemoAdministrationSlip from './ChemoAdministrationSlip';
+import '../../styles/clinicalDesksPremium.css';
 
 const INITIAL_BAYS = [
   {
@@ -490,99 +491,111 @@ export default function ChemoInfusionPanel({ patients = [], doctors = [], search
   };
 
   return (
-    <div className="container-fluid p-3" style={{ minHeight: '85vh', fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
-      {/* HEADER BANNER */}
-      <div className="d-flex flex-wrap justify-content-between align-items-center mb-3 pb-2 border-bottom">
-        <div>
-          <h4 className="fw-bold text-dark mb-1 d-flex align-items-center gap-2">
-            <span className="badge rounded-circle p-2 text-white" style={{ backgroundColor: '#701a75' }}>
-              <i className="bi bi-droplet-half fs-5"></i>
-            </span>
-            Daycare Chemotherapy & Oncology Infusion Desk
-          </h4>
-          <p className="text-muted small mb-0">
-            {getHospitalName()} &bull; ASCO / ONS Dual-Nurse Safety Protocol &bull; Dynamic BSA Dosimetry & Extravasation Safeguards
-          </p>
-        </div>
-        <div className="d-flex gap-2 mt-2 mt-md-0">
-          <button
-            className="btn btn-outline-danger btn-sm fw-bold d-flex align-items-center gap-1 shadow-sm"
-            onClick={() => setShowExtravasationGuide(true)}
-          >
-            <i className="bi bi-shield-exclamation text-danger"></i>
-            Extravasation & Antidotes
-          </button>
-          <button
-            className="btn btn-sm text-white fw-bold d-flex align-items-center gap-1 shadow-sm"
-            style={{ backgroundColor: '#701a75' }}
-            onClick={() => setShowAdmitModal(true)}
-          >
-            <i className="bi bi-plus-circle-fill"></i>
-            Admit Patient to Daycare Bay
-          </button>
+    <div className="desk-premium-page">
+      {/* HERO BANNER */}
+      <div className="desk-hero">
+        <div className="hero-content">
+          <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div className="d-flex align-items-center gap-3">
+              <div className="hero-icon purple">
+                <i className="bi bi-droplet-half"></i>
+              </div>
+              <div>
+                <h4 className="hero-title">
+                  Daycare Chemotherapy & Oncology Infusion Desk
+                </h4>
+                <p className="hero-subtitle">
+                  {getHospitalName()} &bull; ASCO / ONS Dual-Nurse Safety Protocol &bull; Dynamic BSA Dosimetry & Extravasation Safeguards
+                </p>
+              </div>
+            </div>
+
+            <div className="d-flex align-items-center gap-2 flex-wrap">
+              <span className="hero-chip">
+                <i className="bi bi-shield-check text-purple"></i>
+                ASCO / ONS Compliant
+              </span>
+              <span className="hero-chip">
+                <i className="bi bi-shield-exclamation text-danger"></i>
+                Extravasation Safety Protocol
+              </span>
+              <button
+                type="button"
+                className="premium-btn orange"
+                onClick={() => setShowExtravasationGuide(true)}
+              >
+                <i className="bi bi-shield-exclamation me-1"></i> Extravasation & Antidotes
+              </button>
+              <button
+                type="button"
+                className="premium-btn purple"
+                onClick={() => setShowAdmitModal(true)}
+              >
+                <i className="bi bi-plus-circle-fill me-1"></i> Admit Patient to Bay
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* STATS METRIC TILES */}
-      <div className="row g-2 mb-3">
-        <div className="col-6 col-md-2">
-          <div className="card shadow-sm border-0 border-start border-4 border-primary h-100 p-2">
-            <div className="text-muted small fw-bold">TOTAL SUITE BAYS</div>
-            <div className="fs-4 fw-bold text-primary">{totalBays}</div>
-            <div className="small text-muted">6 Dedicated Recliners</div>
+      {/* METRIC GRID */}
+      <div className="metric-grid">
+        <div className="metric-card metric-purple">
+          <div className="metric-icon">
+            <i className="bi bi-pie-chart-fill"></i>
           </div>
+          <div className="metric-label">Total Suite Bays</div>
+          <div className="metric-value">{totalBays}</div>
+          <div className="metric-subtext">6 Dedicated Recliners</div>
         </div>
-        <div className="col-6 col-md-3">
-          <div className="card shadow-sm border-0 border-start border-4 border-success h-100 p-2">
-            <div className="text-muted small fw-bold">ACTIVE INFUSIONS</div>
-            <div className="fs-4 fw-bold text-success d-flex align-items-center gap-2">
-              {activeInfusions}
-              <span className="spinner-grow spinner-grow-sm text-success" role="status"></span>
-            </div>
-            <div className="small text-muted">Pumps Running Continuously</div>
+
+        <div className="metric-card metric-green">
+          <div className="metric-icon">
+            <i className="bi bi-play-circle-fill"></i>
           </div>
+          <div className="metric-label">Active Infusions</div>
+          <div className="metric-value">{activeInfusions}</div>
+          <div className="metric-subtext">Pumps Running Continuously</div>
         </div>
-        <div className="col-6 col-md-2">
-          <div className="card shadow-sm border-0 border-start border-4 border-warning h-100 p-2">
-            <div className="text-muted small fw-bold">PRE-MEDS / PREP</div>
-            <div className="fs-4 fw-bold text-warning">{preMedsCount}</div>
-            <div className="small text-muted">Anti-emetic / Hydration</div>
+
+        <div className="metric-card metric-orange">
+          <div className="metric-icon">
+            <i className="bi bi-capsule"></i>
           </div>
+          <div className="metric-label">Pre-Meds / Prep</div>
+          <div className="metric-value">{preMedsCount}</div>
+          <div className="metric-subtext">Anti-emetic / Hydration</div>
         </div>
-        <div className="col-6 col-md-2">
-          <div className="card shadow-sm border-0 border-start border-4 border-info h-100 p-2">
-            <div className="text-muted small fw-bold">OBSERVATION / FLUSH</div>
-            <div className="fs-4 fw-bold text-info">{observationCount}</div>
-            <div className="small text-muted">Post-infusion 30-min flush</div>
+
+        <div className="metric-card metric-cyan">
+          <div className="metric-icon">
+            <i className="bi bi-check-circle-fill"></i>
           </div>
-        </div>
-        <div className="col-6 col-md-3">
-          <div className="card shadow-sm border-0 border-start border-4 border-secondary h-100 p-2">
-            <div className="text-muted small fw-bold">AVAILABLE BAYS</div>
-            <div className="fs-4 fw-bold text-secondary">{availableBays}</div>
-            <div className="small text-muted">Sanitized for next cycle</div>
-          </div>
+          <div className="metric-label">Available Bays</div>
+          <div className="metric-value">{availableBays}</div>
+          <div className="metric-subtext">Sanitized for next cycle</div>
         </div>
       </div>
 
       {/* FILTER BUTTONS & CONTROLS */}
-      <div className="d-flex flex-wrap gap-2 mb-3">
-        {[
-          { key: 'ALL', label: `All Bays (${bays.length})` },
-          { key: 'INFUSION_ACTIVE', label: `Active Infusion (${activeInfusions})` },
-          { key: 'PRE_MEDS', label: `Pre-Medications (${preMedsCount})` },
-          { key: 'OBSERVATION', label: `Observation (${observationCount})` },
-          { key: 'AVAILABLE', label: `Available (${availableBays})` },
-        ].map(item => (
-          <button
-            key={item.key}
-            onClick={() => setFilterStatus(item.key)}
-            className={`btn btn-sm px-3 fw-semibold ${filterStatus === item.key ? 'text-white' : 'btn-outline-secondary'}`}
-            style={{ backgroundColor: filterStatus === item.key ? '#701a75' : 'transparent', borderColor: filterStatus === item.key ? '#701a75' : undefined }}
-          >
-            {item.label}
-          </button>
-        ))}
+      <div className="premium-panel mb-4 p-2">
+        <div className="premium-tabs">
+          {[
+            { key: 'ALL', label: `All Bays (${bays.length})` },
+            { key: 'INFUSION_ACTIVE', label: `Active Infusion (${activeInfusions})` },
+            { key: 'PRE_MEDS', label: `Pre-Medications (${preMedsCount})` },
+            { key: 'OBSERVATION', label: `Observation (${observationCount})` },
+            { key: 'AVAILABLE', label: `Available (${availableBays})` },
+          ].map(item => (
+            <button
+              key={item.key}
+              onClick={() => setFilterStatus(item.key)}
+              className={`premium-tab ${filterStatus === item.key ? 'active' : ''}`}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* INFUSION BAYS GRID */}

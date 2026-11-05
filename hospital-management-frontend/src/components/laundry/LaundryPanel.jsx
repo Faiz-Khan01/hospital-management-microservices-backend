@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { getHospitalName } from '../../services/hospitalConfig';
 import LinenDispatchSlip from './LinenDispatchSlip';
 import { toast } from 'react-toastify';
+import '../../styles/clinicalDesksPremium.css';
 
 const INITIAL_LAUNDRY_MACHINES = [
   {
@@ -201,81 +202,82 @@ export default function LaundryPanel() {
   const totalSoiledCollected = wardExchanges.reduce((acc, w) => acc + (w.soiledCollectedKg || 0), 0).toFixed(1);
 
   return (
-    <div className="container-fluid py-3">
-      {/* Header */}
-      <div className="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom">
-        <div>
-          <h3 className="fw-bold text-dark mb-1 d-flex align-items-center">
-            <i className="bi bi-tag-fill text-info me-2 fs-2"></i>
-            Hospital Laundry & Linen Asset Management Desk
-          </h3>
-          <p className="text-muted small mb-0">
-            {getHospitalName()} • NABH FMS Linen Standards • Thermal Barrier Disinfection & Automated Ironing
-          </p>
-        </div>
-        <div className="d-flex gap-2 mt-2 mt-sm-0">
-          <button
-            type="button"
-            className="btn btn-info text-dark btn-sm fw-bold px-3 shadow-sm"
-            onClick={() => setShowDispatchModal(true)}
-          >
-            <i className="bi bi-box-seam me-1"></i> Dispatch Clean Linen to Ward
-          </button>
+    <div className="desk-premium-page">
+      {/* HERO BANNER */}
+      <div className="desk-hero">
+        <div className="hero-content">
+          <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div className="d-flex align-items-center gap-3">
+              <div className="hero-icon teal">
+                <i className="bi bi-tag-fill"></i>
+              </div>
+              <div>
+                <h4 className="hero-title">
+                  Hospital Laundry & Linen Asset Management Desk
+                </h4>
+                <p className="hero-subtitle">
+                  {getHospitalName()} &bull; NABH FMS Linen Standards &bull; Thermal Barrier Disinfection & Automated Ironing
+                </p>
+              </div>
+            </div>
+
+            <div className="d-flex align-items-center gap-2 flex-wrap">
+              <span className="hero-chip">
+                <i className="bi bi-shield-check text-success"></i>
+                NABH FMS Certified
+              </span>
+              <span className="hero-chip">
+                <i className="bi bi-thermometer-sun text-info"></i>
+                Thermal Disinfection 85°C
+              </span>
+              <button
+                type="button"
+                className="premium-btn teal"
+                onClick={() => setShowDispatchModal(true)}
+              >
+                <i className="bi bi-box-seam me-1"></i> Dispatch Clean Linen
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* KPI Cards */}
-      <div className="row g-3 mb-4">
-        <div className="col-md-3 col-sm-6">
-          <div className="card shadow-sm border-0 border-start border-info border-4 h-100">
-            <div className="card-body">
-              <span className="text-muted small fw-semibold text-uppercase">Clean Linen Dispatched</span>
-              <div className="d-flex align-items-center justify-content-between mt-2">
-                <h3 className="fw-bold mb-0 text-dark">{totalDispatchedToday} Pcs</h3>
-                <i className="bi bi-tag fs-1 text-info opacity-50"></i>
-              </div>
-              <small className="text-muted">Sheets, gowns, surgical drapes</small>
-            </div>
+      {/* METRIC GRID */}
+      <div className="metric-grid">
+        <div className="metric-card metric-blue">
+          <div className="metric-icon">
+            <i className="bi bi-tag"></i>
           </div>
+          <div className="metric-label">Clean Linen Dispatched</div>
+          <div className="metric-value">{totalDispatchedToday} Pcs</div>
+          <div className="metric-subtext">Sheets, gowns, surgical drapes</div>
         </div>
 
-        <div className="col-md-3 col-sm-6">
-          <div className="card shadow-sm border-0 border-start border-warning border-4 h-100">
-            <div className="card-body">
-              <span className="text-muted small fw-semibold text-uppercase">Soiled Linen Collected</span>
-              <div className="d-flex align-items-center justify-content-between mt-2">
-                <h3 className="fw-bold mb-0 text-dark">{totalSoiledCollected} kg</h3>
-                <i className="bi bi-basket3-fill fs-1 text-warning opacity-50"></i>
-              </div>
-              <small className="text-muted">Segregated sluice disinfection</small>
-            </div>
+        <div className="metric-card metric-orange">
+          <div className="metric-icon">
+            <i className="bi bi-basket3-fill"></i>
           </div>
+          <div className="metric-label">Soiled Linen Collected</div>
+          <div className="metric-value">{totalSoiledCollected} kg</div>
+          <div className="metric-subtext">Segregated sluice disinfection</div>
         </div>
 
-        <div className="col-md-3 col-sm-6">
-          <div className="card shadow-sm border-0 border-start border-success border-4 h-100">
-            <div className="card-body">
-              <span className="text-muted small fw-semibold text-uppercase">Thermal Wash Temp</span>
-              <div className="d-flex align-items-center justify-content-between mt-2">
-                <h3 className="fw-bold mb-0 text-success">85.4 °C</h3>
-                <i className="bi bi-thermometer-sun fs-1 text-success opacity-25"></i>
-              </div>
-              <small className="text-muted">NABH guideline: &gt; 71°C for 10 mins</small>
-            </div>
+        <div className="metric-card metric-green">
+          <div className="metric-icon">
+            <i className="bi bi-thermometer-sun"></i>
           </div>
+          <div className="metric-label">Thermal Wash Temp</div>
+          <div className="metric-value">85.4 °C</div>
+          <div className="metric-subtext">NABH guideline: &gt; 71°C for 10 mins</div>
         </div>
 
-        <div className="col-md-3 col-sm-6">
-          <div className="card shadow-sm border-0 border-start border-primary border-4 h-100">
-            <div className="card-body">
-              <span className="text-muted small fw-semibold text-uppercase">Bio-Burden Clearance</span>
-              <div className="d-flex align-items-center justify-content-between mt-2">
-                <h3 className="fw-bold mb-0 text-primary">0 CFU</h3>
-                <i className="bi bi-shield-check fs-1 text-primary opacity-25"></i>
-              </div>
-              <small className="text-muted">100% Pathogen-free certification</small>
-            </div>
+        <div className="metric-card metric-cyan">
+          <div className="metric-icon">
+            <i className="bi bi-shield-check"></i>
           </div>
+          <div className="metric-label">Bio-Burden Clearance</div>
+          <div className="metric-value">0 CFU</div>
+          <div className="metric-subtext">100% Pathogen-free certification</div>
         </div>
       </div>
 
@@ -283,15 +285,15 @@ export default function LaundryPanel() {
       <div className="row g-3 mb-4">
         {machines.map(m => (
           <div key={m.id} className="col-md-4">
-            <div className="card border shadow-sm h-100">
-              <div className="card-header bg-light py-2 d-flex justify-content-between align-items-center">
-                <strong className="small text-dark text-truncate">{m.name}</strong>
-                <span className={`badge ${m.status === 'CYCLE_ACTIVE' ? 'bg-primary' : 'bg-success'} px-2 py-1`}>
+            <div className="premium-panel h-100 p-3" style={{ border: '1px solid rgba(226, 232, 240, 0.8)' }}>
+              <div className="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                <strong className="small text-dark text-truncate fw-bold">{m.name}</strong>
+                <span className={`premium-status ${m.status === 'CYCLE_ACTIVE' ? 'active' : 'completed'}`}>
                   {m.status.replace(/_/g, ' ')}
                 </span>
               </div>
-              <div className="card-body p-3 small">
-                <div className="text-muted mb-2">{m.type} • Cap: {m.capacity}</div>
+              <div className="small">
+                <div className="text-muted mb-2">{m.type} &bull; Cap: {m.capacity}</div>
                 <div className="d-flex justify-content-between py-1 border-bottom">
                   <span className="text-muted">Operating Temp:</span>
                   <strong className="text-dark font-monospace">{m.temp}</strong>
@@ -307,129 +309,125 @@ export default function LaundryPanel() {
       </div>
 
       {/* Ward Linen Inventory Exchange Table */}
-      <div className="card shadow-sm border-0 mb-4">
-        <div className="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-          <h5 className="fw-bold mb-0 text-dark">
-            <i className="bi bi-grid-3x3-gap-fill text-info me-2"></i>
-            Ward Linen Par-Level Inventory & Exchange Matrix
-          </h5>
-          <span className="badge bg-light text-dark border">
+      <div className="premium-panel mb-4">
+        <div className="panel-toolbar">
+          <div className="d-flex align-items-center gap-2">
+            <i className="bi bi-grid-3x3-gap-fill text-info fs-5"></i>
+            <h5 className="panel-title mb-0">Ward Linen Par-Level Inventory & Exchange Matrix</h5>
+          </div>
+          <span className="hero-chip">
             {wardExchanges.length} Monitored Hospital Wards
           </span>
         </div>
 
-        <div className="card-body p-0">
-          <div className="table-responsive">
-            <table className="table table-hover align-middle mb-0">
-              <thead className="table-light small text-uppercase text-secondary">
-                <tr>
-                  <th className="ps-3">Hospital Ward</th>
-                  <th>Soiled Collected (kg)</th>
-                  <th>Clean Dispatched (pcs)</th>
-                  <th>Bed Sheets Par</th>
-                  <th>Gowns Par</th>
-                  <th>OT Drapes Par</th>
-                  <th>Stock Status</th>
+        <div className="table-responsive">
+          <table className="premium-table">
+            <thead>
+              <tr>
+                <th className="ps-3">Hospital Ward</th>
+                <th>Soiled Collected (kg)</th>
+                <th>Clean Dispatched (pcs)</th>
+                <th>Bed Sheets Par</th>
+                <th>Gowns Par</th>
+                <th>OT Drapes Par</th>
+                <th>Stock Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {wardExchanges.map(item => (
+                <tr key={item.id}>
+                  <td className="ps-3">
+                    <strong className="text-dark fs-6">{item.ward}</strong>
+                  </td>
+                  <td>
+                    <span className="font-monospace fw-semibold text-warning">{item.soiledCollectedKg} kg</span>
+                  </td>
+                  <td>
+                    <span className="badge bg-info-subtle text-dark border font-monospace fs-6">{item.cleanDispatchedPcs} Pcs</span>
+                  </td>
+                  <td>
+                    <span className="badge bg-light text-dark border">{item.inStockSheets} Sheets</span>
+                  </td>
+                  <td>
+                    <span className="badge bg-light text-dark border">{item.inStockGowns} Gowns</span>
+                  </td>
+                  <td>
+                    <span className="badge bg-light text-dark border">{item.inStockDrapes} Drapes</span>
+                  </td>
+                  <td>
+                    <span className={`premium-status ${
+                      item.stockStatus === 'OPTIMAL_PAR_LEVEL' ? 'completed' : 'critical'
+                    }`}>
+                      {item.stockStatus.replace(/_/g, ' ')}
+                    </span>
+                  </td>
                 </tr>
-              </thead>
-              <tbody className="small">
-                {wardExchanges.map(item => (
-                  <tr key={item.id}>
-                    <td className="ps-3">
-                      <strong className="text-dark fs-6">{item.ward}</strong>
-                    </td>
-                    <td>
-                      <span className="font-monospace fw-semibold text-warning-emphasis">{item.soiledCollectedKg} kg</span>
-                    </td>
-                    <td>
-                      <span className="badge bg-info-subtle text-dark border font-monospace fs-6">{item.cleanDispatchedPcs} Pcs</span>
-                    </td>
-                    <td>
-                      <span className="badge bg-light text-dark border">{item.inStockSheets} Sheets</span>
-                    </td>
-                    <td>
-                      <span className="badge bg-light text-dark border">{item.inStockGowns} Gowns</span>
-                    </td>
-                    <td>
-                      <span className="badge bg-light text-dark border">{item.inStockDrapes} Drapes</span>
-                    </td>
-                    <td>
-                      <span className={`badge ${
-                        item.stockStatus === 'OPTIMAL_PAR_LEVEL' ? 'bg-success' : 'bg-danger'
-                      } px-2 py-1`}>
-                        {item.stockStatus.replace(/_/g, ' ')}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
 
       {/* Recent Dispatches Table */}
-      <div className="card shadow-sm border-0">
-        <div className="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-          <h5 className="fw-bold mb-0 text-dark">
-            <i className="bi bi-clock-history text-primary me-2"></i>
-            Clean Linen Ward Delivery Manifests
-          </h5>
+      <div className="premium-panel">
+        <div className="panel-toolbar">
+          <div className="d-flex align-items-center gap-2">
+            <i className="bi bi-clock-history text-primary fs-5"></i>
+            <h5 className="panel-title mb-0">Clean Linen Ward Delivery Manifests</h5>
+          </div>
         </div>
 
-        <div className="card-body p-0">
-          <div className="table-responsive">
-            <table className="table table-hover align-middle mb-0">
-              <thead className="table-light small text-uppercase text-secondary">
-                <tr>
-                  <th className="ps-3">Manifest # / Date</th>
-                  <th>Destination Ward</th>
-                  <th>Total Pieces</th>
-                  <th>Thermal Temp</th>
-                  <th>Ironing Calender</th>
-                  <th>Status</th>
-                  <th className="text-end pe-3">Actions</th>
+        <div className="table-responsive">
+          <table className="premium-table">
+            <thead>
+              <tr>
+                <th className="ps-3">Manifest # / Date</th>
+                <th>Destination Ward</th>
+                <th>Total Pieces</th>
+                <th>Thermal Temp</th>
+                <th>Ironing Calender</th>
+                <th>Status</th>
+                <th className="text-end pe-3">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {dispatches.map(d => (
+                <tr key={d.id}>
+                  <td className="ps-3">
+                    <strong className="text-dark font-monospace">{d.dispatchNumber}</strong>
+                    <div className="text-muted" style={{ fontSize: '0.72rem' }}>{d.dispatchDate}</div>
+                  </td>
+                  <td>
+                    <div className="fw-semibold text-dark">{d.destinationWard}</div>
+                    <div className="text-muted" style={{ fontSize: '0.72rem' }}>{d.floor}</div>
+                  </td>
+                  <td>
+                    <strong className="text-primary font-monospace fs-6">{d.totalPieces} Pcs</strong>
+                  </td>
+                  <td>
+                    <span className="text-success font-monospace">{d.washTemp}</span>
+                  </td>
+                  <td>
+                    <span className="text-danger font-monospace">{d.ironTemp}</span>
+                  </td>
+                  <td>
+                    <span className="premium-status completed">
+                      {d.status.replace(/_/g, ' ')}
+                    </span>
+                  </td>
+                  <td className="text-end pe-3">
+                    <button
+                      type="button"
+                      className="btn btn-outline-info text-dark btn-sm py-1 px-2"
+                      onClick={() => setActiveSlipDispatch(d)}
+                    >
+                      <i className="bi bi-printer-fill me-1"></i> Pass
+                    </button>
+                  </td>
                 </tr>
-              </thead>
-              <tbody className="small">
-                {dispatches.map(d => (
-                  <tr key={d.id}>
-                    <td className="ps-3">
-                      <strong className="text-dark font-monospace">{d.dispatchNumber}</strong>
-                      <div className="text-muted" style={{ fontSize: '0.72rem' }}>{d.dispatchDate}</div>
-                    </td>
-                    <td>
-                      <div className="fw-semibold text-dark">{d.destinationWard}</div>
-                      <div className="text-muted" style={{ fontSize: '0.72rem' }}>{d.floor}</div>
-                    </td>
-                    <td>
-                      <strong className="text-primary font-monospace fs-6">{d.totalPieces} Pcs</strong>
-                    </td>
-                    <td>
-                      <span className="text-success font-monospace">{d.washTemp}</span>
-                    </td>
-                    <td>
-                      <span className="text-danger font-monospace">{d.ironTemp}</span>
-                    </td>
-                    <td>
-                      <span className="badge bg-success-subtle text-success border border-success">
-                        {d.status.replace(/_/g, ' ')}
-                      </span>
-                    </td>
-                    <td className="text-end pe-3">
-                      <button
-                        type="button"
-                        className="btn btn-outline-info text-dark btn-sm py-1 px-2"
-                        onClick={() => setActiveSlipDispatch(d)}
-                      >
-                        <i className="bi bi-printer-fill me-1"></i> Pass
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
 

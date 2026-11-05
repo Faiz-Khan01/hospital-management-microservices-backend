@@ -3,6 +3,7 @@ import PatientService from '../../services/PatientService';
 import { getHospitalName } from '../../services/hospitalConfig';
 import AbhaCardPrintSlip from './AbhaCardPrintSlip';
 import { toast } from 'react-toastify';
+import '../../styles/clinicalDesksPremium.css';
 
 const INITIAL_ABHA_PATIENTS = [
   {
@@ -189,116 +190,119 @@ export default function AbdmPanel() {
   };
 
   return (
-    <div className="container-fluid py-3">
-      {/* Top Header */}
-      <div className="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom">
-        <div>
-          <h3 className="fw-bold text-dark mb-1 d-flex align-items-center">
-            <i className="bi bi-qr-code text-primary me-2 fs-2"></i>
-            ABDM (Ayushman Bharat Digital Mission) & ABHA Health ID Gateway
-          </h3>
-          <p className="text-muted small mb-0">
-            {getHospitalName()} • National Health Authority (NHA) Certified HIP & HIU Gateway • M1/M2/M3 Interoperability
-          </p>
-        </div>
-        <div className="d-flex gap-2 mt-2 mt-sm-0">
-          <button
-            type="button"
-            className="btn btn-outline-primary btn-sm fw-bold px-3 shadow-sm"
-            onClick={handleQuickScanShare}
-          >
-            <i className="bi bi-camera me-1"></i> Scan & Share (OPD Queue)
-          </button>
-          <button
-            type="button"
-            className="btn btn-primary btn-sm fw-bold px-3 shadow-sm"
-            onClick={() => setShowCreateModal(true)}
-          >
-            <i className="bi bi-person-plus-fill me-1"></i> Create 14-Digit ABHA ID
-          </button>
-        </div>
-      </div>
+    <div className="desk-premium-page">
 
-      {/* ABDM Milestone Compliance Cards */}
-      <div className="row g-3 mb-4">
-        <div className="col-md-4 col-sm-6">
-          <div className="card shadow-sm border-0 border-start border-primary border-4 h-100">
-            <div className="card-body">
-              <div className="d-flex justify-content-between align-items-center mb-1">
-                <span className="badge bg-primary">MILESTONE 1 (M1)</span>
-                <i className="bi bi-check-circle-fill text-success fs-5"></i>
+      {/* HERO BANNER */}
+      <div className="desk-hero">
+        <div className="hero-content">
+          <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div className="d-flex align-items-center gap-3">
+              <div className="hero-icon blue">
+                <i className="bi bi-qr-code"></i>
               </div>
-              <h5 className="fw-bold mb-1 text-dark">ABHA Registration & Verification</h5>
-              <p className="text-muted small mb-0">Aadhaar OTP / Mobile authentication, 14-digit ABHA creation, and verified digital health cards.</p>
+              <div>
+                <h4 className="hero-title">
+                  ABDM (Ayushman Bharat Digital Mission) & ABHA Health ID Gateway
+                </h4>
+                <p className="hero-subtitle">
+                  {getHospitalName()} &bull; National Health Authority (NHA) Certified HIP & HIU Gateway &bull; M1/M2/M3 Interoperability
+                </p>
+              </div>
             </div>
-          </div>
-        </div>
 
-        <div className="col-md-4 col-sm-6">
-          <div className="card shadow-sm border-0 border-start border-success border-4 h-100">
-            <div className="card-body">
-              <div className="d-flex justify-content-between align-items-center mb-1">
-                <span className="badge bg-success">MILESTONE 2 (M2)</span>
-                <i className="bi bi-check-circle-fill text-success fs-5"></i>
-              </div>
-              <h5 className="fw-bold mb-1 text-dark">Health Information Provider (HIP)</h5>
-              <p className="text-muted small mb-0">Automatic linking of OPD consults, diagnostic lab results, and discharge summaries to patient ABHA.</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="col-md-4 col-sm-6">
-          <div className="card shadow-sm border-0 border-start border-info border-4 h-100">
-            <div className="card-body">
-              <div className="d-flex justify-content-between align-items-center mb-1">
-                <span className="badge bg-info text-dark">MILESTONE 3 (M3)</span>
-                <i className="bi bi-check-circle-fill text-success fs-5"></i>
-              </div>
-              <h5 className="fw-bold mb-1 text-dark">Health Information User (HIU)</h5>
-              <p className="text-muted small mb-0">Electronic Consent Artifact Management for seamless, patient-consented health record sharing across India.</p>
+            <div className="d-flex align-items-center gap-2 flex-wrap">
+              <span className="hero-chip">
+                <i className="bi bi-shield-check text-primary"></i>
+                NHA M1/M2/M3 Certified
+              </span>
+              <span className="hero-chip">
+                <i className="bi bi-award-fill text-primary"></i>
+                ABDM Interoperable
+              </span>
+              <button
+                type="button"
+                className="premium-btn"
+                onClick={handleQuickScanShare}
+              >
+                <i className="bi bi-camera me-1"></i> Scan & Share
+              </button>
+              <button
+                type="button"
+                className="premium-btn green"
+                onClick={() => setShowCreateModal(true)}
+              >
+                <i className="bi bi-person-plus-fill me-1"></i> Create ABHA ID
+              </button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Tabs */}
-      <ul className="nav nav-pills mb-3 border-bottom pb-2">
-        <li className="nav-item">
-          <button
-            type="button"
-            className={`nav-link fw-semibold ${activeTabSub === 'abha' ? 'active bg-primary text-white' : 'text-dark'}`}
-            onClick={() => setActiveTabSub('abha')}
-          >
-            <i className="bi bi-person-badge-fill me-1"></i> Patient ABHA Digital Health Accounts ({abhaList.length})
-          </button>
-        </li>
-        <li className="nav-item ms-2">
-          <button
-            type="button"
-            className={`nav-link fw-semibold ${activeTabSub === 'consent' ? 'active bg-dark text-white' : 'text-dark'}`}
-            onClick={() => setActiveTabSub('consent')}
-          >
-            <i className="bi bi-shield-lock-fill me-1"></i> Inter-Hospital Consent Sharing Desk ({consents.length})
-          </button>
-        </li>
-      </ul>
+      {/* METRIC GRID */}
+      <div className="metric-grid">
+        <div className="metric-card metric-blue">
+          <div className="metric-icon">
+            <i className="bi bi-person-badge-fill"></i>
+          </div>
+          <div className="metric-label">ABHA Created / Linked</div>
+          <div className="metric-value">{abhaList.length}</div>
+        </div>
 
-      {/* View: ABHA Patients Registry */}
-      {activeTabSub === 'abha' && (
-        <div className="card shadow-sm border-0">
-          <div className="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-            <h5 className="fw-bold mb-0 text-dark">
-              <i className="bi bi-card-checklist text-primary me-2"></i>
-              Hospital Patient ABHA Registry & Linked Health Records
-            </h5>
+        <div className="metric-card metric-green">
+          <div className="metric-icon">
+            <i className="bi bi-link-45deg"></i>
+          </div>
+          <div className="metric-label">Records Linked (HIP)</div>
+          <div className="metric-value">{abhaList.reduce((acc, p) => acc + (p.linkedRecordsCount || 0), 0)}</div>
+        </div>
+
+        <div className="metric-card metric-orange">
+          <div className="metric-icon">
+            <i className="bi bi-shield-lock-fill"></i>
+          </div>
+          <div className="metric-label">Consents Active (HIU)</div>
+          <div className="metric-value">{consents.length}</div>
+        </div>
+
+        <div className="metric-card metric-purple">
+          <div className="metric-icon">
+            <i className="bi bi-award"></i>
+          </div>
+          <div className="metric-label">Compliance Milestones</div>
+          <div className="metric-value">M1 • M2 • M3</div>
+        </div>
+      </div>
+
+      {/* Tabs Toolbar */}
+      <div className="premium-panel mb-4">
+        <div className="panel-toolbar">
+          <div className="d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div className="premium-tabs">
+              <button
+                type="button"
+                className={`premium-tab ${activeTabSub === 'abha' ? 'active' : ''}`}
+                onClick={() => setActiveTabSub('abha')}
+              >
+                <i className="bi bi-person-badge-fill me-1"></i> Patient ABHA Accounts <span className="tab-count">{abhaList.length}</span>
+              </button>
+              <button
+                type="button"
+                className={`premium-tab ${activeTabSub === 'consent' ? 'active' : ''}`}
+                onClick={() => setActiveTabSub('consent')}
+              >
+                <i className="bi bi-shield-lock-fill me-1"></i> Inter-Hospital Consents <span className="tab-count">{consents.length}</span>
+              </button>
+            </div>
             <span className="badge bg-light text-dark border">
               {abhaList.length} Verified ABHA Accounts
             </span>
           </div>
+        </div>
 
-          <div className="card-body p-0">
-            <div className="table-responsive">
-              <table className="table table-hover align-middle mb-0">
+        {/* View: ABHA Patients Registry */}
+        {activeTabSub === 'abha' && (
+          <div className="table-wrap">
+            <table className="premium-table">
                 <thead className="table-light small text-uppercase text-secondary">
                   <tr>
                     <th className="ps-3">14-Digit ABHA ID</th>
@@ -355,24 +359,13 @@ export default function AbdmPanel() {
                   ))}
                 </tbody>
               </table>
-            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* View: Consent Requests Table */}
-      {activeTabSub === 'consent' && (
-        <div className="card shadow-sm border-0">
-          <div className="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-            <h5 className="fw-bold mb-0 text-dark">
-              <i className="bi bi-shield-check text-success me-2"></i>
-              NHA National Health Data Consent Requests (HIU & HIP)
-            </h5>
-          </div>
-
-          <div className="card-body p-0">
-            <div className="table-responsive">
-              <table className="table table-hover align-middle mb-0">
+        {/* View: Consent Requests Table */}
+        {activeTabSub === 'consent' && (
+          <div className="table-wrap">
+            <table className="premium-table">
                 <thead className="table-light small text-uppercase text-secondary">
                   <tr>
                     <th className="ps-3">Consent Request ID</th>
@@ -440,11 +433,10 @@ export default function AbdmPanel() {
                     );
                   })}
                 </tbody>
-              </table>
-            </div>
+            </table>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Create ABHA ID Modal */}
       {showCreateModal && (

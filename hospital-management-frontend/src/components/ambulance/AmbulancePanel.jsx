@@ -5,6 +5,7 @@ import RealtimeNotificationHub, { playEmergencyCodeRedSiren } from '../../servic
 import { getHospitalName } from '../../services/hospitalConfig';
 import AmbulanceDispatchSlip from './AmbulanceDispatchSlip';
 import { toast } from 'react-toastify';
+import '../../styles/clinicalDesksPremium.css';
 
 const INITIAL_FLEET = [
   {
@@ -312,88 +313,86 @@ export default function AmbulancePanel() {
   const readyFleetCount = fleet.filter(a => a.status === 'AVAILABLE_AT_BASE').length;
 
   return (
-    <div className="container-fluid py-3">
-      {/* Top Banner */}
-      <div className="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom">
-        <div>
-          <h3 className="fw-bold text-dark mb-1 d-flex align-items-center">
-            <i className="bi bi-truck-front-fill text-danger me-2 fs-2"></i>
-            Ambulance Fleet & Rapid Emergency Dispatch Desk
-          </h3>
-          <p className="text-muted small mb-0">
-            {getHospitalName()} • 24x7 Critical Care Fleet Tracking • NABH Standard EMS Protocol
-          </p>
-        </div>
-        <div className="d-flex gap-2 mt-2 mt-sm-0">
-          <button 
-            type="button" 
-            className="btn btn-outline-danger btn-sm fw-semibold shadow-sm"
-            onClick={triggerManualAlarm}
-          >
-            <i className="bi bi-volume-up-fill me-1"></i> Sound Emergency Siren
-          </button>
-          <button 
-            type="button" 
-            className="btn btn-danger btn-sm fw-bold px-3 shadow-sm"
-            onClick={() => setShowDispatchModal(true)}
-          >
-            <i className="bi bi-telephone-plus-fill me-1"></i> Dispatch Ambulance (SOS)
-          </button>
+    <div className="desk-premium-page">
+
+      {/* HERO BANNER */}
+      <div className="desk-hero">
+        <div className="hero-content">
+          <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div className="d-flex align-items-center gap-3">
+              <div className="hero-icon orange">
+                <i className="bi bi-truck-front-fill"></i>
+              </div>
+              <div>
+                <h4 className="hero-title">
+                  Ambulance Fleet & Rapid Emergency Dispatch Desk
+                </h4>
+                <p className="hero-subtitle">
+                  {getHospitalName()} &bull; 24x7 Critical Care Fleet Tracking &bull; NABH Standard EMS Protocol
+                </p>
+              </div>
+            </div>
+
+            <div className="d-flex align-items-center gap-2 flex-wrap">
+              <span className="hero-chip">
+                <i className="bi bi-shield-check text-warning"></i>
+                NABH EMS Protocol
+              </span>
+              <span className="hero-chip">
+                <i className="bi bi-geo-alt-fill text-danger"></i>
+                Live GPS Telemetry
+              </span>
+              <button 
+                type="button" 
+                className="premium-btn orange"
+                onClick={triggerManualAlarm}
+              >
+                <i className="bi bi-volume-up-fill me-1"></i> Sound Siren
+              </button>
+              <button 
+                type="button" 
+                className="premium-btn red"
+                onClick={() => setShowDispatchModal(true)}
+              >
+                <i className="bi bi-telephone-plus-fill me-1"></i> Dispatch SOS
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* KPI Cards */}
-      <div className="row g-3 mb-4">
-        <div className="col-md-3 col-sm-6">
-          <div className="card shadow-sm border-0 border-start border-primary border-4 h-100">
-            <div className="card-body">
-              <span className="text-muted small fw-semibold text-uppercase">Total Fleet Vehicles</span>
-              <div className="d-flex align-items-center justify-content-between mt-2">
-                <h3 className="fw-bold mb-0 text-primary">{fleet.length}</h3>
-                <i className="bi bi-truck fs-1 text-primary opacity-25"></i>
-              </div>
-              <small className="text-muted">ALS, BLS, Neonatal & Mobile ICU</small>
-            </div>
+      {/* METRIC GRID */}
+      <div className="metric-grid">
+        <div className="metric-card metric-blue">
+          <div className="metric-icon">
+            <i className="bi bi-truck"></i>
           </div>
+          <div className="metric-label">Total Fleet Vehicles</div>
+          <div className="metric-value">{fleet.length}</div>
         </div>
 
-        <div className="col-md-3 col-sm-6">
-          <div className="card shadow-sm border-0 border-start border-success border-4 h-100">
-            <div className="card-body">
-              <span className="text-muted small fw-semibold text-uppercase">Ready at Base Station</span>
-              <div className="d-flex align-items-center justify-content-between mt-2">
-                <h3 className="fw-bold mb-0 text-success">{readyFleetCount}</h3>
-                <i className="bi bi-check-circle-fill fs-1 text-success opacity-25"></i>
-              </div>
-              <small className="text-muted">Equipped & Ready for immediate launch</small>
-            </div>
+        <div className="metric-card metric-green">
+          <div className="metric-icon">
+            <i className="bi bi-check-circle-fill"></i>
           </div>
+          <div className="metric-label">Ready at Base</div>
+          <div className="metric-value">{readyFleetCount}</div>
         </div>
 
-        <div className="col-md-3 col-sm-6">
-          <div className="card shadow-sm border-0 border-start border-danger border-4 h-100">
-            <div className="card-body">
-              <span className="text-muted small fw-semibold text-uppercase">Active On Missions</span>
-              <div className="d-flex align-items-center justify-content-between mt-2">
-                <h3 className="fw-bold mb-0 text-danger">{activeMissionCount}</h3>
-                <i className="bi bi-lightning-charge-fill fs-1 text-danger opacity-25"></i>
-              </div>
-              <small className="text-muted">Dispatched / En-route / At Trauma</small>
-            </div>
+        <div className="metric-card metric-red">
+          <div className="metric-icon">
+            <i className="bi bi-lightning-charge-fill"></i>
           </div>
+          <div className="metric-label">Active on Missions</div>
+          <div className="metric-value">{activeMissionCount}</div>
         </div>
 
-        <div className="col-md-3 col-sm-6">
-          <div className="card shadow-sm border-0 border-start border-warning border-4 h-100">
-            <div className="card-body">
-              <span className="text-muted small fw-semibold text-uppercase">Today's Total Runs</span>
-              <div className="d-flex align-items-center justify-content-between mt-2">
-                <h3 className="fw-bold mb-0 text-dark">{dispatches.length}</h3>
-                <i className="bi bi-clock-history fs-1 text-warning opacity-50"></i>
-              </div>
-              <small className="text-muted">Average Response Time: 8.4 mins</small>
-            </div>
+        <div className="metric-card metric-orange">
+          <div className="metric-icon">
+            <i className="bi bi-clock-history"></i>
           </div>
+          <div className="metric-label">Today's Total Runs</div>
+          <div className="metric-value">{dispatches.length}</div>
         </div>
       </div>
 
@@ -497,63 +496,67 @@ export default function AmbulancePanel() {
         </div>
       </div>
 
-      {/* Dispatches Table */}
-      <div className="card shadow-sm border-0">
-        <div className="card-header bg-white py-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
-          <h5 className="fw-bold mb-0 text-dark">
-            <i className="bi bi-clock-history text-danger me-2"></i>
-            Live Emergency Dispatches & Run Records
-          </h5>
+      {/* Dispatches Table (Premium Panel) */}
+      <div className="premium-panel">
+        <div className="panel-toolbar">
+          <div className="d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <h6 className="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
+              <i className="bi bi-clock-history text-danger"></i>
+              Live Emergency Dispatches & Run Records
+            </h6>
 
-          <div className="d-flex gap-2">
-            <button
-              type="button"
-              className={`btn btn-sm ${filterStatus === 'ALL' ? 'btn-danger' : 'btn-outline-secondary'}`}
-              onClick={() => setFilterStatus('ALL')}
-            >
-              All Runs ({dispatches.length})
-            </button>
-            <button
-              type="button"
-              className={`btn btn-sm ${filterStatus === 'ACTIVE' ? 'btn-danger' : 'btn-outline-secondary'}`}
-              onClick={() => setFilterStatus('ACTIVE')}
-            >
-              Active Missions ({dispatches.filter(d => d.status !== 'COMPLETED').length})
-            </button>
-            <button
-              type="button"
-              className={`btn btn-sm ${filterStatus === 'COMPLETED' ? 'btn-danger' : 'btn-outline-secondary'}`}
-              onClick={() => setFilterStatus('COMPLETED')}
-            >
-              Completed ({dispatches.filter(d => d.status === 'COMPLETED').length})
-            </button>
+            <div className="premium-tabs">
+              <button
+                type="button"
+                className={`premium-tab ${filterStatus === 'ALL' ? 'active' : ''}`}
+                onClick={() => setFilterStatus('ALL')}
+              >
+                All Runs <span className="tab-count">{dispatches.length}</span>
+              </button>
+              <button
+                type="button"
+                className={`premium-tab ${filterStatus === 'ACTIVE' ? 'active' : ''}`}
+                onClick={() => setFilterStatus('ACTIVE')}
+              >
+                Active <span className="tab-count">{dispatches.filter(d => d.status !== 'COMPLETED').length}</span>
+              </button>
+              <button
+                type="button"
+                className={`premium-tab ${filterStatus === 'COMPLETED' ? 'active' : ''}`}
+                onClick={() => setFilterStatus('COMPLETED')}
+              >
+                Completed <span className="tab-count">{dispatches.filter(d => d.status === 'COMPLETED').length}</span>
+              </button>
+            </div>
           </div>
         </div>
 
-        <div className="card-body p-0">
-          <div className="table-responsive">
-            <table className="table table-hover align-middle mb-0">
-              <thead className="table-light small text-uppercase text-secondary">
+        <div className="table-wrap">
+          <table className="premium-table">
+            <thead>
+              <tr>
+                <th className="ps-3">Trip # / Time</th>
+                <th>Ambulance</th>
+                <th>Patient Details</th>
+                <th>Pickup Location</th>
+                <th>Urgency</th>
+                <th>Reserved Bed</th>
+                <th>Status & Progress</th>
+                <th className="text-end pe-3">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredDispatches.length === 0 ? (
                 <tr>
-                  <th className="ps-3">Trip # / Time</th>
-                  <th>Ambulance</th>
-                  <th>Patient Details</th>
-                  <th>Pickup Location</th>
-                  <th>Urgency</th>
-                  <th>Reserved Bed</th>
-                  <th>Status & Progress</th>
-                  <th className="text-end pe-3">Actions</th>
+                  <td colSpan="8" className="text-center py-5 text-muted">
+                    <div className="empty-state">
+                      <div className="empty-icon"><i className="bi bi-truck"></i></div>
+                      <div className="fw-bold">No ambulance dispatches logged</div>
+                      <small>Click "Dispatch SOS" to launch an emergency mission</small>
+                    </div>
+                  </td>
                 </tr>
-              </thead>
-              <tbody className="small">
-                {filteredDispatches.length === 0 ? (
-                  <tr>
-                    <td colSpan="8" className="text-center py-5 text-muted">
-                      <i className="bi bi-truck fs-1 d-block mb-2 opacity-50"></i>
-                      No ambulance dispatches logged. Click "Dispatch Ambulance (SOS)" to launch a mission.
-                    </td>
-                  </tr>
-                ) : (
+              ) : (
                   filteredDispatches.map(item => {
                     const isCompleted = item.status === 'COMPLETED';
 
@@ -665,7 +668,6 @@ export default function AmbulancePanel() {
             </table>
           </div>
         </div>
-      </div>
 
       {/* Emergency Dispatch Form Modal */}
       {showDispatchModal && (

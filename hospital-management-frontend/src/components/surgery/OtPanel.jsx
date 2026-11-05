@@ -4,6 +4,7 @@ import SurgeryOtPassSlip from './SurgeryOtPassSlip';
 import RealtimeNotificationHub, { playHospitalAlertChime } from '../../services/RealtimeNotificationHub';
 import { getHospitalName, formatDoctorName } from '../../services/hospitalConfig';
 import { toast } from 'react-toastify';
+import '../../styles/clinicalDesksPremium.css';
 
 const OT_SUITES = [
   { id: 'OT-1', name: 'OT-1 (Cardiac & Cardio-Thoracic Suite)', type: 'Ultra-Clean Laminar Flow', floor: '3rd Floor Surgical Wing' },
@@ -218,77 +219,82 @@ function OtPanel({ role = 'ADMIN', patients = [], doctors = [], searchQuery = ''
   };
 
   return (
-    <div className="ot-panel-container p-3 p-md-4" style={{ fontFamily: "'Segoe UI', Roboto, sans-serif" }}>
-      
-      {/* HEADER BAR */}
-      <div className="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
-        <div>
-          <div className="d-flex align-items-center gap-2">
-            <div className="rounded-3 bg-danger bg-opacity-10 text-danger p-2 d-flex align-items-center justify-content-center" style={{ width: 44, height: 44 }}>
-              <i className="bi bi-scissors fs-4"></i>
+    <div className="desk-premium-page">
+
+      {/* HERO */}
+      <div className="desk-hero">
+        <div className="hero-content">
+          <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div className="d-flex align-items-center gap-3">
+              <div className="hero-icon red">
+                <i className="bi bi-scissors"></i>
+              </div>
+              <div>
+                <h4 className="hero-title">
+                  Operation Theatre (OT) & Surgical Scheduling Desk
+                </h4>
+                <p className="hero-subtitle">
+                  {hospitalName} &bull; Modular Theatres &bull; WHO Surgical Safety Protocol
+                </p>
+              </div>
             </div>
-            <div>
-              <h4 className="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
-                Operation Theatre (OT) & Surgical Scheduling Desk
-              </h4>
-              <p className="text-muted small mb-0">
-                {hospitalName} &bull; Modular Theatres &bull; WHO Surgical Safety Protocol
-              </p>
+
+            <div className="d-flex align-items-center gap-2 flex-wrap">
+              <span className="hero-chip">
+                <i className="bi bi-shield-check text-danger"></i>
+                WHO Protocol
+              </span>
+              <span className="hero-chip">
+                <i className="bi bi-activity text-danger"></i>
+                Laminar Class 100
+              </span>
+              {!isPatient && (
+                <button
+                  type="button"
+                  className="premium-btn red ms-1"
+                  onClick={() => setShowScheduleModal(true)}
+                >
+                  <i className="bi bi-plus-circle-fill me-1"></i>
+                  Schedule Surgery
+                </button>
+              )}
             </div>
           </div>
         </div>
-
-        {!isPatient && (
-          <div className="d-flex align-items-center gap-2">
-            <button
-              type="button"
-              className="btn btn-danger btn-sm px-3 py-2 fw-bold d-inline-flex align-items-center gap-2 rounded-pill shadow-sm"
-              onClick={() => setShowScheduleModal(true)}
-            >
-              <i className="bi bi-plus-circle-fill"></i>
-              Schedule New Surgery
-            </button>
-          </div>
-        )}
       </div>
 
-      {/* METRICS ROW */}
-      <div className="row g-3 mb-4">
-        <div className="col-6 col-md-3">
-          <div className="p-3 rounded-4 bg-white border shadow-sm">
-            <div className="text-secondary small fw-bold text-uppercase" style={{ fontSize: '11px' }}>IN ACTIVE SURGERY</div>
-            <div className="d-flex align-items-baseline gap-2 mt-1">
-              <span className="fs-3 fw-bold text-danger">{stats.inSurgery}</span>
-              <span className="text-muted small">Theatres Operating</span>
-            </div>
+      {/* METRIC GRID */}
+      <div className="metric-grid">
+        <div className="metric-card metric-red">
+          <div className="metric-icon">
+            <i className="bi bi-heart-pulse-fill"></i>
           </div>
+          <div className="metric-label">In Active Surgery</div>
+          <div className="metric-value">{stats.inSurgery}</div>
         </div>
-        <div className="col-6 col-md-3">
-          <div className="p-3 rounded-4 bg-white border shadow-sm">
-            <div className="text-secondary small fw-bold text-uppercase" style={{ fontSize: '11px' }}>PRE-OP PREPARATION</div>
-            <div className="d-flex align-items-baseline gap-2 mt-1">
-              <span className="fs-3 fw-bold text-warning text-dark">{stats.preOp}</span>
-              <span className="text-muted small">Holding Bay</span>
-            </div>
+
+        <div className="metric-card metric-orange">
+          <div className="metric-icon">
+            <i className="bi bi-clock-history"></i>
           </div>
+          <div className="metric-label">Pre-Op Preparation</div>
+          <div className="metric-value">{stats.preOp}</div>
         </div>
-        <div className="col-6 col-md-3">
-          <div className="p-3 rounded-4 bg-white border shadow-sm">
-            <div className="text-secondary small fw-bold text-uppercase" style={{ fontSize: '11px' }}>PACU RECOVERY</div>
-            <div className="d-flex align-items-baseline gap-2 mt-1">
-              <span className="fs-3 fw-bold text-info">{stats.pacu}</span>
-              <span className="text-muted small">Post-Anesthesia</span>
-            </div>
+
+        <div className="metric-card metric-purple">
+          <div className="metric-icon">
+            <i className="bi bi-lungs-fill"></i>
           </div>
+          <div className="metric-label">PACU Recovery</div>
+          <div className="metric-value">{stats.pacu}</div>
         </div>
-        <div className="col-6 col-md-3">
-          <div className="p-3 rounded-4 bg-white border shadow-sm">
-            <div className="text-secondary small fw-bold text-uppercase" style={{ fontSize: '11px' }}>TOTAL SCHEDULED</div>
-            <div className="d-flex align-items-baseline gap-2 mt-1">
-              <span className="fs-3 fw-bold text-primary">{stats.total}</span>
-              <span className="text-muted small">Operations Today</span>
-            </div>
+
+        <div className="metric-card metric-blue">
+          <div className="metric-icon">
+            <i className="bi bi-calendar2-check-fill"></i>
           </div>
+          <div className="metric-label">Total Scheduled</div>
+          <div className="metric-value">{stats.total}</div>
         </div>
       </div>
 
@@ -309,11 +315,13 @@ function OtPanel({ role = 'ADMIN', patients = [], doctors = [], searchQuery = ''
             return (
               <div key={suite.id} className="col-12 col-md-6 col-xl">
                 <div
-                  className="p-3 rounded-3 h-100 border transition-all"
+                  className="p-3 rounded-4 h-100 border transition-all"
                   style={{
-                    background: isOperating ? '#fff1f2' : activeOp ? '#fffbeb' : '#ffffff',
-                    borderColor: isOperating ? '#f43f5e' : activeOp ? '#f59e0b' : '#e2e8f0',
-                    borderWidth: activeOp ? '2px' : '1px'
+                    background: isOperating ? '#fff1f2' : activeOp ? '#fffbeb' : 'rgba(255,255,255,0.85)',
+                    borderColor: isOperating ? '#f43f5e' : activeOp ? '#f59e0b' : 'rgba(226,232,240,0.85)',
+                    borderWidth: activeOp ? '2px' : '1px',
+                    backdropFilter: 'blur(12px)',
+                    boxShadow: '0 8px 24px rgba(15,23,42,0.04)'
                   }}
                 >
                   <div className="d-flex justify-content-between align-items-start mb-2">
@@ -357,19 +365,19 @@ function OtPanel({ role = 'ADMIN', patients = [], doctors = [], searchQuery = ''
         </div>
       </div>
 
-      {/* SURGICAL ROSTER & QUEUE MANAGEMENT */}
-      <div className="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
-        <div className="card-header bg-white border-bottom p-3">
-          <div className="d-flex flex-wrap justify-content-between align-items-center gap-2">
+      {/* SURGICAL ROSTER & QUEUE MANAGEMENT (PREMIUM PANEL) */}
+      <div className="premium-panel">
+        <div className="panel-toolbar">
+          <div className="d-flex flex-wrap justify-content-between align-items-center gap-3">
             <h6 className="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
-              <i className="bi bi-journal-medical text-primary"></i> Surgical Operating Roster & Tracking
+              <i className="bi bi-journal-medical text-danger"></i> Surgical Operating Roster & Real-Time Tracking
             </h6>
 
             {/* Filter controls */}
             <div className="d-flex flex-wrap gap-2">
               <select
-                className="form-select form-select-sm"
-                style={{ width: 'auto' }}
+                className="premium-select"
+                style={{ width: 'auto', minHeight: '38px', padding: '6px 14px', fontSize: '0.8rem' }}
                 value={filterStage}
                 onChange={(e) => setFilterStage(e.target.value)}
               >
@@ -382,8 +390,8 @@ function OtPanel({ role = 'ADMIN', patients = [], doctors = [], searchQuery = ''
               </select>
 
               <select
-                className="form-select form-select-sm"
-                style={{ width: 'auto' }}
+                className="premium-select"
+                style={{ width: 'auto', minHeight: '38px', padding: '6px 14px', fontSize: '0.8rem' }}
                 value={filterTheatre}
                 onChange={(e) => setFilterTheatre(e.target.value)}
               >
@@ -398,9 +406,9 @@ function OtPanel({ role = 'ADMIN', patients = [], doctors = [], searchQuery = ''
           </div>
         </div>
 
-        <div className="table-responsive">
-          <table className="table table-hover align-middle mb-0" style={{ fontSize: '13px' }}>
-            <thead className="table-light">
+        <div className="table-wrap">
+          <table className="premium-table">
+            <thead>
               <tr>
                 <th style={{ width: '18%' }}>Patient Details</th>
                 <th style={{ width: '22%' }}>Procedure & Indication</th>
@@ -414,8 +422,11 @@ function OtPanel({ role = 'ADMIN', patients = [], doctors = [], searchQuery = ''
               {filteredSurgeries.length === 0 ? (
                 <tr>
                   <td colSpan="6" className="text-center py-5 text-muted">
-                    <i className="bi bi-clipboard2-x fs-2 d-block mb-2 text-secondary"></i>
-                    No surgeries found matching current filters.
+                    <div className="empty-state">
+                      <div className="empty-icon"><i className="bi bi-clipboard2-x"></i></div>
+                      <div className="fw-bold">No surgeries found</div>
+                      <small>No records matching current filters</small>
+                    </div>
                   </td>
                 </tr>
               ) : (
@@ -456,11 +467,11 @@ function OtPanel({ role = 'ADMIN', patients = [], doctors = [], searchQuery = ''
                         <button
                           type="button"
                           className="btn btn-sm btn-outline-primary py-1 px-2 fw-semibold"
-                          style={{ fontSize: '11px', borderRadius: '6px' }}
+                          style={{ fontSize: '11px', borderRadius: '8px' }}
                           title="Print WHO Surgical Safety Pass"
                           onClick={() => setActivePrintPass(s)}
                         >
-                          <i className="bi bi-printer me-1"></i> Safety Pass
+                          <i className="bi bi-printer me-1"></i> Pass
                         </button>
 
                         {/* Stage Progression Buttons */}
@@ -470,17 +481,17 @@ function OtPanel({ role = 'ADMIN', patients = [], doctors = [], searchQuery = ''
                               <button
                                 type="button"
                                 className="btn btn-sm btn-warning text-dark py-1 px-2 fw-semibold"
-                                style={{ fontSize: '11px', borderRadius: '6px' }}
+                                style={{ fontSize: '11px', borderRadius: '8px' }}
                                 onClick={() => handleStageAdvance(s.id, 'PRE_OP_PREP')}
                               >
-                                Wheel to Pre-Op
+                                Wheel Pre-Op
                               </button>
                             )}
                             {s.status === 'PRE_OP_PREP' && (
                               <button
                                 type="button"
                                 className="btn btn-sm btn-danger py-1 px-2 fw-semibold"
-                                style={{ fontSize: '11px', borderRadius: '6px' }}
+                                style={{ fontSize: '11px', borderRadius: '8px' }}
                                 onClick={() => handleStageAdvance(s.id, 'IN_SURGERY')}
                               >
                                 Start Surgery
@@ -490,20 +501,20 @@ function OtPanel({ role = 'ADMIN', patients = [], doctors = [], searchQuery = ''
                               <button
                                 type="button"
                                 className="btn btn-sm btn-info text-dark py-1 px-2 fw-semibold"
-                                style={{ fontSize: '11px', borderRadius: '6px' }}
+                                style={{ fontSize: '11px', borderRadius: '8px' }}
                                 onClick={() => handleStageAdvance(s.id, 'PACU_RECOVERY')}
                               >
-                                Shift to PACU
+                                Shift PACU
                               </button>
                             )}
                             {s.status === 'PACU_RECOVERY' && (
                               <button
                                 type="button"
                                 className="btn btn-sm btn-success py-1 px-2 fw-semibold"
-                                style={{ fontSize: '11px', borderRadius: '6px' }}
+                                style={{ fontSize: '11px', borderRadius: '8px' }}
                                 onClick={() => handleStageAdvance(s.id, 'COMPLETED')}
                               >
-                                Mark Complete
+                                Complete
                               </button>
                             )}
                           </>

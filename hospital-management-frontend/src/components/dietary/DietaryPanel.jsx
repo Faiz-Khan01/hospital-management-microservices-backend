@@ -4,6 +4,7 @@ import BedService from '../../services/BedService';
 import { getHospitalName } from '../../services/hospitalConfig';
 import DietaryMealSlip from './DietaryMealSlip';
 import { toast } from 'react-toastify';
+import '../../styles/clinicalDesksPremium.css';
 
 const INITIAL_MEAL_ORDERS = [
   {
@@ -184,120 +185,119 @@ export default function DietaryPanel() {
   }, [mealOrders, filterStatus]);
 
   return (
-    <div className="container-fluid py-3">
-      {/* Header */}
-      <div className="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom">
-        <div>
-          <h3 className="fw-bold text-dark mb-1 d-flex align-items-center">
-            <i className="bi bi-cup-hot-fill text-warning-emphasis me-2 fs-2"></i>
-            Hospital Dietary, Nutrition & Patient Food Management Desk
-          </h3>
-          <p className="text-muted small mb-0">
-            {getHospitalName()} • Clinical Therapeutic Dietetics • ISO 22000 Food Safety Standards
-          </p>
-        </div>
-        <div className="d-flex gap-2 mt-2 mt-sm-0">
-          <button
-            type="button"
-            className="btn btn-warning text-dark btn-sm fw-bold px-3 shadow-sm"
-            onClick={() => setShowOrderModal(true)}
-          >
-            <i className="bi bi-plus-circle-fill me-1"></i> Prescribe Diet Order
-          </button>
-        </div>
-      </div>
+    <div className="desk-premium-page">
 
-      {/* KPI Cards */}
-      <div className="row g-3 mb-4">
-        <div className="col-md-3 col-sm-6">
-          <div className="card shadow-sm border-0 border-start border-warning border-4 h-100">
-            <div className="card-body">
-              <span className="text-muted small fw-semibold text-uppercase">Total Inpatient Meals</span>
-              <div className="d-flex align-items-center justify-content-between mt-2">
-                <h3 className="fw-bold mb-0 text-dark">{mealOrders.length}</h3>
-                <i className="bi bi-egg-fried fs-1 text-warning opacity-50"></i>
+      {/* HERO BANNER */}
+      <div className="desk-hero">
+        <div className="hero-content">
+          <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div className="d-flex align-items-center gap-3">
+              <div className="hero-icon orange">
+                <i className="bi bi-cup-hot-fill"></i>
               </div>
-              <small className="text-muted">Active meal sessions today</small>
+              <div>
+                <h4 className="hero-title">
+                  Hospital Dietary, Nutrition & Patient Food Management Desk
+                </h4>
+                <p className="hero-subtitle">
+                  {getHospitalName()} &bull; Clinical Therapeutic Dietetics &bull; ISO 22000 Food Safety Standards
+                </p>
+              </div>
             </div>
-          </div>
-        </div>
 
-        <div className="col-md-3 col-sm-6">
-          <div className="card shadow-sm border-0 border-start border-primary border-4 h-100">
-            <div className="card-body">
-              <span className="text-muted small fw-semibold text-uppercase">Kitchen Preparing</span>
-              <div className="d-flex align-items-center justify-content-between mt-2">
-                <h3 className="fw-bold mb-0 text-primary">{inKitchenCount}</h3>
-                <i className="bi bi-fire fs-1 text-primary opacity-25"></i>
-              </div>
-              <small className="text-muted">HACCP cooking & tray assembly</small>
-            </div>
-          </div>
-        </div>
-
-        <div className="col-md-3 col-sm-6">
-          <div className="card shadow-sm border-0 border-start border-info border-4 h-100">
-            <div className="card-body">
-              <span className="text-muted small fw-semibold text-uppercase">Trolley Dispatched</span>
-              <div className="d-flex align-items-center justify-content-between mt-2">
-                <h3 className="fw-bold mb-0 text-info">{dispatchedCount}</h3>
-                <i className="bi bi-truck fs-1 text-info opacity-25"></i>
-              </div>
-              <small className="text-muted">Hot-box trolleys en-route to wards</small>
-            </div>
-          </div>
-        </div>
-
-        <div className="col-md-3 col-sm-6">
-          <div className="card shadow-sm border-0 border-start border-success border-4 h-100">
-            <div className="card-body">
-              <span className="text-muted small fw-semibold text-uppercase">Delivered to Bed</span>
-              <div className="d-flex align-items-center justify-content-between mt-2">
-                <h3 className="fw-bold mb-0 text-success">{deliveredCount}</h3>
-                <i className="bi bi-check2-all fs-1 text-success opacity-25"></i>
-              </div>
-              <small className="text-muted">Nurse acknowledged & served</small>
+            <div className="d-flex align-items-center gap-2 flex-wrap">
+              <span className="hero-chip">
+                <i className="bi bi-shield-check text-warning"></i>
+                ISO 22000 Certified
+              </span>
+              <span className="hero-chip">
+                <i className="bi bi-egg-fried text-warning"></i>
+                HACCP Kitchen Standard
+              </span>
+              <button
+                type="button"
+                className="premium-btn orange"
+                onClick={() => setShowOrderModal(true)}
+              >
+                <i className="bi bi-plus-circle-fill me-1"></i> Prescribe Diet Order
+              </button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Meals Table */}
-      <div className="card shadow-sm border-0">
-        <div className="card-header bg-white py-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
-          <h5 className="fw-bold mb-0 text-dark">
-            <i className="bi bi-card-checklist text-warning-emphasis me-2"></i>
-            Inpatient Therapeutic Meal Tray Dispatch Register
-          </h5>
+      {/* METRIC GRID */}
+      <div className="metric-grid">
+        <div className="metric-card metric-orange">
+          <div className="metric-icon">
+            <i className="bi bi-egg-fried"></i>
+          </div>
+          <div className="metric-label">Total Inpatient Meals</div>
+          <div className="metric-value">{mealOrders.length}</div>
+        </div>
 
-          <div className="d-flex gap-2">
-            <button
-              type="button"
-              className={`btn btn-sm ${filterStatus === 'ALL' ? 'btn-warning text-dark' : 'btn-outline-secondary'}`}
-              onClick={() => setFilterStatus('ALL')}
-            >
-              All ({mealOrders.length})
-            </button>
-            <button
-              type="button"
-              className={`btn btn-sm ${filterStatus === 'KITCHEN_PREPARING' ? 'btn-warning text-dark' : 'btn-outline-secondary'}`}
-              onClick={() => setFilterStatus('KITCHEN_PREPARING')}
-            >
-              Preparing ({inKitchenCount})
-            </button>
-            <button
-              type="button"
-              className={`btn btn-sm ${filterStatus === 'DELIVERED_TO_PATIENT' ? 'btn-warning text-dark' : 'btn-outline-secondary'}`}
-              onClick={() => setFilterStatus('DELIVERED_TO_PATIENT')}
-            >
-              Delivered ({deliveredCount})
-            </button>
+        <div className="metric-card metric-purple">
+          <div className="metric-icon">
+            <i className="bi bi-fire"></i>
+          </div>
+          <div className="metric-label">Kitchen Preparing</div>
+          <div className="metric-value">{inKitchenCount}</div>
+        </div>
+
+        <div className="metric-card metric-blue">
+          <div className="metric-icon">
+            <i className="bi bi-truck"></i>
+          </div>
+          <div className="metric-label">Trolley Dispatched</div>
+          <div className="metric-value">{dispatchedCount}</div>
+        </div>
+
+        <div className="metric-card metric-green">
+          <div className="metric-icon">
+            <i className="bi bi-check2-all"></i>
+          </div>
+          <div className="metric-label">Delivered to Bed</div>
+          <div className="metric-value">{deliveredCount}</div>
+        </div>
+      </div>
+
+      {/* Meals Table (Premium Panel) */}
+      <div className="premium-panel">
+        <div className="panel-toolbar">
+          <div className="d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <h6 className="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
+              <i className="bi bi-card-checklist text-warning"></i>
+              Inpatient Therapeutic Meal Tray Dispatch Register
+            </h6>
+
+            <div className="premium-tabs">
+              <button
+                type="button"
+                className={`premium-tab ${filterStatus === 'ALL' ? 'active' : ''}`}
+                onClick={() => setFilterStatus('ALL')}
+              >
+                All <span className="tab-count">{mealOrders.length}</span>
+              </button>
+              <button
+                type="button"
+                className={`premium-tab ${filterStatus === 'KITCHEN_PREPARING' ? 'active' : ''}`}
+                onClick={() => setFilterStatus('KITCHEN_PREPARING')}
+              >
+                Preparing <span className="tab-count">{inKitchenCount}</span>
+              </button>
+              <button
+                type="button"
+                className={`premium-tab ${filterStatus === 'DELIVERED_TO_PATIENT' ? 'active' : ''}`}
+                onClick={() => setFilterStatus('DELIVERED_TO_PATIENT')}
+              >
+                Delivered <span className="tab-count">{deliveredCount}</span>
+              </button>
+            </div>
           </div>
         </div>
 
-        <div className="card-body p-0">
-          <div className="table-responsive">
-            <table className="table table-hover align-middle mb-0">
+        <div className="table-wrap">
+          <table className="premium-table">
               <thead className="table-light small text-uppercase text-secondary">
                 <tr>
                   <th className="ps-3">Order # / Bed</th>
@@ -405,7 +405,6 @@ export default function DietaryPanel() {
             </table>
           </div>
         </div>
-      </div>
 
       {/* Prescribe Diet Order Modal */}
       {showOrderModal && (

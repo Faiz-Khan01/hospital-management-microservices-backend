@@ -4,6 +4,7 @@ import BloodCrossMatchSlip from './BloodCrossMatchSlip';
 import RealtimeNotificationHub, { playHospitalAlertChime } from '../../services/RealtimeNotificationHub';
 import { getHospitalName, formatDoctorName } from '../../services/hospitalConfig';
 import { toast } from 'react-toastify';
+import '../../styles/clinicalDesksPremium.css';
 
 const INITIAL_BLOOD_STOCK = [
   { group: 'A +ve', prbc: 18, ffp: 12, platelets: 8, total: 38, status: 'NORMAL' },
@@ -264,83 +265,92 @@ function BloodBankPanel({ role = 'ADMIN', patients = [], doctors = [], searchQue
   };
 
   return (
-    <div className="bloodbank-panel p-3 p-md-4" style={{ fontFamily: "'Segoe UI', Roboto, sans-serif" }}>
+    <div className="desk-premium-page">
 
-      {/* HEADER */}
-      <div className="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
-        <div className="d-flex align-items-center gap-3">
-          <div className="rounded-3 bg-danger text-white p-2 d-flex align-items-center justify-content-center shadow-sm" style={{ width: 44, height: 44 }}>
-            <i className="bi bi-droplet-fill fs-4"></i>
-          </div>
-          <div>
-            <h4 className="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
-              Central Blood Bank & Transfusion Registry
-            </h4>
-            <p className="text-muted small mb-0">
-              {hospitalName} &bull; State Council Licensed &bull; NABH Blood Bank Certified
-            </p>
+      {/* HERO */}
+      <div className="desk-hero">
+        <div className="hero-content">
+          <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div className="d-flex align-items-center gap-3">
+              <div className="hero-icon red">
+                <i className="bi bi-droplet-fill"></i>
+              </div>
+              <div>
+                <h4 className="hero-title">
+                  Central Blood Bank & Transfusion Registry
+                </h4>
+                <p className="hero-subtitle">
+                  {hospitalName} &bull; State Council Licensed &bull; NABH Blood Bank Certified
+                </p>
+              </div>
+            </div>
+
+            <div className="d-flex align-items-center gap-2 flex-wrap">
+              <span className="hero-chip">
+                <i className="bi bi-shield-check text-danger"></i>
+                NABH Certified
+              </span>
+              <span className="hero-chip">
+                <i className="bi bi-thermometer-half text-danger"></i>
+                Cold Vault 2°C - 6°C
+              </span>
+              {!isPatient && (
+                <>
+                  <button
+                    type="button"
+                    className="premium-btn orange"
+                    onClick={() => setShowDonorModal(true)}
+                  >
+                    <i className="bi bi-heart-fill me-1"></i>
+                    Register Donor
+                  </button>
+                  <button
+                    type="button"
+                    className="premium-btn red"
+                    onClick={() => setShowReqModal(true)}
+                  >
+                    <i className="bi bi-plus-circle-fill me-1"></i>
+                    Emergency Requisition
+                  </button>
+                </>
+              )}
+            </div>
           </div>
         </div>
-
-        {!isPatient && (
-          <div className="d-flex align-items-center gap-2">
-            <button
-              type="button"
-              className="btn btn-outline-danger btn-sm px-3 py-2 fw-bold d-inline-flex align-items-center gap-2 rounded-pill shadow-xs"
-              onClick={() => setShowDonorModal(true)}
-            >
-              <i className="bi bi-heart-fill text-danger"></i>
-              Register Blood Donor
-            </button>
-            <button
-              type="button"
-              className="btn btn-danger btn-sm px-3 py-2 fw-bold d-inline-flex align-items-center gap-2 rounded-pill shadow-sm"
-              onClick={() => setShowReqModal(true)}
-            >
-              <i className="bi bi-plus-circle-fill"></i>
-              Emergency Blood Requisition
-            </button>
-          </div>
-        )}
       </div>
 
-      {/* METRICS ROW */}
-      <div className="row g-3 mb-4">
-        <div className="col-6 col-md-3">
-          <div className="p-3 rounded-4 bg-white border shadow-sm">
-            <div className="text-secondary small fw-bold text-uppercase" style={{ fontSize: '11px' }}>TOTAL UNITS IN VAULT</div>
-            <div className="d-flex align-items-baseline gap-2 mt-1">
-              <span className="fs-3 fw-bold text-danger">{totalInventoryUnits}</span>
-              <span className="text-muted small">Bags Available</span>
-            </div>
+      {/* METRIC GRID */}
+      <div className="metric-grid">
+        <div className="metric-card metric-red">
+          <div className="metric-icon">
+            <i className="bi bi-droplet-half"></i>
           </div>
+          <div className="metric-label">Total Units in Vault</div>
+          <div className="metric-value">{totalInventoryUnits}</div>
         </div>
-        <div className="col-6 col-md-3">
-          <div className="p-3 rounded-4 bg-white border shadow-sm">
-            <div className="text-secondary small fw-bold text-uppercase" style={{ fontSize: '11px' }}>LOW / CRITICAL GROUPS</div>
-            <div className="d-flex align-items-baseline gap-2 mt-1">
-              <span className="fs-3 fw-bold text-warning text-dark">{criticalShortageCount}</span>
-              <span className="text-muted small">Groups Short</span>
-            </div>
+
+        <div className="metric-card metric-orange">
+          <div className="metric-icon">
+            <i className="bi bi-exclamation-diamond-fill"></i>
           </div>
+          <div className="metric-label">Low / Critical Groups</div>
+          <div className="metric-value">{criticalShortageCount}</div>
         </div>
-        <div className="col-6 col-md-3">
-          <div className="p-3 rounded-4 bg-white border shadow-sm">
-            <div className="text-secondary small fw-bold text-uppercase" style={{ fontSize: '11px' }}>ACTIVE REQUISITIONS</div>
-            <div className="d-flex align-items-baseline gap-2 mt-1">
-              <span className="fs-3 fw-bold text-primary">{requisitions.filter(r => r.status !== 'TRANSFUSED').length}</span>
-              <span className="text-muted small">Pending Transfusion</span>
-            </div>
+
+        <div className="metric-card metric-blue">
+          <div className="metric-icon">
+            <i className="bi bi-hourglass-split"></i>
           </div>
+          <div className="metric-label">Active Requisitions</div>
+          <div className="metric-value">{requisitions.filter(r => r.status !== 'TRANSFUSED').length}</div>
         </div>
-        <div className="col-6 col-md-3">
-          <div className="p-3 rounded-4 bg-white border shadow-sm">
-            <div className="text-secondary small fw-bold text-uppercase" style={{ fontSize: '11px' }}>COMPATIBLE VERIFIED</div>
-            <div className="d-flex align-items-baseline gap-2 mt-1">
-              <span className="fs-3 fw-bold text-success">{requisitions.filter(r => r.status === 'COMPATIBLE_VERIFIED' || r.status === 'DISPATCHED_TO_WARD').length}</span>
-              <span className="text-muted small">Ready for Patient</span>
-            </div>
+
+        <div className="metric-card metric-green">
+          <div className="metric-icon">
+            <i className="bi bi-check2-circle"></i>
           </div>
+          <div className="metric-label">Compatible Verified</div>
+          <div className="metric-value">{requisitions.filter(r => r.status === 'COMPATIBLE_VERIFIED' || r.status === 'DISPATCHED_TO_WARD').length}</div>
         </div>
       </div>
 
@@ -361,10 +371,13 @@ function BloodBankPanel({ role = 'ADMIN', patients = [], doctors = [], searchQue
             return (
               <div key={b.group} className="col-6 col-md-4 col-xl-3">
                 <div
-                  className="p-3 rounded-4 bg-white border shadow-sm h-100 transition-all"
+                  className="p-3 rounded-4 border h-100 transition-all"
                   style={{
-                    borderColor: isCritical ? '#f43f5e' : isLow ? '#f59e0b' : '#e2e8f0',
-                    borderWidth: isCritical ? '2px' : '1px'
+                    background: isCritical ? '#fff1f2' : isLow ? '#fffbeb' : 'rgba(255,255,255,0.85)',
+                    borderColor: isCritical ? '#f43f5e' : isLow ? '#f59e0b' : 'rgba(226,232,240,0.85)',
+                    borderWidth: (isCritical || isLow) ? '2px' : '1px',
+                    backdropFilter: 'blur(12px)',
+                    boxShadow: '0 8px 24px rgba(15,23,42,0.04)'
                   }}
                 >
                   <div className="d-flex justify-content-between align-items-start mb-2">
@@ -386,7 +399,7 @@ function BloodBankPanel({ role = 'ADMIN', patients = [], doctors = [], searchQue
 
                   <div className="display-6 fw-bold text-dark mb-1">{b.total} <span className="fs-6 text-muted fw-normal">Units</span></div>
 
-                  <div className="bg-light p-2 rounded-2 mt-2" style={{ fontSize: '11px' }}>
+                  <div className="bg-light bg-opacity-75 p-2 rounded-3 mt-2" style={{ fontSize: '11px' }}>
                     <div className="d-flex justify-content-between text-muted">
                       <span>PRBC (Red Cells):</span>
                       <strong className="text-dark">{b.prbc}</strong>
@@ -407,20 +420,20 @@ function BloodBankPanel({ role = 'ADMIN', patients = [], doctors = [], searchQue
         </div>
       </div>
 
-      {/* REQUISITIONS & TRANSFUSION ROSTER */}
-      <div className="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
-        <div className="card-header bg-white border-bottom p-3">
-          <div className="d-flex justify-content-between align-items-center">
+      {/* REQUISITIONS & TRANSFUSION ROSTER (PREMIUM PANEL) */}
+      <div className="premium-panel">
+        <div className="panel-toolbar">
+          <div className="d-flex justify-content-between align-items-center flex-wrap gap-2">
             <h6 className="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
-              <i className="bi bi-clock-history text-primary"></i> Patient Blood Requisitions & Transfusion Queue
+              <i className="bi bi-clock-history text-danger"></i> Patient Blood Requisitions & Transfusion Queue
             </h6>
             <span className="text-muted small">Cross-Match Verification Active</span>
           </div>
         </div>
 
-        <div className="table-responsive">
-          <table className="table table-hover align-middle mb-0" style={{ fontSize: '13px' }}>
-            <thead className="table-light">
+        <div className="table-wrap">
+          <table className="premium-table">
+            <thead>
               <tr>
                 <th style={{ width: '20%' }}>Recipient Patient</th>
                 <th style={{ width: '15%' }}>Required Units</th>
@@ -434,7 +447,11 @@ function BloodBankPanel({ role = 'ADMIN', patients = [], doctors = [], searchQue
               {requisitions.length === 0 ? (
                 <tr>
                   <td colSpan="6" className="text-center py-5 text-muted">
-                    No active blood requisitions in queue.
+                    <div className="empty-state">
+                      <div className="empty-icon"><i className="bi bi-droplet-slash"></i></div>
+                      <div className="fw-bold">No active requisitions</div>
+                      <small>No pending blood requests in queue</small>
+                    </div>
                   </td>
                 </tr>
               ) : (
@@ -466,11 +483,11 @@ function BloodBankPanel({ role = 'ADMIN', patients = [], doctors = [], searchQue
                         <button
                           type="button"
                           className="btn btn-sm btn-outline-danger py-1 px-2 fw-semibold"
-                          style={{ fontSize: '11px', borderRadius: '6px' }}
+                          style={{ fontSize: '11px', borderRadius: '8px' }}
                           title="Print Blood Compatibility Slip"
                           onClick={() => setActivePrintSlip(req)}
                         >
-                          <i className="bi bi-printer me-1"></i> Cert
+                          <i className="bi bi-printer me-1"></i> Slip
                         </button>
 
                         {/* Progression Actions */}
@@ -480,7 +497,7 @@ function BloodBankPanel({ role = 'ADMIN', patients = [], doctors = [], searchQue
                               <button
                                 type="button"
                                 className="btn btn-sm btn-success py-1 px-2 fw-semibold"
-                                style={{ fontSize: '11px', borderRadius: '6px' }}
+                                style={{ fontSize: '11px', borderRadius: '8px' }}
                                 onClick={() => handleUpdateRequisitionStatus(req.id, 'COMPATIBLE_VERIFIED')}
                               >
                                 Verify Match
@@ -490,17 +507,17 @@ function BloodBankPanel({ role = 'ADMIN', patients = [], doctors = [], searchQue
                               <button
                                 type="button"
                                 className="btn btn-sm btn-info text-dark py-1 px-2 fw-semibold"
-                                style={{ fontSize: '11px', borderRadius: '6px' }}
+                                style={{ fontSize: '11px', borderRadius: '8px' }}
                                 onClick={() => handleUpdateRequisitionStatus(req.id, 'DISPATCHED_TO_WARD')}
                               >
-                                Dispatch Bag
+                                Dispatch
                               </button>
                             )}
                             {req.status === 'DISPATCHED_TO_WARD' && (
                               <button
                                 type="button"
                                 className="btn btn-sm btn-primary py-1 px-2 fw-semibold"
-                                style={{ fontSize: '11px', borderRadius: '6px' }}
+                                style={{ fontSize: '11px', borderRadius: '8px' }}
                                 onClick={() => handleUpdateRequisitionStatus(req.id, 'TRANSFUSED')}
                               >
                                 Transfused

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { getHospitalName } from '../../services/hospitalConfig';
 import CssdSterilitySlip from './CssdSterilitySlip';
 import { toast } from 'react-toastify';
+import '../../styles/clinicalDesksPremium.css';
 
 const INITIAL_MACHINES = [
   {
@@ -244,81 +245,79 @@ export default function CssdPanel() {
   const expiredCount = trays.filter(t => t.status === 'RE_STERILIZATION_DUE').length;
 
   return (
-    <div className="container-fluid py-3">
-      {/* Header */}
-      <div className="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom">
-        <div>
-          <h3 className="fw-bold text-dark mb-1 d-flex align-items-center">
-            <i className="bi bi-shield-check text-success me-2 fs-2"></i>
-            CSSD & Hospital Infection Control Surveillance Desk
-          </h3>
-          <p className="text-muted small mb-0">
-            {getHospitalName()} • Central Sterile Services • NABH HIC.2 Standard • Biological Spore Testing
-          </p>
-        </div>
-        <div className="d-flex gap-2 mt-2 mt-sm-0">
-          <button
-            type="button"
-            className="btn btn-success btn-sm fw-bold px-3 shadow-sm"
-            onClick={() => setShowBatchModal(true)}
-          >
-            <i className="bi bi-play-circle-fill me-1"></i> Run Sterilizer Batch
-          </button>
+    <div className="desk-premium-page">
+
+      {/* HERO BANNER */}
+      <div className="desk-hero">
+        <div className="hero-content">
+          <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div className="d-flex align-items-center gap-3">
+              <div className="hero-icon emerald">
+                <i className="bi bi-shield-check"></i>
+              </div>
+              <div>
+                <h4 className="hero-title">
+                  CSSD & Hospital Infection Control Surveillance Desk
+                </h4>
+                <p className="hero-subtitle">
+                  {getHospitalName()} &bull; Central Sterile Services &bull; NABH HIC.2 Standard &bull; Biological Spore Testing
+                </p>
+              </div>
+            </div>
+
+            <div className="d-flex align-items-center gap-2 flex-wrap">
+              <span className="hero-chip">
+                <i className="bi bi-shield-check text-success"></i>
+                NABH HIC.2 Standard
+              </span>
+              <span className="hero-chip">
+                <i className="bi bi-check2-all text-success"></i>
+                Class-5 Integrator
+              </span>
+              <button
+                type="button"
+                className="premium-btn green"
+                onClick={() => setShowBatchModal(true)}
+              >
+                <i className="bi bi-play-circle-fill me-1"></i> Run Sterilizer Batch
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* KPI Cards */}
-      <div className="row g-3 mb-4">
-        <div className="col-md-3 col-sm-6">
-          <div className="card shadow-sm border-0 border-start border-success border-4 h-100">
-            <div className="card-body">
-              <span className="text-muted small fw-semibold text-uppercase">Sterile Surgical Packs</span>
-              <div className="d-flex align-items-center justify-content-between mt-2">
-                <h3 className="fw-bold mb-0 text-success">{sterileCount}</h3>
-                <i className="bi bi-check-circle-fill fs-1 text-success opacity-25"></i>
-              </div>
-              <small className="text-muted">Shelf-life certified & validated</small>
-            </div>
+      {/* METRIC GRID */}
+      <div className="metric-grid">
+        <div className="metric-card metric-green">
+          <div className="metric-icon">
+            <i className="bi bi-check-circle-fill"></i>
           </div>
+          <div className="metric-label">Sterile Surgical Packs</div>
+          <div className="metric-value">{sterileCount}</div>
         </div>
 
-        <div className="col-md-3 col-sm-6">
-          <div className="card shadow-sm border-0 border-start border-primary border-4 h-100">
-            <div className="card-body">
-              <span className="text-muted small fw-semibold text-uppercase">In Operation Theatres</span>
-              <div className="d-flex align-items-center justify-content-between mt-2">
-                <h3 className="fw-bold mb-0 text-primary">{dispatchedCount}</h3>
-                <i className="bi bi-box-seam fs-1 text-primary opacity-25"></i>
-              </div>
-              <small className="text-muted">Active in OT 1, 2, Laparoscopy & Maternity</small>
-            </div>
+        <div className="metric-card metric-blue">
+          <div className="metric-icon">
+            <i className="bi bi-box-seam"></i>
           </div>
+          <div className="metric-label">In Operation Theatres</div>
+          <div className="metric-value">{dispatchedCount}</div>
         </div>
 
-        <div className="col-md-3 col-sm-6">
-          <div className="card shadow-sm border-0 border-start border-danger border-4 h-100">
-            <div className="card-body">
-              <span className="text-muted small fw-semibold text-uppercase">Re-Sterilization Due</span>
-              <div className="d-flex align-items-center justify-content-between mt-2">
-                <h3 className="fw-bold mb-0 text-danger">{expiredCount}</h3>
-                <i className="bi bi-exclamation-triangle-fill fs-1 text-danger opacity-25"></i>
-              </div>
-              <small className="text-muted">Expired wrap or used instruments</small>
-            </div>
+        <div className="metric-card metric-red">
+          <div className="metric-icon">
+            <i className="bi bi-exclamation-triangle-fill"></i>
           </div>
+          <div className="metric-label">Re-Sterilization Due</div>
+          <div className="metric-value">{expiredCount}</div>
         </div>
 
-        <div className="col-md-3 col-sm-6">
-          <div className="card shadow-sm border-0 border-start border-info border-4 h-100">
-            <div className="card-body">
-              <span className="text-muted small fw-semibold text-uppercase">HAI Infection Rate</span>
-              <div className="d-flex align-items-center justify-content-between mt-2">
-                <h3 className="fw-bold mb-0 text-info">0.4%</h3>
-                <i className="bi bi-activity fs-1 text-info opacity-25"></i>
-              </div>
-              <small className="text-muted">NABH Benchmark: &lt; 1.5% SSI Rate</small>
-            </div>
+        <div className="metric-card metric-cyan">
+          <div className="metric-icon">
+            <i className="bi bi-activity"></i>
           </div>
+          <div className="metric-label">HAI Infection Rate</div>
+          <div className="metric-value">0.4%</div>
         </div>
       </div>
 
@@ -355,51 +354,43 @@ export default function CssdPanel() {
         ))}
       </div>
 
-      {/* Tabs */}
-      <ul className="nav nav-pills mb-3 border-bottom pb-2">
-        <li className="nav-item">
-          <button
-            type="button"
-            className={`nav-link fw-semibold ${activeTabSub === 'trays' ? 'active bg-success text-white' : 'text-dark'}`}
-            onClick={() => setActiveTabSub('trays')}
-          >
-            <i className="bi bi-box-seam me-1"></i> Surgical Instrument Trays ({trays.length})
-          </button>
-        </li>
-        <li className="nav-item ms-2">
-          <button
-            type="button"
-            className={`nav-link fw-semibold ${activeTabSub === 'batches' ? 'active bg-dark text-white' : 'text-dark'}`}
-            onClick={() => setActiveTabSub('batches')}
-          >
-            <i className="bi bi-clock-history me-1"></i> Sterilization Batches & Passes ({batches.length})
-          </button>
-        </li>
-        <li className="nav-item ms-2">
-          <button
-            type="button"
-            className={`nav-link fw-semibold ${activeTabSub === 'hai' ? 'active bg-info text-white' : 'text-dark'}`}
-            onClick={() => setActiveTabSub('hai')}
-          >
-            <i className="bi bi-virus me-1"></i> Hospital Infection (HAI) Surveillance
-          </button>
-        </li>
-      </ul>
-
-      {/* Subtab 1: Surgical Trays */}
-      {activeTabSub === 'trays' && (
-        <div className="card shadow-sm border-0">
-          <div className="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-            <h5 className="fw-bold mb-0 text-dark">
-              <i className="bi bi-tools text-success me-2"></i>
-              Surgical Tray Sterility & Expiry Tracking Matrix
-            </h5>
-            <span className="badge bg-light text-dark border">{sterileCount} Available Packs</span>
+      {/* Tabs Toolbar */}
+      <div className="premium-panel mb-4">
+        <div className="panel-toolbar">
+          <div className="d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div className="premium-tabs">
+              <button
+                type="button"
+                className={`premium-tab ${activeTabSub === 'trays' ? 'active' : ''}`}
+                onClick={() => setActiveTabSub('trays')}
+              >
+                <i className="bi bi-box-seam me-1"></i> Surgical Trays <span className="tab-count">{trays.length}</span>
+              </button>
+              <button
+                type="button"
+                className={`premium-tab ${activeTabSub === 'batches' ? 'active' : ''}`}
+                onClick={() => setActiveTabSub('batches')}
+              >
+                <i className="bi bi-clock-history me-1"></i> Autoclave Cycles & Passes <span className="tab-count">{batches.length}</span>
+              </button>
+              <button
+                type="button"
+                className={`premium-tab ${activeTabSub === 'hai' ? 'active' : ''}`}
+                onClick={() => setActiveTabSub('hai')}
+              >
+                <i className="bi bi-virus me-1"></i> HAI Infection Surveillance
+              </button>
+            </div>
+            {activeTabSub === 'trays' && (
+              <span className="badge bg-light text-dark border">{sterileCount} Available Packs</span>
+            )}
           </div>
+        </div>
 
-          <div className="card-body p-0">
-            <div className="table-responsive">
-              <table className="table table-hover align-middle mb-0">
+        {/* Subtab 1: Surgical Trays */}
+        {activeTabSub === 'trays' && (
+          <div className="table-wrap">
+            <table className="premium-table">
                 <thead className="table-light small text-uppercase text-secondary">
                   <tr>
                     <th className="ps-3">Tray Code</th>
@@ -472,24 +463,13 @@ export default function CssdPanel() {
                   })}
                 </tbody>
               </table>
-            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Subtab 2: Batches & Passes */}
-      {activeTabSub === 'batches' && (
-        <div className="card shadow-sm border-0">
-          <div className="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-            <h5 className="fw-bold mb-0 text-dark">
-              <i className="bi bi-journal-check text-success me-2"></i>
-              Official Sterilization Autoclave Cycle Log & Clearance Passes
-            </h5>
-          </div>
-
-          <div className="card-body p-0">
-            <div className="table-responsive">
-              <table className="table table-hover align-middle mb-0">
+        {/* Subtab 2: Batches & Passes */}
+        {activeTabSub === 'batches' && (
+          <div className="table-wrap">
+            <table className="premium-table">
                 <thead className="table-light small text-uppercase text-secondary">
                   <tr>
                     <th className="ps-3">Batch # / Time</th>
@@ -542,11 +522,10 @@ export default function CssdPanel() {
                     </tr>
                   ))}
                 </tbody>
-              </table>
-            </div>
+            </table>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Subtab 3: Hospital Infection Control Surveillance */}
       {activeTabSub === 'hai' && (

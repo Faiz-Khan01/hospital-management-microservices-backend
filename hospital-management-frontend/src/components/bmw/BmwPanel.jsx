@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { getHospitalName } from '../../services/hospitalConfig';
 import BmwDailyManifestSlip from './BmwDailyManifestSlip';
 import { toast } from 'react-toastify';
+import '../../styles/clinicalDesksPremium.css';
 
 const INITIAL_WASTE_BAGS = [
   {
@@ -223,137 +224,127 @@ export default function BmwPanel() {
   const pendingBagsCount = bags.filter(b => b.status === 'IN_INTERIM_STORAGE').length;
 
   return (
-    <div className="container-fluid py-3">
-      {/* Header */}
-      <div className="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom">
-        <div>
-          <h3 className="fw-bold text-dark mb-1 d-flex align-items-center">
-            <i className="bi bi-trash3-fill text-warning me-2 fs-2"></i>
-            Bio-Medical Waste (BMW) Management & Pollution Control Desk
-          </h3>
-          <p className="text-muted small mb-0">
-            {getHospitalName()} • CPCB Form VI Compliance • Color-Coded Segregation & Barcode Weight Tracking
-          </p>
-        </div>
-        <div className="d-flex gap-2 mt-2 mt-sm-0">
-          <button
-            type="button"
-            className="btn btn-outline-dark btn-sm fw-bold px-3 shadow-sm"
-            onClick={() => setShowLogBagModal(true)}
-          >
-            <i className="bi bi-upc-scan me-1"></i> Scan & Weigh Bag
-          </button>
-          <button
-            type="button"
-            className="btn btn-danger btn-sm fw-bold px-3 shadow-sm"
-            onClick={() => setShowDispatchModal(true)}
-          >
-            <i className="bi bi-truck me-1"></i> Dispatch to CBMWTF Facility
-          </button>
-        </div>
-      </div>
+    <div className="desk-premium-page">
 
-      {/* KPI Cards */}
-      <div className="row g-3 mb-4">
-        <div className="col-md-3 col-sm-6">
-          <div className="card shadow-sm border-0 border-start border-warning border-4 h-100">
-            <div className="card-body">
-              <span className="text-muted small fw-semibold text-uppercase">🟡 Yellow Waste (Anatomical)</span>
-              <div className="d-flex align-items-center justify-content-between mt-2">
-                <h3 className="fw-bold mb-0 text-dark">
-                  {bags.filter(b => b.category === 'YELLOW').reduce((a, b) => a + b.weightKg, 0).toFixed(1)} kg
-                </h3>
-                <i className="bi bi-fire fs-1 text-warning opacity-50"></i>
+      {/* HERO BANNER */}
+      <div className="desk-hero">
+        <div className="hero-content">
+          <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div className="d-flex align-items-center gap-3">
+              <div className="hero-icon orange">
+                <i className="bi bi-trash3-fill"></i>
               </div>
-              <small className="text-muted">High-temp incineration stream</small>
+              <div>
+                <h4 className="hero-title">
+                  Bio-Medical Waste (BMW) Management & Pollution Control Desk
+                </h4>
+                <p className="hero-subtitle">
+                  {getHospitalName()} &bull; CPCB Form VI Compliance &bull; Color-Coded Segregation & Barcode Weight Tracking
+                </p>
+              </div>
             </div>
-          </div>
-        </div>
 
-        <div className="col-md-3 col-sm-6">
-          <div className="card shadow-sm border-0 border-start border-danger border-4 h-100">
-            <div className="card-body">
-              <span className="text-muted small fw-semibold text-uppercase">🔴 Red Waste (Contaminated Plastic)</span>
-              <div className="d-flex align-items-center justify-content-between mt-2">
-                <h3 className="fw-bold mb-0 text-danger">
-                  {bags.filter(b => b.category === 'RED').reduce((a, b) => a + b.weightKg, 0).toFixed(1)} kg
-                </h3>
-                <i className="bi bi-recycle fs-1 text-danger opacity-25"></i>
-              </div>
-              <small className="text-muted">Autoclaving & shredding stream</small>
-            </div>
-          </div>
-        </div>
-
-        <div className="col-md-3 col-sm-6">
-          <div className="card shadow-sm border-0 border-start border-secondary border-4 h-100">
-            <div className="card-body">
-              <span className="text-muted small fw-semibold text-uppercase">⚪ White Containers (Sharps)</span>
-              <div className="d-flex align-items-center justify-content-between mt-2">
-                <h3 className="fw-bold mb-0 text-dark">
-                  {bags.filter(b => b.category === 'WHITE').reduce((a, b) => a + b.weightKg, 0).toFixed(1)} kg
-                </h3>
-                <i className="bi bi-shield-slash fs-1 text-secondary opacity-50"></i>
-              </div>
-              <small className="text-muted">Puncture-proof encapsulation</small>
-            </div>
-          </div>
-        </div>
-
-        <div className="col-md-3 col-sm-6">
-          <div className="card shadow-sm border-0 border-start border-primary border-4 h-100">
-            <div className="card-body">
-              <span className="text-muted small fw-semibold text-uppercase">🔵 Blue Box (Glass & Ampoules)</span>
-              <div className="d-flex align-items-center justify-content-between mt-2">
-                <h3 className="fw-bold mb-0 text-primary">
-                  {bags.filter(b => b.category === 'BLUE').reduce((a, b) => a + b.weightKg, 0).toFixed(1)} kg
-                </h3>
-                <i className="bi bi-prescription fs-1 text-primary opacity-25"></i>
-              </div>
-              <small className="text-muted">Disinfection & glass recycling</small>
+            <div className="d-flex align-items-center gap-2 flex-wrap">
+              <span className="hero-chip">
+                <i className="bi bi-shield-check text-warning"></i>
+                CPCB Form VI Compliance
+              </span>
+              <span className="hero-chip">
+                <i className="bi bi-qr-code text-warning"></i>
+                Barcoded Weight Audit
+              </span>
+              <button
+                type="button"
+                className="premium-btn"
+                onClick={() => setShowLogBagModal(true)}
+              >
+                <i className="bi bi-upc-scan me-1"></i> Scan & Weigh
+              </button>
+              <button
+                type="button"
+                className="premium-btn orange"
+                onClick={() => setShowDispatchModal(true)}
+              >
+                <i className="bi bi-truck me-1"></i> Dispatch CBMWTF
+              </button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Tabs */}
-      <ul className="nav nav-pills mb-3 border-bottom pb-2">
-        <li className="nav-item">
-          <button
-            type="button"
-            className={`nav-link fw-semibold ${activeTabSub === 'bags' ? 'active bg-dark text-white' : 'text-dark'}`}
-            onClick={() => setActiveTabSub('bags')}
-          >
-            <i className="bi bi-upc-scan me-1"></i> Barcoded Bags & Storage ({bags.length})
-          </button>
-        </li>
-        <li className="nav-item ms-2">
-          <button
-            type="button"
-            className={`nav-link fw-semibold ${activeTabSub === 'manifests' ? 'active bg-danger text-white' : 'text-dark'}`}
-            onClick={() => setActiveTabSub('manifests')}
-          >
-            <i className="bi bi-file-earmark-text-fill me-1"></i> CPCB Form VI Dispatches ({manifests.length})
-          </button>
-        </li>
-      </ul>
+      {/* METRIC GRID */}
+      <div className="metric-grid">
+        <div className="metric-card metric-orange">
+          <div className="metric-icon">
+            <i className="bi bi-fire"></i>
+          </div>
+          <div className="metric-label">🟡 Yellow Waste (Anatomical)</div>
+          <div className="metric-value">
+            {bags.filter(b => b.category === 'YELLOW').reduce((a, b) => a + b.weightKg, 0).toFixed(1)} kg
+          </div>
+        </div>
 
-      {/* Subtab 1: Bags Table */}
-      {activeTabSub === 'bags' && (
-        <div className="card shadow-sm border-0">
-          <div className="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-            <h5 className="fw-bold mb-0 text-dark">
-              <i className="bi bi-upc text-primary me-2"></i>
-              Ward Waste Generation & Digital Barcode Log
-            </h5>
-            <span className="badge bg-warning text-dark border">
+        <div className="metric-card metric-red">
+          <div className="metric-icon">
+            <i className="bi bi-recycle"></i>
+          </div>
+          <div className="metric-label">🔴 Red Waste (Plastic)</div>
+          <div className="metric-value">
+            {bags.filter(b => b.category === 'RED').reduce((a, b) => a + b.weightKg, 0).toFixed(1)} kg
+          </div>
+        </div>
+
+        <div className="metric-card metric-purple">
+          <div className="metric-icon">
+            <i className="bi bi-shield-slash"></i>
+          </div>
+          <div className="metric-label">⚪ White Sharps Box</div>
+          <div className="metric-value">
+            {bags.filter(b => b.category === 'WHITE').reduce((a, b) => a + b.weightKg, 0).toFixed(1)} kg
+          </div>
+        </div>
+
+        <div className="metric-card metric-blue">
+          <div className="metric-icon">
+            <i className="bi bi-prescription"></i>
+          </div>
+          <div className="metric-label">🔵 Blue Glass & Ampoules</div>
+          <div className="metric-value">
+            {bags.filter(b => b.category === 'BLUE').reduce((a, b) => a + b.weightKg, 0).toFixed(1)} kg
+          </div>
+        </div>
+      </div>
+
+      {/* Tabs Toolbar */}
+      <div className="premium-panel mb-4">
+        <div className="panel-toolbar">
+          <div className="d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div className="premium-tabs">
+              <button
+                type="button"
+                className={`premium-tab ${activeTabSub === 'bags' ? 'active' : ''}`}
+                onClick={() => setActiveTabSub('bags')}
+              >
+                <i className="bi bi-upc-scan me-1"></i> Barcoded Bags & Storage <span className="tab-count">{bags.length}</span>
+              </button>
+              <button
+                type="button"
+                className={`premium-tab ${activeTabSub === 'manifests' ? 'active' : ''}`}
+                onClick={() => setActiveTabSub('manifests')}
+              >
+                <i className="bi bi-file-earmark-text-fill me-1"></i> CPCB Form VI Dispatches <span className="tab-count">{manifests.length}</span>
+              </button>
+            </div>
+            <span className="badge bg-warning-subtle text-dark border border-warning">
               Pending in Storage: {pendingBagsCount} Bags ({totalPendingWeight} kg)
             </span>
           </div>
+        </div>
 
-          <div className="card-body p-0">
-            <div className="table-responsive">
-              <table className="table table-hover align-middle mb-0">
+        {/* Subtab 1: Bags Table */}
+        {activeTabSub === 'bags' && (
+          <div className="table-wrap">
+            <table className="premium-table">
                 <thead className="table-light small text-uppercase text-secondary">
                   <tr>
                     <th className="ps-3">Barcode Tag</th>
@@ -405,25 +396,14 @@ export default function BmwPanel() {
                     );
                   })}
                 </tbody>
-              </table>
-            </div>
+            </table>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Subtab 2: Form VI Dispatches Table */}
-      {activeTabSub === 'manifests' && (
-        <div className="card shadow-sm border-0">
-          <div className="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-            <h5 className="fw-bold mb-0 text-dark">
-              <i className="bi bi-file-earmark-check text-success me-2"></i>
-              Official CPCB Form VI Bio-Medical Waste Consignments
-            </h5>
-          </div>
-
-          <div className="card-body p-0">
-            <div className="table-responsive">
-              <table className="table table-hover align-middle mb-0">
+        {/* Subtab 2: Form VI Dispatches Table */}
+        {activeTabSub === 'manifests' && (
+          <div className="table-wrap">
+            <table className="premium-table">
                 <thead className="table-light small text-uppercase text-secondary">
                   <tr>
                     <th className="ps-3">Manifest # / Date</th>
@@ -478,11 +458,10 @@ export default function BmwPanel() {
                     </tr>
                   ))}
                 </tbody>
-              </table>
-            </div>
+            </table>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Scan & Weigh Bag Modal */}
       {showLogBagModal && (

@@ -4,6 +4,7 @@ import DoctorService from '../../services/DoctorService';
 import { getHospitalName, formatDoctorName } from '../../services/hospitalConfig';
 import MortuaryHandoverSlip from './MortuaryHandoverSlip';
 import { toast } from 'react-toastify';
+import '../../styles/clinicalDesksPremium.css';
 
 const INITIAL_MORGUE_BAYS = [
   { id: 'BAY-01', name: 'Cold Chamber Bay 01', temp: '2.4 °C', status: 'OCCUPIED', deceasedName: 'Shyam Lal (UHID-8810)' },
@@ -264,81 +265,79 @@ export default function MortuaryPanel() {
   const availableBaysCount = bays.filter(b => b.status === 'AVAILABLE').length;
 
   return (
-    <div className="container-fluid py-3">
-      {/* Header */}
-      <div className="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom">
-        <div>
-          <h3 className="fw-bold text-dark mb-1 d-flex align-items-center">
-            <i className="bi bi-file-earmark-medical-fill text-danger me-2 fs-2"></i>
-            Hospital Mortuary & Institutional Death Registry Desk
-          </h3>
-          <p className="text-muted small mb-0">
-            {getHospitalName()} • Forensic Cold Chambers • Form 4/4A Medico-Legal Death Certification
-          </p>
-        </div>
-        <div className="d-flex gap-2 mt-2 mt-sm-0">
-          <button
-            type="button"
-            className="btn btn-dark btn-sm fw-bold px-3 shadow-sm"
-            onClick={() => setShowRegisterModal(true)}
-          >
-            <i className="bi bi-person-x-fill me-1"></i> Register Institutional Death
-          </button>
+    <div className="desk-premium-page">
+
+      {/* HERO BANNER */}
+      <div className="desk-hero">
+        <div className="hero-content">
+          <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div className="d-flex align-items-center gap-3">
+              <div className="hero-icon">
+                <i className="bi bi-file-earmark-medical-fill"></i>
+              </div>
+              <div>
+                <h4 className="hero-title">
+                  Hospital Mortuary & Institutional Death Registry Desk
+                </h4>
+                <p className="hero-subtitle">
+                  {getHospitalName()} &bull; Forensic Cold Chambers &bull; Form 4/4A Medico-Legal Death Certification
+                </p>
+              </div>
+            </div>
+
+            <div className="d-flex align-items-center gap-2 flex-wrap">
+              <span className="hero-chip">
+                <i className="bi bi-shield-check text-purple"></i>
+                Form 4/4A Certified
+              </span>
+              <span className="hero-chip">
+                <i className="bi bi-snow text-primary"></i>
+                Cold Chain 2.0°C ± 0.5°C
+              </span>
+              <button
+                type="button"
+                className="premium-btn"
+                onClick={() => setShowRegisterModal(true)}
+              >
+                <i className="bi bi-person-x-fill me-1"></i> Register Death
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* KPI Cards */}
-      <div className="row g-3 mb-4">
-        <div className="col-md-3 col-sm-6">
-          <div className="card shadow-sm border-0 border-start border-dark border-4 h-100">
-            <div className="card-body">
-              <span className="text-muted small fw-semibold text-uppercase">Total Morgue Freezer Bays</span>
-              <div className="d-flex align-items-center justify-content-between mt-2">
-                <h3 className="fw-bold mb-0 text-dark">{bays.length}</h3>
-                <i className="bi bi-snow fs-1 text-dark opacity-25"></i>
-              </div>
-              <small className="text-muted">Temperature monitored: 2.0°C ± 0.5°C</small>
-            </div>
+      {/* METRIC GRID */}
+      <div className="metric-grid">
+        <div className="metric-card metric-purple">
+          <div className="metric-icon">
+            <i className="bi bi-snow"></i>
           </div>
+          <div className="metric-label">Total Morgue Freezer Bays</div>
+          <div className="metric-value">{bays.length}</div>
         </div>
 
-        <div className="col-md-3 col-sm-6">
-          <div className="card shadow-sm border-0 border-start border-danger border-4 h-100">
-            <div className="card-body">
-              <span className="text-muted small fw-semibold text-uppercase">Chambers Occupied</span>
-              <div className="d-flex align-items-center justify-content-between mt-2">
-                <h3 className="fw-bold mb-0 text-danger">{occupiedBaysCount}</h3>
-                <i className="bi bi-box2-fill fs-1 text-danger opacity-25"></i>
-              </div>
-              <small className="text-muted">Awaiting autopsy / family claim</small>
-            </div>
+        <div className="metric-card metric-red">
+          <div className="metric-icon">
+            <i className="bi bi-box2-fill"></i>
           </div>
+          <div className="metric-label">Chambers Occupied</div>
+          <div className="metric-value">{occupiedBaysCount}</div>
         </div>
 
-        <div className="col-md-3 col-sm-6">
-          <div className="card shadow-sm border-0 border-start border-success border-4 h-100">
-            <div className="card-body">
-              <span className="text-muted small fw-semibold text-uppercase">Chambers Available</span>
-              <div className="d-flex align-items-center justify-content-between mt-2">
-                <h3 className="fw-bold mb-0 text-success">{availableBaysCount}</h3>
-                <i className="bi bi-check-circle-fill fs-1 text-success opacity-25"></i>
-              </div>
-              <small className="text-muted">Sanitized & temperature ready</small>
-            </div>
+        <div className="metric-card metric-green">
+          <div className="metric-icon">
+            <i className="bi bi-check-circle-fill"></i>
           </div>
+          <div className="metric-label">Chambers Available</div>
+          <div className="metric-value">{availableBaysCount}</div>
         </div>
 
-        <div className="col-md-3 col-sm-6">
-          <div className="card shadow-sm border-0 border-start border-primary border-4 h-100">
-            <div className="card-body">
-              <span className="text-muted small fw-semibold text-uppercase">Total Death Records</span>
-              <div className="d-flex align-items-center justify-content-between mt-2">
-                <h3 className="fw-bold mb-0 text-primary">{records.length}</h3>
-                <i className="bi bi-card-checklist fs-1 text-primary opacity-25"></i>
-              </div>
-              <small className="text-muted">Form 4/4A issued & archived</small>
-            </div>
+        <div className="metric-card metric-blue">
+          <div className="metric-icon">
+            <i className="bi bi-card-checklist"></i>
           </div>
+          <div className="metric-label">Total Death Records</div>
+          <div className="metric-value">{records.length}</div>
         </div>
       </div>
 
@@ -391,18 +390,20 @@ export default function MortuaryPanel() {
         </div>
       </div>
 
-      {/* Death Registry Table */}
-      <div className="card shadow-sm border-0">
-        <div className="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-          <h5 className="fw-bold mb-0 text-dark">
-            <i className="bi bi-journal-text text-danger me-2"></i>
-            Institutional Death Certificates & Body Handover Gatepass Registry
-          </h5>
+      {/* Death Registry Table (Premium Panel) */}
+      <div className="premium-panel">
+        <div className="panel-toolbar">
+          <div className="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <h6 className="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
+              <i className="bi bi-journal-text text-danger"></i>
+              Institutional Death Certificates & Body Handover Gatepass Registry
+            </h6>
+            <span className="badge bg-light text-dark border">{records.length} Records</span>
+          </div>
         </div>
 
-        <div className="card-body p-0">
-          <div className="table-responsive">
-            <table className="table table-hover align-middle mb-0">
+        <div className="table-wrap">
+          <table className="premium-table">
               <thead className="table-light small text-uppercase text-secondary">
                 <tr>
                   <th className="ps-3">Death Reg # / Time</th>
@@ -489,7 +490,6 @@ export default function MortuaryPanel() {
             </table>
           </div>
         </div>
-      </div>
 
       {/* Register Institutional Death Modal */}
       {showRegisterModal && (

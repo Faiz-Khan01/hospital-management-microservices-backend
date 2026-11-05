@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { getHospitalName } from '../../services/hospitalConfig';
 import BiomedicalMaintenanceSlip from './BiomedicalMaintenanceSlip';
 import { toast } from 'react-toastify';
+import '../../styles/clinicalDesksPremium.css';
 
 const INITIAL_ASSETS = [
   {
@@ -245,233 +246,197 @@ export default function BiomedicalPanel() {
   }, [assets, filterStatus]);
 
   return (
-    <div className="container-fluid py-3">
-      {/* Header */}
-      <div className="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom">
-        <div>
-          <h3 className="fw-bold text-dark mb-1 d-flex align-items-center">
-            <i className="bi bi-tools text-warning-emphasis me-2 fs-2"></i>
-            Biomedical Engineering & Hospital Asset Maintenance Desk
-          </h3>
-          <p className="text-muted small mb-0">
-            {getHospitalName()} • NABH FMS Standard Equipment Calibration • IEC 62353 Safety Management
-          </p>
-        </div>
-        <div className="d-flex gap-2 mt-2 mt-sm-0">
-          <button
-            type="button"
-            className="btn btn-warning text-dark btn-sm fw-bold px-3 shadow-sm"
-            onClick={() => setShowLogModal(true)}
-          >
-            <i className="bi bi-exclamation-triangle-fill me-1"></i> Log Breakdown Ticket
-          </button>
+    <div className="desk-premium-page">
+
+      {/* HERO BANNER */}
+      <div className="desk-hero">
+        <div className="hero-content">
+          <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div className="d-flex align-items-center gap-3">
+              <div className="hero-icon teal">
+                <i className="bi bi-tools"></i>
+              </div>
+              <div>
+                <h4 className="hero-title">
+                  Biomedical Engineering & Hospital Asset Maintenance Desk
+                </h4>
+                <p className="hero-subtitle">
+                  {getHospitalName()} &bull; NABH FMS Standard Equipment Calibration &bull; IEC 62353 Safety Management
+                </p>
+              </div>
+            </div>
+
+            <div className="d-flex align-items-center gap-2 flex-wrap">
+              <span className="hero-chip">
+                <i className="bi bi-shield-check text-teal"></i>
+                NABH FMS Certified
+              </span>
+              <span className="hero-chip">
+                <i className="bi bi-cpu-fill text-teal"></i>
+                IEC 62353 Safety
+              </span>
+              <button
+                type="button"
+                className="premium-btn orange"
+                onClick={() => setShowLogModal(true)}
+              >
+                <i className="bi bi-exclamation-triangle-fill me-1"></i> Log Breakdown Ticket
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* KPI Cards */}
-      <div className="row g-3 mb-4">
-        <div className="col-md-3 col-sm-6">
-          <div className="card shadow-sm border-0 border-start border-primary border-4 h-100">
-            <div className="card-body">
-              <span className="text-muted small fw-semibold text-uppercase">Total Biomedical Assets</span>
-              <div className="d-flex align-items-center justify-content-between mt-2">
-                <h3 className="fw-bold mb-0 text-primary">{assets.length}</h3>
-                <i className="bi bi-cpu fs-1 text-primary opacity-25"></i>
-              </div>
-              <small className="text-muted">Ventilators, Defibrillators, CT, Anesthesia</small>
-            </div>
+      {/* METRIC GRID */}
+      <div className="metric-grid">
+        <div className="metric-card metric-blue">
+          <div className="metric-icon">
+            <i className="bi bi-cpu"></i>
           </div>
+          <div className="metric-label">Total Biomedical Assets</div>
+          <div className="metric-value">{assets.length}</div>
         </div>
 
-        <div className="col-md-3 col-sm-6">
-          <div className="card shadow-sm border-0 border-start border-danger border-4 h-100">
-            <div className="card-body">
-              <span className="text-muted small fw-semibold text-uppercase">Life Support Devices</span>
-              <div className="d-flex align-items-center justify-content-between mt-2">
-                <h3 className="fw-bold mb-0 text-danger">{lifeSupportCount}</h3>
-                <i className="bi bi-heart-pulse-fill fs-1 text-danger opacity-25"></i>
-              </div>
-              <small className="text-muted">High-priority critical clinical systems</small>
-            </div>
+        <div className="metric-card metric-red">
+          <div className="metric-icon">
+            <i className="bi bi-heart-pulse-fill"></i>
           </div>
+          <div className="metric-label">Life Support Devices</div>
+          <div className="metric-value">{lifeSupportCount}</div>
         </div>
 
-        <div className="col-md-3 col-sm-6">
-          <div className="card shadow-sm border-0 border-start border-success border-4 h-100">
-            <div className="card-body">
-              <span className="text-muted small fw-semibold text-uppercase">Operational & Calibrated</span>
-              <div className="d-flex align-items-center justify-content-between mt-2">
-                <h3 className="fw-bold mb-0 text-success">{operationalCount}</h3>
-                <i className="bi bi-check-circle-fill fs-1 text-success opacity-25"></i>
-              </div>
-              <small className="text-muted">Electrical safety test passed (100%)</small>
-            </div>
+        <div className="metric-card metric-green">
+          <div className="metric-icon">
+            <i className="bi bi-check-circle-fill"></i>
           </div>
+          <div className="metric-label">Operational & Calibrated</div>
+          <div className="metric-value">{operationalCount}</div>
         </div>
 
-        <div className="col-md-3 col-sm-6">
-          <div className="card shadow-sm border-0 border-start border-warning border-4 h-100">
-            <div className="card-body">
-              <span className="text-muted small fw-semibold text-uppercase">Under Repair / Tickets</span>
-              <div className="d-flex align-items-center justify-content-between mt-2">
-                <h3 className="fw-bold mb-0 text-dark">{maintenanceCount}</h3>
-                <i className="bi bi-wrench-adjustable fs-1 text-warning opacity-50"></i>
-              </div>
-              <small className="text-muted">Active BME engineering tickets</small>
-            </div>
+        <div className="metric-card metric-orange">
+          <div className="metric-icon">
+            <i className="bi bi-wrench-adjustable"></i>
           </div>
+          <div className="metric-label">Under Repair / Tickets</div>
+          <div className="metric-value">{maintenanceCount}</div>
         </div>
       </div>
 
       {/* Tabs */}
-      <ul className="nav nav-pills mb-3 border-bottom pb-2">
-        <li className="nav-item">
-          <button
-            type="button"
-            className={`nav-link fw-semibold ${activeTabSub === 'assets' ? 'active bg-dark text-white' : 'text-dark'}`}
-            onClick={() => setActiveTabSub('assets')}
-          >
-            <i className="bi bi-grid-fill me-1"></i> Medical Equipment Inventory ({assets.length})
-          </button>
-        </li>
-        <li className="nav-item ms-2">
-          <button
-            type="button"
-            className={`nav-link fw-semibold ${activeTabSub === 'tickets' ? 'active bg-warning text-dark' : 'text-dark'}`}
-            onClick={() => setActiveTabSub('tickets')}
-          >
-            <i className="bi bi-card-checklist me-1"></i> Breakdown Complaints & Service Tickets ({tickets.length})
-          </button>
-        </li>
-      </ul>
-
-      {/* View: Assets Inventory Grid */}
-      {activeTabSub === 'assets' && (
-        <div className="card shadow-sm border-0">
-          <div className="card-header bg-white py-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
-            <h5 className="fw-bold mb-0 text-dark">
-              <i className="bi bi-shield-check text-success me-2"></i>
-              NABH Bio-Medical Asset Registry & Calibration Status
-            </h5>
-
-            <div className="d-flex gap-2">
+      <div className="premium-panel mb-4">
+        <div className="panel-toolbar">
+          <div className="d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div className="premium-tabs">
               <button
                 type="button"
-                className={`btn btn-sm ${filterStatus === 'ALL' ? 'btn-dark' : 'btn-outline-secondary'}`}
-                onClick={() => setFilterStatus('ALL')}
+                className={`premium-tab ${activeTabSub === 'assets' ? 'active' : ''}`}
+                onClick={() => setActiveTabSub('assets')}
               >
-                All ({assets.length})
+                <i className="bi bi-grid-fill me-1"></i> Medical Equipment Inventory <span className="tab-count">{assets.length}</span>
               </button>
               <button
                 type="button"
-                className={`btn btn-sm ${filterStatus === 'OPERATIONAL' ? 'btn-success' : 'btn-outline-secondary'}`}
-                onClick={() => setFilterStatus('OPERATIONAL')}
+                className={`premium-tab ${activeTabSub === 'tickets' ? 'active' : ''}`}
+                onClick={() => setActiveTabSub('tickets')}
               >
-                Operational ({operationalCount})
-              </button>
-              <button
-                type="button"
-                className={`btn btn-sm ${filterStatus === 'UNDER_MAINTENANCE' ? 'btn-danger' : 'btn-outline-secondary'}`}
-                onClick={() => setFilterStatus('UNDER_MAINTENANCE')}
-              >
-                In Maintenance ({maintenanceCount})
+                <i className="bi bi-card-checklist me-1"></i> Service Tickets <span className="tab-count">{tickets.length}</span>
               </button>
             </div>
-          </div>
 
-          <div className="card-body p-0">
-            <div className="table-responsive">
-              <table className="table table-hover align-middle mb-0">
-                <thead className="table-light small text-uppercase text-secondary">
-                  <tr>
-                    <th className="ps-3">Asset Code / S/N</th>
-                    <th>Equipment Name & Model</th>
-                    <th>Location / Room</th>
-                    <th>Criticality</th>
-                    <th>Last Calibration</th>
-                    <th>Next Due (PPM)</th>
-                    <th>Status</th>
-                    <th className="text-end pe-3">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="small">
-                  {filteredAssets.map(item => {
-                    const isOperational = item.status === 'OPERATIONAL';
-
-                    return (
-                      <tr key={item.id} className={!isOperational ? 'table-warning-subtle' : ''}>
-                        <td className="ps-3">
-                          <strong className="text-dark font-monospace">{item.assetCode}</strong>
-                          <div className="text-muted font-monospace" style={{ fontSize: '0.72rem' }}>{item.serialNumber}</div>
-                        </td>
-                        <td>
-                          <div className="fw-semibold text-dark">{item.name}</div>
-                          <div className="text-muted" style={{ fontSize: '0.75rem' }}>{item.manufacturer} • {item.model}</div>
-                        </td>
-                        <td>
-                          <div className="fw-semibold text-primary">{item.location}</div>
-                          <div className="text-muted" style={{ fontSize: '0.75rem' }}>{item.roomBay}</div>
-                        </td>
-                        <td>
-                          <span className={`badge ${
-                            item.criticality === 'LIFE_SUPPORT' ? 'bg-danger' : 'bg-warning text-dark'
-                          }`}>
-                            {item.criticality?.replace(/_/g, ' ')}
-                          </span>
-                        </td>
-                        <td>
-                          <span className="text-dark">{item.lastCalibrationDate}</span>
-                        </td>
-                        <td>
-                          <span className="fw-bold text-danger font-monospace">{item.nextPpmDue}</span>
-                        </td>
-                        <td>
-                          <span className={`badge ${
-                            isOperational ? 'bg-success' : 'bg-warning text-dark'
-                          } px-2 py-1`}>
-                            {item.status.replace(/_/g, ' ')}
-                          </span>
-                        </td>
-                        <td className="text-end pe-3">
-                          <button
-                            type="button"
-                            className="btn btn-outline-dark btn-sm py-1 px-2"
-                            title="Print Electrical Safety & Calibration Certificate"
-                            onClick={() => setActiveSlipAsset(item)}
-                          >
-                            <i className="bi bi-printer-fill me-1"></i> Cert
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
+            {activeTabSub === 'assets' && (
+              <div className="d-flex gap-2">
+                <select
+                  className="premium-select"
+                  style={{ width: 'auto', minHeight: '38px', padding: '6px 14px', fontSize: '0.8rem' }}
+                  value={filterStatus}
+                  onChange={(e) => setFilterStatus(e.target.value)}
+                >
+                  <option value="ALL">All Status ({assets.length})</option>
+                  <option value="OPERATIONAL">Operational ({operationalCount})</option>
+                  <option value="UNDER_MAINTENANCE">In Maintenance ({maintenanceCount})</option>
+                </select>
+              </div>
+            )}
           </div>
         </div>
-      )}
 
-      {/* View: Breakdown Tickets Table */}
-      {activeTabSub === 'tickets' && (
-        <div className="card shadow-sm border-0">
-          <div className="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-            <h5 className="fw-bold mb-0 text-dark">
-              <i className="bi bi-wrench text-danger me-2"></i>
-              Active Breakdown Maintenance & Service Tickets
-            </h5>
-            <button
-              type="button"
-              className="btn btn-outline-warning text-dark btn-sm fw-bold"
-              onClick={() => setShowLogModal(true)}
-            >
-              <i className="bi bi-plus-circle me-1"></i> New Ticket
-            </button>
+        {/* View: Assets Inventory Grid */}
+        {activeTabSub === 'assets' && (
+          <div className="table-wrap">
+            <table className="premium-table">
+              <thead>
+                <tr>
+                  <th className="ps-3">Asset Code / S/N</th>
+                  <th>Equipment Name & Model</th>
+                  <th>Location / Room</th>
+                  <th>Criticality</th>
+                  <th>Last Calibration</th>
+                  <th>Next Due (PPM)</th>
+                  <th>Status</th>
+                  <th className="text-end pe-3">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredAssets.map(item => {
+                  const isOperational = item.status === 'OPERATIONAL';
+
+                  return (
+                    <tr key={item.id}>
+                      <td className="ps-3">
+                        <strong className="text-dark font-monospace">{item.assetCode}</strong>
+                        <div className="text-muted font-monospace" style={{ fontSize: '0.72rem' }}>{item.serialNumber}</div>
+                      </td>
+                      <td>
+                        <div className="fw-semibold text-dark">{item.name}</div>
+                        <div className="text-muted" style={{ fontSize: '0.75rem' }}>{item.manufacturer} • {item.model}</div>
+                      </td>
+                      <td>
+                        <div className="fw-semibold text-primary">{item.location}</div>
+                        <div className="text-muted" style={{ fontSize: '0.75rem' }}>{item.roomBay}</div>
+                      </td>
+                      <td>
+                        <span className={`badge ${
+                          item.criticality === 'LIFE_SUPPORT' ? 'bg-danger' : 'bg-warning text-dark'
+                        }`}>
+                          {item.criticality?.replace(/_/g, ' ')}
+                        </span>
+                      </td>
+                      <td>
+                        <span className="text-dark">{item.lastCalibrationDate}</span>
+                      </td>
+                      <td>
+                        <span className="fw-bold text-danger font-monospace">{item.nextPpmDue}</span>
+                      </td>
+                      <td>
+                        <span className={`badge ${
+                          isOperational ? 'bg-success' : 'bg-warning text-dark'
+                        } px-2 py-1`}>
+                          {item.status.replace(/_/g, ' ')}
+                        </span>
+                      </td>
+                      <td className="text-end pe-3">
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-outline-secondary py-1 px-2 fw-semibold"
+                          style={{ fontSize: '11px', borderRadius: '8px' }}
+                          title="Print Electrical Safety & Calibration Certificate"
+                          onClick={() => setActiveSlipAsset(item)}
+                        >
+                          <i className="bi bi-printer me-1"></i> Cert
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
+        )}
 
-          <div className="card-body p-0">
-            <div className="table-responsive">
-              <table className="table table-hover align-middle mb-0">
+        {/* View: Breakdown Tickets */}
+        {activeTabSub === 'tickets' && (
+          <div className="table-wrap">
+            <table className="premium-table">
                 <thead className="table-light small text-uppercase text-secondary">
                   <tr>
                     <th className="ps-3">Ticket # / Time</th>
@@ -539,10 +504,9 @@ export default function BiomedicalPanel() {
                   })}
                 </tbody>
               </table>
-            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Log Breakdown Ticket Modal */}
       {showLogModal && (

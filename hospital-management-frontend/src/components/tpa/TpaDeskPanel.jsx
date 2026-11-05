@@ -5,6 +5,7 @@ import BillingService from '../../services/BillingService';
 import { getHospitalName, formatDoctorName } from '../../services/hospitalConfig';
 import TpaClaimSettlementSlip from './TpaClaimSettlementSlip';
 import { toast } from 'react-toastify';
+import '../../styles/clinicalDesksPremium.css';
 
 const INITIAL_INSURANCE_PROVIDERS = [
   { id: 'STAR', name: 'Star Health and Allied Insurance', tpa: 'In-House TPA Desk', helpline: '1800 425 2255' },
@@ -230,140 +231,143 @@ export default function TpaDeskPanel() {
   const totalSettled = claims.filter(c => c.status === 'SETTLED').reduce((acc, c) => acc + (Number(c.netTpaDisbursed) || 0), 0);
 
   return (
-    <div className="container-fluid py-3">
-      {/* Header */}
-      <div className="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom">
-        <div>
-          <h3 className="fw-bold text-dark mb-1 d-flex align-items-center">
-            <i className="bi bi-shield-check text-primary me-2 fs-2"></i>
-            TPA / Cashless Health Insurance & PM-JAY Helpdesk
-          </h3>
-          <p className="text-muted small mb-0">
-            {getHospitalName()} • IRDAI Empaneled Cashless Portal • Real-Time Pre-Auth Adjudication
-          </p>
-        </div>
-        <div className="d-flex gap-2 mt-2 mt-sm-0">
-          <button
-            type="button"
-            className="btn btn-primary btn-sm fw-bold px-3 shadow-sm"
-            onClick={() => setShowPreAuthModal(true)}
-          >
-            <i className="bi bi-file-earmark-plus-fill me-1"></i> New Cashless Pre-Auth
-          </button>
-        </div>
-      </div>
+    <div className="desk-premium-page">
 
-      {/* KPI Cards */}
-      <div className="row g-3 mb-4">
-        <div className="col-md-3 col-sm-6">
-          <div className="card shadow-sm border-0 border-start border-primary border-4 h-100">
-            <div className="card-body">
-              <span className="text-muted small fw-semibold text-uppercase">Total Cashless Claims</span>
-              <div className="d-flex align-items-center justify-content-between mt-2">
-                <h3 className="fw-bold mb-0 text-primary">{claims.length}</h3>
-                <i className="bi bi-folder-check fs-1 text-primary opacity-25"></i>
+      {/* HERO BANNER */}
+      <div className="desk-hero">
+        <div className="hero-content">
+          <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div className="d-flex align-items-center gap-3">
+              <div className="hero-icon blue">
+                <i className="bi bi-shield-check"></i>
               </div>
-              <small className="text-muted">Star, Care, HDFC, Ayushman Bharat</small>
+              <div>
+                <h4 className="hero-title">
+                  TPA / Cashless Health Insurance & PM-JAY Helpdesk
+                </h4>
+                <p className="hero-subtitle">
+                  {getHospitalName()} &bull; IRDAI Empaneled Cashless Portal &bull; Real-Time Pre-Auth Adjudication
+                </p>
+              </div>
             </div>
-          </div>
-        </div>
 
-        <div className="col-md-3 col-sm-6">
-          <div className="card shadow-sm border-0 border-start border-success border-4 h-100">
-            <div className="card-body">
-              <span className="text-muted small fw-semibold text-uppercase">Total TPA Sanctioned</span>
-              <div className="d-flex align-items-center justify-content-between mt-2">
-                <h3 className="fw-bold mb-0 text-success">₹{(totalSanctioned / 100000).toFixed(1)}L</h3>
-                <i className="bi bi-currency-rupee fs-1 text-success opacity-25"></i>
-              </div>
-              <small className="text-muted">Pre-approved Cashless Limits</small>
-            </div>
-          </div>
-        </div>
-
-        <div className="col-md-3 col-sm-6">
-          <div className="card shadow-sm border-0 border-start border-info border-4 h-100">
-            <div className="card-body">
-              <span className="text-muted small fw-semibold text-uppercase">Total Settled / Disbursed</span>
-              <div className="d-flex align-items-center justify-content-between mt-2">
-                <h3 className="fw-bold mb-0 text-info">₹{(totalSettled / 100000).toFixed(1)}L</h3>
-                <i className="bi bi-check-all fs-1 text-info opacity-25"></i>
-              </div>
-              <small className="text-muted">Direct Hospital Bank Credit</small>
-            </div>
-          </div>
-        </div>
-
-        <div className="col-md-3 col-sm-6">
-          <div className="card shadow-sm border-0 border-start border-warning border-4 h-100">
-            <div className="card-body">
-              <span className="text-muted small fw-semibold text-uppercase">Empaneled TPAs / Insurers</span>
-              <div className="d-flex align-items-center justify-content-between mt-2">
-                <h3 className="fw-bold mb-0 text-dark">{INITIAL_INSURANCE_PROVIDERS.length}</h3>
-                <i className="bi bi-building-check fs-1 text-warning opacity-50"></i>
-              </div>
-              <small className="text-muted">Govt PM-JAY & Private Insurers</small>
+            <div className="d-flex align-items-center gap-2 flex-wrap">
+              <span className="hero-chip">
+                <i className="bi bi-shield-lock-fill text-primary"></i>
+                IRDAI Empaneled
+              </span>
+              <span className="hero-chip">
+                <i className="bi bi-award-fill text-primary"></i>
+                PM-JAY Gold Portal
+              </span>
+              <button
+                type="button"
+                className="premium-btn"
+                onClick={() => setShowPreAuthModal(true)}
+              >
+                <i className="bi bi-file-earmark-plus-fill me-1"></i> New Cashless Pre-Auth
+              </button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Claims Table */}
-      <div className="card shadow-sm border-0">
-        <div className="card-header bg-white py-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
-          <h5 className="fw-bold mb-0 text-dark">
-            <i className="bi bi-card-checklist text-primary me-2"></i>
-            Cashless Hospitalization Claims & Pre-Auth Registry
-          </h5>
+      {/* METRIC GRID */}
+      <div className="metric-grid">
+        <div className="metric-card metric-blue">
+          <div className="metric-icon">
+            <i className="bi bi-folder-check"></i>
+          </div>
+          <div className="metric-label">Total Cashless Claims</div>
+          <div className="metric-value">{claims.length}</div>
+        </div>
 
-          <div className="d-flex gap-2">
-            <button
-              type="button"
-              className={`btn btn-sm ${filterStatus === 'ALL' ? 'btn-primary' : 'btn-outline-secondary'}`}
-              onClick={() => setFilterStatus('ALL')}
-            >
-              All ({claims.length})
-            </button>
-            <button
-              type="button"
-              className={`btn btn-sm ${filterStatus === 'PRE_AUTH_APPROVED' ? 'btn-primary' : 'btn-outline-secondary'}`}
-              onClick={() => setFilterStatus('PRE_AUTH_APPROVED')}
-            >
-              Pre-Auth Active ({claims.filter(c => c.status === 'PRE_AUTH_APPROVED').length})
-            </button>
-            <button
-              type="button"
-              className={`btn btn-sm ${filterStatus === 'SETTLED' ? 'btn-primary' : 'btn-outline-secondary'}`}
-              onClick={() => setFilterStatus('SETTLED')}
-            >
-              Settled ({claims.filter(c => c.status === 'SETTLED').length})
-            </button>
+        <div className="metric-card metric-green">
+          <div className="metric-icon">
+            <i className="bi bi-currency-rupee"></i>
+          </div>
+          <div className="metric-label">Total TPA Sanctioned</div>
+          <div className="metric-value">₹{(totalSanctioned / 100000).toFixed(1)}L</div>
+        </div>
+
+        <div className="metric-card metric-cyan">
+          <div className="metric-icon">
+            <i className="bi bi-check-all"></i>
+          </div>
+          <div className="metric-label">Total Settled / Disbursed</div>
+          <div className="metric-value">₹{(totalSettled / 100000).toFixed(1)}L</div>
+        </div>
+
+        <div className="metric-card metric-purple">
+          <div className="metric-icon">
+            <i className="bi bi-building-check"></i>
+          </div>
+          <div className="metric-label">Empaneled Insurers</div>
+          <div className="metric-value">{INITIAL_INSURANCE_PROVIDERS.length}</div>
+        </div>
+      </div>
+
+      {/* Claims Table (Premium Panel) */}
+      <div className="premium-panel">
+        <div className="panel-toolbar">
+          <div className="d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <h6 className="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
+              <i className="bi bi-card-checklist text-primary"></i>
+              Cashless Hospitalization Claims & Pre-Auth Registry
+            </h6>
+
+            <div className="premium-tabs">
+              <button
+                type="button"
+                className={`premium-tab ${filterStatus === 'ALL' ? 'active' : ''}`}
+                onClick={() => setFilterStatus('ALL')}
+              >
+                All <span className="tab-count">{claims.length}</span>
+              </button>
+              <button
+                type="button"
+                className={`premium-tab ${filterStatus === 'PRE_AUTH_APPROVED' ? 'active' : ''}`}
+                onClick={() => setFilterStatus('PRE_AUTH_APPROVED')}
+              >
+                Pre-Auth Active <span className="tab-count">{claims.filter(c => c.status === 'PRE_AUTH_APPROVED').length}</span>
+              </button>
+              <button
+                type="button"
+                className={`premium-tab ${filterStatus === 'SETTLED' ? 'active' : ''}`}
+                onClick={() => setFilterStatus('SETTLED')}
+              >
+                Settled <span className="tab-count">{claims.filter(c => c.status === 'SETTLED').length}</span>
+              </button>
+            </div>
           </div>
         </div>
 
-        <div className="card-body p-0">
-          <div className="table-responsive">
-            <table className="table table-hover align-middle mb-0">
-              <thead className="table-light small text-uppercase text-secondary">
+        <div className="table-wrap">
+          <table className="premium-table">
+            <thead>
+              <tr>
+                <th className="ps-3">Claim # / Date</th>
+                <th>Patient Details</th>
+                <th>Insurer / Policy</th>
+                <th>Diagnosis / Doctor</th>
+                <th>Bill / Approved</th>
+                <th>Patient Due</th>
+                <th>Status</th>
+                <th className="text-end pe-3">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredClaims.length === 0 ? (
                 <tr>
-                  <th className="ps-3">Claim # / Date</th>
-                  <th>Patient Details</th>
-                  <th>Insurer / Policy</th>
-                  <th>Diagnosis / Doctor</th>
-                  <th>Bill / Approved</th>
-                  <th>Patient Due</th>
-                  <th>Status</th>
-                  <th className="text-end pe-3">Actions</th>
+                  <td colSpan="8" className="text-center py-5 text-muted">
+                    <div className="empty-state">
+                      <div className="empty-icon"><i className="bi bi-folder-x"></i></div>
+                      <div className="fw-bold">No insurance claims found</div>
+                      <small>No claims matching the selected filter</small>
+                    </div>
+                  </td>
                 </tr>
-              </thead>
-              <tbody className="small">
-                {filteredClaims.length === 0 ? (
-                  <tr>
-                    <td colSpan="8" className="text-center py-5 text-muted">
-                      No insurance claims found in registry.
-                    </td>
-                  </tr>
-                ) : (
+              ) : (
                   filteredClaims.map(item => {
                     const isSettled = item.status === 'SETTLED';
 
@@ -440,7 +444,6 @@ export default function TpaDeskPanel() {
             </table>
           </div>
         </div>
-      </div>
 
       {/* Cashless Pre-Auth Modal */}
       {showPreAuthModal && (
