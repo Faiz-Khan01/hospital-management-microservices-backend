@@ -30,8 +30,7 @@ function Navbar({ toggleSidebar, activeTab, setActiveTab, onSearch, darkMode, to
 
     const isDemo = localStorage.getItem("is_demo_mode") === "true";
     const token = localStorage.getItem("token");
-    const isBackendDisabled = localStorage.getItem("notifications_backend_disabled") === "true";
-    if (isDemo || !token || token.startsWith("demo-") || backendDeniedRef.current || isBackendDisabled) {
+    if (isDemo || !token || token.startsWith("demo-") || backendDeniedRef.current) {
       setNotifications(stored);
       setUnreadCount(stored.filter(n => !n.read).length);
       return;
@@ -60,9 +59,8 @@ function Navbar({ toggleSidebar, activeTab, setActiveTab, onSearch, darkMode, to
         setUnreadCount(combined.filter(n => !n.read).length);
       })
       .catch((err) => {
-        if (err.response?.status === 403 || err.response?.status === 404) {
+        if (err.response?.status === 403) {
           backendDeniedRef.current = true;
-          localStorage.setItem("notifications_backend_disabled", "true");
         }
         setNotifications(stored);
         setUnreadCount(stored.filter(n => !n.read).length);
