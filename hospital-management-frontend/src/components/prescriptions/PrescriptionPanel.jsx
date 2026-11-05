@@ -486,25 +486,32 @@ function PrescriptionPanel({
                     </span>
                   </div>
 
-                  <button
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                     type="button"
                     className="add-medicine-btn ms-auto"
                     onClick={handleAddMedicineRow}
                   >
                     <i className="bi bi-plus-circle"></i>
                     Add medication
-                  </button>
+                  </motion.button>
 
                 </div>
 
 
                 <div className="medicine-list">
-
+                  <AnimatePresence mode="popLayout">
                   {medicines.map((med, idx) => (
 
-                    <div
+                    <motion.div
                       className="medicine-card"
                       key={idx}
+                      layout
+                      initial={{ opacity: 0, scale: 0.96, y: -8 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95, height: 0, marginBottom: 0, overflow: 'hidden' }}
+                      transition={springSnappy}
                     >
 
                       <div className="medicine-index">
@@ -668,10 +675,10 @@ function PrescriptionPanel({
                         <i className="bi bi-trash3"></i>
                       </button>
 
-                    </div>
+                    </motion.div>
 
                   ))}
-
+                  </AnimatePresence>
                 </div>
 
               </div>
@@ -810,10 +817,16 @@ function PrescriptionPanel({
             </thead>
 
             <tbody>
-
+              <AnimatePresence mode="popLayout">
               {safePrescriptions.length === 0 ? (
 
-                <tr>
+                <motion.tr
+                  key="empty-rx"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
 
                   <td
                     colSpan="7"
@@ -834,7 +847,7 @@ function PrescriptionPanel({
 
                   </td>
 
-                </tr>
+                </motion.tr>
 
               ) : (
 
@@ -842,9 +855,11 @@ function PrescriptionPanel({
 
                   <motion.tr 
                     key={rx.id}
-                    initial={{ opacity: 0, y: 6 }}
+                    layout
+                    initial={{ opacity: 0, y: 5 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.2 }}
+                    exit={{ opacity: 0, scale: 0.98 }}
+                    transition={{ duration: 0.18, ease: 'easeOut' }}
                   >
 
                     <td>
@@ -1005,7 +1020,7 @@ function PrescriptionPanel({
                 ))
 
               )}
-
+              </AnimatePresence>
             </tbody>
 
           </table>

@@ -4,6 +4,8 @@ import AppointmentService from '../../services/AppointmentService';
 import AuthService from '../../services/AuthService';
 import Pagination from '../common/Pagination';
 import PrintModal from '../common/PrintModal';
+import AnimatedCounter from '../common/AnimatedCounter';
+import AnimatedTabs from '../common/AnimatedTabs';
 import ConsultationModal from './ConsultationModal';
 import PrescriptionPrintSlip from './PrescriptionPrintSlip';
 import OpdLobbyTvDisplay from './OpdLobbyTvDisplay';
@@ -1351,7 +1353,7 @@ function AppointmentsPanel({
                   </div>
 
                   <div className="ap-kpi-value">
-                    {scheduledCount}
+                    <AnimatedCounter value={scheduledCount} />
                   </div>
 
                   <div className="ap-kpi-caption">
@@ -1379,7 +1381,7 @@ function AppointmentsPanel({
                   </div>
 
                   <div className="ap-kpi-value">
-                    {inProgressCount}
+                    <AnimatedCounter value={inProgressCount} />
                   </div>
 
                   <div className="ap-kpi-caption">
@@ -1407,7 +1409,7 @@ function AppointmentsPanel({
                   </div>
 
                   <div className="ap-kpi-value">
-                    {completedCount}
+                    <AnimatedCounter value={completedCount} />
                   </div>
 
                   <div className="ap-kpi-caption">
@@ -1435,7 +1437,7 @@ function AppointmentsPanel({
                   </div>
 
                   <div className="ap-kpi-value">
-                    {cancelledCount}
+                    <AnimatedCounter value={cancelledCount} />
                   </div>
 
                   <div className="ap-kpi-caption">
@@ -1806,6 +1808,26 @@ function AppointmentsPanel({
 
           </div>
 
+          {/* WORKFLOW STATUS TABS */}
+          <div className="px-3 px-md-4 pt-3 pb-1 d-flex overflow-x-auto">
+            <AnimatedTabs
+              tabs={[
+                { id: '', label: 'All Appointments' },
+                { id: 'Scheduled', label: 'Scheduled' },
+                { id: 'In Progress', label: 'In Progress' },
+                { id: 'Completed', label: 'Completed' },
+                { id: 'Cancelled', label: 'Cancelled' }
+              ]}
+              activeTab={statusFilter}
+              onChange={(id) => {
+                setStatusFilter(id);
+                setCurrentPage(1);
+              }}
+              layoutId="appointments-status-tabs"
+              className="flex-wrap"
+            />
+          </div>
+
           {/* TOOLBAR */}
 
           <div className="ap-toolbar">
@@ -1880,10 +1902,16 @@ function AppointmentsPanel({
               </thead>
 
               <tbody>
-
+                <AnimatePresence mode="popLayout">
                 {filteredAppointments.length === 0 ? (
 
-                  <tr>
+                  <motion.tr
+                    key="empty-appt"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
 
                     <td colSpan="7">
 
@@ -1905,7 +1933,7 @@ function AppointmentsPanel({
 
                     </td>
 
-                  </tr>
+                  </motion.tr>
 
                 ) : (
 
@@ -1939,9 +1967,11 @@ function AppointmentsPanel({
 
                       <motion.tr 
                         key={appt.id}
-                        initial={{ opacity: 0, y: 6 }}
+                        layout
+                        initial={{ opacity: 0, y: 5 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.2 }}
+                        exit={{ opacity: 0, scale: 0.98 }}
+                        transition={{ duration: 0.18, ease: 'easeOut' }}
                       >
 
                         {/* APPOINTMENT */}
@@ -2037,7 +2067,12 @@ function AppointmentsPanel({
 
                         <td>
 
-                          <span
+                          <motion.span
+                            layout
+                            key={statusConfig.label}
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            transition={{ duration: 0.2 }}
                             className={`ap-status ${statusConfig.className}`}
                           >
 
@@ -2047,7 +2082,7 @@ function AppointmentsPanel({
 
                             {statusConfig.label}
 
-                          </span>
+                          </motion.span>
 
                         </td>
 
@@ -2202,7 +2237,7 @@ function AppointmentsPanel({
                   })
 
                 )}
-
+                </AnimatePresence>
               </tbody>
 
             </table>

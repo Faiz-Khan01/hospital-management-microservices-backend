@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'motion/react';
 import BedService from '../../services/BedService';
 import RealtimeNotificationHub, { playHospitalAlertChime } from '../../services/RealtimeNotificationHub';
 import PrintModal from '../common/PrintModal';
+import AnimatedCounter from '../common/AnimatedCounter';
+import AnimatedTabs from '../common/AnimatedTabs';
 import AdmissionBedCardSlip from './AdmissionBedCardSlip';
 import DischargeGatepassSlip from './DischargeGatepassSlip';
 import { toast } from 'react-toastify';
@@ -1050,7 +1052,7 @@ function BedsPanel({ initialBeds = [], patients = [], doctors = [], onBedsUpdate
                 </div>
 
                 <div className="stat-value">
-                  {stats.total}
+                  <AnimatedCounter value={stats.total} />
                 </div>
 
               </div>
@@ -1087,7 +1089,7 @@ function BedsPanel({ initialBeds = [], patients = [], doctors = [], onBedsUpdate
                 </div>
 
                 <div className="stat-value">
-                  {stats.available}
+                  <AnimatedCounter value={stats.available} />
                 </div>
 
               </div>
@@ -1124,7 +1126,7 @@ function BedsPanel({ initialBeds = [], patients = [], doctors = [], onBedsUpdate
                 </div>
 
                 <div className="stat-value">
-                  {stats.occupied}
+                  <AnimatedCounter value={stats.occupied} />
                 </div>
 
               </div>
@@ -1161,7 +1163,7 @@ function BedsPanel({ initialBeds = [], patients = [], doctors = [], onBedsUpdate
                 </div>
 
                 <div className="stat-value">
-                  {stats.maintenance}
+                  <AnimatedCounter value={stats.maintenance} />
                 </div>
 
               </div>
@@ -1174,6 +1176,24 @@ function BedsPanel({ initialBeds = [], patients = [], doctors = [], onBedsUpdate
 
       </div>
 
+
+      {/* WARD NAVIGATION TABS */}
+      <div className="mb-3 d-flex overflow-x-auto">
+        <AnimatedTabs
+          tabs={[
+            { id: '', label: 'All Wards' },
+            { id: 'ICU', label: 'Intensive Care (ICU)' },
+            { id: 'General', label: 'General Ward' },
+            { id: 'Specialized', label: 'Cardiac Care (CCU)' },
+            { id: 'Private', label: 'Deluxe Suite' },
+            { id: 'Emergency', label: 'Emergency Trauma' }
+          ]}
+          activeTab={searchTerm}
+          onChange={(w) => setSearchTerm(w)}
+          layoutId="beds-ward-filter-tabs"
+          className="flex-wrap"
+        />
+      </div>
 
       {/* FILTER */}
 
@@ -1419,11 +1439,18 @@ function BedsPanel({ initialBeds = [], patients = [], doctors = [], onBedsUpdate
                       </div>
 
 
-                      <span
+                      <motion.span
+                        layout
+                        key={config.label}
+                        initial={{ scale: 0.9, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ duration: 0.2 }}
                         className="status-badge"
                         style={{
                           background: config.bg,
-                          color: config.color
+                          color: config.color,
+                          border: `1px solid ${config.color}33`,
+                          transition: 'border-color 0.25s ease'
                         }}
                       >
 
@@ -1433,7 +1460,7 @@ function BedsPanel({ initialBeds = [], patients = [], doctors = [], onBedsUpdate
 
                         {config.label}
 
-                      </span>
+                      </motion.span>
 
                     </div>
 

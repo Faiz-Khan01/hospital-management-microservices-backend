@@ -3,6 +3,8 @@ import MedicalRecordService from '../../services/MedicalRecordService';
 import AuthService from '../../services/AuthService';
 import PrintModal from '../common/PrintModal';
 import PatientDischargeSummarySlip from './PatientDischargeSummarySlip';
+import AnimatedCounter from '../common/AnimatedCounter';
+import AnimatedTabs from '../common/AnimatedTabs';
 import { toast } from 'react-toastify';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -48,6 +50,7 @@ function MedicalRecordPanel({
 
   // Timeline Filter: 'ALL', 'OPD', 'PRESCRIPTION', 'ADMISSION', 'BILLING'
   const [timelineFilter, setTimelineFilter] = useState('ALL');
+  const [expandedTimelineId, setExpandedTimelineId] = useState(null);
 
   // Print Discharge Modal State
   const [printDischargeSlip, setPrintDischargeSlip] = useState(null);
@@ -571,23 +574,15 @@ function MedicalRecordPanel({
           </div>
 
           <div className="d-flex flex-wrap align-items-center gap-2">
-            <button
-              type="button"
-              className={`ehr-nav-tab ${activeViewTab === 'DOSSIER' ? 'active-dossier' : ''}`}
-              onClick={() => setActiveViewTab('DOSSIER')}
-            >
-              <i className="bi bi-clock-history"></i>
-              Patient 360° Dossier & Timeline
-            </button>
-
-            <button
-              type="button"
-              className={`ehr-nav-tab ${activeViewTab === 'LEDGER' ? 'active-ledger' : ''}`}
-              onClick={() => setActiveViewTab('LEDGER')}
-            >
-              <i className="bi bi-table"></i>
-              Clinical Records Ledger ({records.length})
-            </button>
+            <AnimatedTabs
+              tabs={[
+                { id: 'DOSSIER', label: 'Patient 360° Dossier & Timeline' },
+                { id: 'LEDGER', label: `Clinical Records Ledger (${records.length})` }
+              ]}
+              activeTab={activeViewTab}
+              onChange={setActiveViewTab}
+              layoutId="emr-main-view-tabs"
+            />
           </div>
         </div>
       </div>
@@ -779,95 +774,118 @@ function MedicalRecordPanel({
 
               {/* Timeline Category Filters */}
               <div className="d-flex flex-wrap gap-1">
-                {[
-                  { key: 'ALL', label: 'All Touchpoints' },
-                  { key: 'OPD', label: 'OPD Visits' },
-                  { key: 'PRESCRIPTION', label: 'Medications ℞' },
-                  { key: 'ADMISSION', label: 'Bed Stays' },
-                  { key: 'BILLING', label: 'Invoices' }
-                ].map(filter => (
-                  <button
-                    key={filter.key}
-                    type="button"
-                    className={`btn btn-sm px-3 rounded-pill fw-bold ${timelineFilter === filter.key ? 'btn-primary text-white' : 'btn-light text-secondary border'}`}
-                    style={{ fontSize: 11 }}
-                    onClick={() => setTimelineFilter(filter.key)}
-                  >
-                    {filter.label}
-                  </button>
-                ))}
+                <AnimatedTabs
+                  tabs={[
+                    { id: 'ALL', label: 'All Touchpoints' },
+                    { id: 'OPD', label: 'OPD Visits' },
+                    { id: 'PRESCRIPTION', label: 'Medications ℞' },
+                    { id: 'ADMISSION', label: 'Bed Stays' },
+                    { id: 'BILLING', label: 'Invoices' }
+                  ]}
+                  activeTab={timelineFilter}
+                  onChange={setTimelineFilter}
+                  layoutId="emr-timeline-tabs"
+                  className="flex-wrap"
+                />
               </div>
             </div>
 
             {/* TIMELINE LIST */}
             <div className="timeline-container">
-              {filteredTimeline.map((item, idx) => (
-                <motion.div
-                  key={item.id}
-                  className="timeline-node"
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.25, delay: idx * 0.05 }}
-                >
-                  <div
-                    className="timeline-dot"
-                    style={{ background: item.iconColor, borderColor: '#ffffff', boxShadow: `0 0 0 2px ${item.iconColor}` }}
-                  ></div>
+              {filteredTimeline.map((item, idx) => {
+                const isExpanded = expandedTimelineId === item.id;
 
-                  <div className="timeline-bubble">
-                    <div className="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
-                      <div className="d-flex align-items-center gap-2">
-                        <div
-                          className="d-flex align-items-center justify-content-center rounded-3 flex-shrink-0"
-                          style={{ width: 36, height: 36, background: item.iconBg, color: item.iconColor, fontSize: 18 }}
-                        >
-                          <i className={`bi ${item.icon}`}></i>
-                        </div>
-                        <div>
-                          <span className={`badge rounded-pill fw-bold me-2 ${item.badgeColor}`} style={{ fontSize: 10 }}>
-                            {item.typeBadge}
-                          </span>
-                          <strong className="text-dark fs-6">{item.title}</strong>
-                        </div>
-                      </div>
+                return (
+                  <motion.div
+                    key={item.id}
+                    className="timeline-node"
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.25, delay: idx * 0.04 }}
+                  >
+                    <div
+                      className="timeline-dot"
+                      style={{ background: item.iconColor, borderColor: '#ffffff', boxShadow: `0 0 0 2px ${item.iconColor}` }}
+                    ></div>
 
-                      <div className="text-end">
-                        <span className="badge bg-light text-dark border fw-bold" style={{ fontSize: 11 }}>
-                          <i className="bi bi-calendar3 me-1"></i> {item.date}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Prescriptions List if any */}
-                    {item.medicines && item.medicines.length > 0 && (
-                      <div className="p-2 bg-light rounded-2 border my-2">
-                        <div className="text-muted fw-bold text-uppercase mb-1" style={{ fontSize: 10 }}>
-                          Prescribed Formulations:
-                        </div>
-                        <div className="d-flex flex-wrap gap-2">
-                          {item.medicines.map((m, mIdx) => (
-                            <span key={mIdx} className="badge bg-white text-dark border px-2 py-1">
-                              💊 {m.name} &bull; {m.dosage || '1 Tab'} &bull; {m.duration || '5 Days'}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Details Key-Value Grid */}
-                    {item.details && (
-                      <div className="row g-2 mt-1" style={{ fontSize: 11.5 }}>
-                        {Object.entries(item.details).map(([key, val]) => (
-                          <div key={key} className="col-12 col-md-6">
-                            <span className="text-muted fw-semibold">{key}: </span>
-                            <span className="text-dark" dangerouslySetInnerHTML={{ __html: val }}></span>
+                    <div className="timeline-bubble">
+                      <div className="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
+                        <div className="d-flex align-items-center gap-2">
+                          <div
+                            className="d-flex align-items-center justify-content-center rounded-3 flex-shrink-0"
+                            style={{ width: 36, height: 36, background: item.iconBg, color: item.iconColor, fontSize: 18 }}
+                          >
+                            <i className={`bi ${item.icon}`}></i>
                           </div>
-                        ))}
+                          <div>
+                            <span className={`badge rounded-pill fw-bold me-2 ${item.badgeColor}`} style={{ fontSize: 10 }}>
+                              {item.typeBadge}
+                            </span>
+                            <strong className="text-dark fs-6">{item.title}</strong>
+                          </div>
+                        </div>
+
+                        <div className="d-flex align-items-center gap-2">
+                          <span className="badge bg-light text-dark border fw-bold" style={{ fontSize: 11 }}>
+                            <i className="bi bi-calendar3 me-1"></i> {item.date}
+                          </span>
+
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-outline-secondary py-0 px-2 fw-semibold"
+                            style={{ fontSize: 10, borderRadius: 6 }}
+                            onClick={() => setExpandedTimelineId(prev => prev === item.id ? null : item.id)}
+                            aria-expanded={isExpanded}
+                          >
+                            {isExpanded ? 'Hide Details' : 'View Details'}
+                          </button>
+                        </div>
                       </div>
-                    )}
-                  </div>
-                </motion.div>
-              ))}
+
+                      {/* Expandable Details Container */}
+                      <AnimatePresence initial={false}>
+                        {isExpanded && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+                            style={{ overflow: 'hidden' }}
+                          >
+                            {/* Prescriptions List if any */}
+                            {item.medicines && item.medicines.length > 0 && (
+                              <div className="p-2 bg-light rounded-2 border my-2">
+                                <div className="text-muted fw-bold text-uppercase mb-1" style={{ fontSize: 10 }}>
+                                  Prescribed Formulations:
+                                </div>
+                                <div className="d-flex flex-wrap gap-2">
+                                  {item.medicines.map((m, mIdx) => (
+                                    <span key={mIdx} className="badge bg-white text-dark border px-2 py-1">
+                                      💊 {m.name} &bull; {m.dosage || '1 Tab'} &bull; {m.duration || '5 Days'}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Details Key-Value Grid */}
+                            {item.details && (
+                              <div className="row g-2 mt-1" style={{ fontSize: 11.5 }}>
+                                {Object.entries(item.details).map(([key, val]) => (
+                                  <div key={key} className="col-12 col-md-6">
+                                    <span className="text-muted fw-semibold">{key}: </span>
+                                    <span className="text-dark" dangerouslySetInnerHTML={{ __html: val }}></span>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  </motion.div>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -885,7 +903,7 @@ function MedicalRecordPanel({
                 </div>
                 <div>
                   <small className="text-muted fw-bold text-uppercase d-block" style={{ fontSize: 10 }}>Total Records</small>
-                  <div className="fs-4 fw-bold text-dark">{stats.total}</div>
+                  <div className="fs-4 fw-bold text-dark"><AnimatedCounter value={stats.total} /></div>
                 </div>
               </div>
             </div>
@@ -897,7 +915,7 @@ function MedicalRecordPanel({
                 </div>
                 <div>
                   <small className="text-muted fw-bold text-uppercase d-block" style={{ fontSize: 10 }}>OPD Encounters</small>
-                  <div className="fs-4 fw-bold text-dark">{stats.opd}</div>
+                  <div className="fs-4 fw-bold text-dark"><AnimatedCounter value={stats.opd} /></div>
                 </div>
               </div>
             </div>
@@ -909,7 +927,7 @@ function MedicalRecordPanel({
                 </div>
                 <div>
                   <small className="text-muted fw-bold text-uppercase d-block" style={{ fontSize: 10 }}>Emergency Records</small>
-                  <div className="fs-4 fw-bold text-dark">{stats.emergency}</div>
+                  <div className="fs-4 fw-bold text-dark"><AnimatedCounter value={stats.emergency} /></div>
                 </div>
               </div>
             </div>
@@ -921,7 +939,7 @@ function MedicalRecordPanel({
                 </div>
                 <div>
                   <small className="text-muted fw-bold text-uppercase d-block" style={{ fontSize: 10 }}>IPD Admissions</small>
-                  <div className="fs-4 fw-bold text-dark">{stats.ipd}</div>
+                  <div className="fs-4 fw-bold text-dark"><AnimatedCounter value={stats.ipd} /></div>
                 </div>
               </div>
             </div>

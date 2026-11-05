@@ -1742,8 +1742,15 @@ function BillingPanel({ role = 'ADMIN', bills, patients, onBillGenerated }) {
             </thead>
 
             <tbody>
+              <AnimatePresence mode="popLayout">
               {safeBills.length === 0 ? (
-                <tr>
+                <motion.tr
+                  key="empty-bills"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
                   <td
                     colSpan="8"
                     className="text-center empty-state"
@@ -1760,7 +1767,7 @@ function BillingPanel({ role = 'ADMIN', bills, patients, onBillGenerated }) {
                       Your generated medical invoices will appear here.
                     </div>
                   </td>
-                </tr>
+                </motion.tr>
               ) : (
                 safeBills.map((bill) => {
                   const patientName =
@@ -1775,9 +1782,11 @@ function BillingPanel({ role = 'ADMIN', bills, patients, onBillGenerated }) {
                   return (
                     <motion.tr 
                       key={bill.id}
-                      initial={{ opacity: 0, y: 6 }}
+                      layout
+                      initial={{ opacity: 0, y: 5 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.2 }}
+                      exit={{ opacity: 0, scale: 0.98 }}
+                      transition={{ duration: 0.18, ease: 'easeOut' }}
                     >
                       {/* Invoice */}
                       <td className="ps-4">
@@ -1858,7 +1867,12 @@ function BillingPanel({ role = 'ADMIN', bills, patients, onBillGenerated }) {
 
                       {/* Status */}
                       <td>
-                        <span
+                        <motion.span
+                          layout
+                          key={bill.paymentStatus}
+                          initial={{ scale: 0.9, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          transition={{ duration: 0.2 }}
                           className={`status-pill ${
                             isPaid
                               ? 'status-paid'
@@ -1875,7 +1889,7 @@ function BillingPanel({ role = 'ADMIN', bills, patients, onBillGenerated }) {
 
                           {bill.paymentStatus ||
                             'Pending'}
-                        </span>
+                        </motion.span>
                       </td>
 
                       {/* Actions */}
@@ -1941,6 +1955,7 @@ function BillingPanel({ role = 'ADMIN', bills, patients, onBillGenerated }) {
                   );
                 })
               )}
+              </AnimatePresence>
             </tbody>
           </table>
         </div>

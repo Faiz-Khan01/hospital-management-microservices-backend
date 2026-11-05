@@ -4,6 +4,8 @@ import LabService from '../../services/LabService';
 import AuthService from '../../services/AuthService';
 import PrintModal from '../common/PrintModal';
 import LabReportPrintSlip from './LabReportPrintSlip';
+import AnimatedCounter from '../common/AnimatedCounter';
+import AnimatedTabs from '../common/AnimatedTabs';
 import RealtimeNotificationHub, { playHospitalAlertChime } from '../../services/RealtimeNotificationHub';
 import { toast } from 'react-toastify';
 import { springSmooth } from '../../animations/motionConfig';
@@ -245,10 +247,17 @@ function LabPanel({ role = 'ADMIN', patients = [] }) {
     const config = getStatusConfig(status);
 
     return (
-      <span className={`premium-status ${config.className}`}>
+      <motion.span
+        layout
+        key={config.label}
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.2 }}
+        className={`premium-status ${config.className}`}
+      >
         <i className={`bi ${config.icon}`}></i>
         {config.label}
-      </span>
+      </motion.span>
     );
   };
 
@@ -1092,7 +1101,7 @@ function LabPanel({ role = 'ADMIN', patients = [] }) {
             <i className="bi bi-eyedropper"></i>
           </div>
           <div className="metric-label">Test Catalog</div>
-          <div className="metric-value">{tests.length}</div>
+          <div className="metric-value"><AnimatedCounter value={tests.length} /></div>
         </div>
 
         <div className="metric-card metric-purple">
@@ -1100,7 +1109,7 @@ function LabPanel({ role = 'ADMIN', patients = [] }) {
             <i className="bi bi-file-earmark-medical"></i>
           </div>
           <div className="metric-label">Total Reports</div>
-          <div className="metric-value">{reports.length}</div>
+          <div className="metric-value"><AnimatedCounter value={reports.length} /></div>
         </div>
 
         <div className="metric-card metric-orange">
@@ -1108,7 +1117,7 @@ function LabPanel({ role = 'ADMIN', patients = [] }) {
             <i className="bi bi-hourglass-split"></i>
           </div>
           <div className="metric-label">Pending Reports</div>
-          <div className="metric-value">{pendingReports}</div>
+          <div className="metric-value"><AnimatedCounter value={pendingReports} /></div>
         </div>
 
         <div className="metric-card metric-green">
@@ -1116,7 +1125,7 @@ function LabPanel({ role = 'ADMIN', patients = [] }) {
             <i className="bi bi-check2-circle"></i>
           </div>
           <div className="metric-label">Completed</div>
-          <div className="metric-value">{completedReports}</div>
+          <div className="metric-value"><AnimatedCounter value={completedReports} /></div>
         </div>
 
       </div>
@@ -1129,37 +1138,16 @@ function LabPanel({ role = 'ADMIN', patients = [] }) {
 
           <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
 
-            <div className="premium-tabs">
-
-              <button
-                className={`premium-tab ${
-                  activeTab === 'tests' ? 'active' : ''
-                }`}
-                onClick={() => setActiveTab('tests')}
-              >
-                <i className="bi bi-flask me-1"></i>
-                Test Catalog
-                <span className="tab-count">
-                  {tests.length}
-                </span>
-              </button>
-
-              <button
-                className={`premium-tab ${
-                  activeTab === 'reports' ? 'active' : ''
-                }`}
-                onClick={() => setActiveTab('reports')}
-              >
-                <i className="bi bi-file-earmark-bar-graph me-1"></i>
-                Patient Reports
-
-                {pendingReports > 0 && (
-                  <span className="tab-count">
-                    {pendingReports}
-                  </span>
-                )}
-              </button>
-
+            <div>
+              <AnimatedTabs
+                tabs={[
+                  { id: 'tests', label: `Test Catalog (${tests.length})` },
+                  { id: 'reports', label: `Patient Reports (${reports.length})` }
+                ]}
+                activeTab={activeTab}
+                onChange={setActiveTab}
+                layoutId="lab-main-tabs"
+              />
             </div>
 
           </div>
@@ -1792,10 +1780,16 @@ function LabPanel({ role = 'ADMIN', patients = [] }) {
                   const statusConfig =
                     getStatusConfig(report.status);
 
+                  const isAbnormal = /elevated|high|low|abnormal|critical/i.test(report.resultValue || '');
+
                   return (
 
-                    <div
+                    <motion.div
                       key={report.id}
+                      layout
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.2 }}
                       className="report-card"
                     >
 
@@ -1873,22 +1867,41 @@ function LabPanel({ role = 'ADMIN', patients = [] }) {
                       </div>
 
                       {report.resultValue && (
-                        <div className="result-box">
+                        <div
+                          className="result-box"
+                          style={isAbnormal ? { borderLeft: '4px solid #dc2626', background: 'rgba(254, 242, 242, 0.65)' } : {}}
+                        >
 
-                          <div
-                            className="fw-bold mb-1"
-                            style={{
-                              fontSize: '.68rem',
-                              color: '#64748b',
-                              textTransform: 'uppercase',
-                              letterSpacing: '.05em'
-                            }}
-                          >
-                            <i className="bi bi-bar-chart-line me-1 text-primary"></i>
-                            Diagnostic Result
+                          <div className="d-flex align-items-center justify-content-between mb-1 flex-wrap gap-2">
+                            <div
+                              className="fw-bold"
+                              style={{
+                                fontSize: '.68rem',
+                                color: isAbnormal ? '#b91c1c' : '#64748b',
+                                textTransform: 'uppercase',
+                                letterSpacing: '.05em'
+                              }}
+                            >
+                              <i className={`bi ${isAbnormal ? 'bi-exclamation-triangle-fill text-danger' : 'bi-bar-chart-line text-primary'} me-1`}></i>
+                              Diagnostic Result
+                            </div>
+
+                            {isAbnormal && (
+                              <span
+                                role="status"
+                                aria-label="Outside biological reference interval"
+                                className="badge bg-danger text-white border-0 d-inline-flex align-items-center gap-1"
+                                style={{ fontSize: '10px', fontWeight: 700 }}
+                              >
+                                <i className="bi bi-exclamation-octagon-fill" aria-hidden="true" />
+                                Attention: Outside Biological Reference Interval
+                              </span>
+                            )}
                           </div>
 
-                          {report.resultValue}
+                          <div className={isAbnormal ? 'fw-bold text-danger-emphasis' : ''}>
+                            {report.resultValue}
+                          </div>
 
                         </div>
                       )}
@@ -1941,7 +1954,7 @@ function LabPanel({ role = 'ADMIN', patients = [] }) {
                         )}
                       </div>
 
-                    </div>
+                    </motion.div>
 
                   );
                 })}

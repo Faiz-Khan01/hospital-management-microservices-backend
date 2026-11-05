@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import DoctorService from '../../services/DoctorService';
 import Pagination from '../common/Pagination';
+import AnimatedCounter from '../common/AnimatedCounter';
+import AnimatedTabs from '../common/AnimatedTabs';
 import { toast } from 'react-toastify';
 import { staggerContainer, staggerItem, springSmooth, springBouncy, springSnappy } from '../../animations/motionConfig';
 
@@ -171,7 +173,12 @@ function DoctorList({ doctors, onDoctorUpdated, searchQuery = '' }) {
     const config = getStatusConfig(status || 'Available');
 
     return (
-      <span
+      <motion.span
+        layout
+        key={config.label}
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.2 }}
         className="doctor-status-badge"
         style={{
           color: config.color,
@@ -190,7 +197,7 @@ function DoctorList({ doctors, onDoctorUpdated, searchQuery = '' }) {
         <i className={`bi ${config.icon}`} />
 
         {config.label}
-      </span>
+      </motion.span>
     );
   };
 
@@ -1184,7 +1191,7 @@ function DoctorList({ doctors, onDoctorUpdated, searchQuery = '' }) {
 
                 <div className="d-flex align-items-end gap-2">
                   <div className="stat-number">
-                    {availableCount}
+                    <AnimatedCounter value={availableCount} />
                   </div>
 
                   <span className="text-muted small mb-1">
@@ -1232,7 +1239,7 @@ function DoctorList({ doctors, onDoctorUpdated, searchQuery = '' }) {
 
                 <div className="d-flex align-items-end gap-2">
                   <div className="stat-number">
-                    {surgeryCount}
+                    <AnimatedCounter value={surgeryCount} />
                   </div>
 
                   <span className="text-muted small mb-1">
@@ -1280,7 +1287,7 @@ function DoctorList({ doctors, onDoctorUpdated, searchQuery = '' }) {
 
                 <div className="d-flex align-items-end gap-2">
                   <div className="stat-number">
-                    {offDutyCount}
+                    <AnimatedCounter value={offDutyCount} />
                   </div>
 
                   <span className="text-muted small mb-1">
@@ -1381,6 +1388,28 @@ function DoctorList({ doctors, onDoctorUpdated, searchQuery = '' }) {
 
           </div>
 
+        </div>
+
+        {/* SLIDING SPECIALTY TABS */}
+        <div className="px-3 px-md-4 pt-3 pb-1 d-flex overflow-x-auto">
+          <AnimatedTabs
+            tabs={[
+              { id: '', label: 'All Specialties' },
+              { id: 'General Medicine', label: 'General Medicine' },
+              { id: 'Cardiology', label: 'Cardiology' },
+              { id: 'General Surgery', label: 'Surgery' },
+              { id: 'Pediatrics', label: 'Pediatrics' },
+              { id: 'Neurology', label: 'Neurology' },
+              { id: 'Orthopedics', label: 'Orthopedics' }
+            ]}
+            activeTab={specialtyFilter}
+            onChange={(tabId) => {
+              setSpecialtyFilter(tabId);
+              setCurrentPage(1);
+            }}
+            layoutId="doctor-specialty-filter-tabs"
+            className="flex-wrap"
+          />
         </div>
 
         {/* FILTERS */}

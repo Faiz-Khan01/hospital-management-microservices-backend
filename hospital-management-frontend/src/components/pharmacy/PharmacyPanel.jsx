@@ -5,6 +5,8 @@ import PrescriptionService from '../../services/PrescriptionService';
 import RealtimeNotificationHub, { playHospitalAlertChime } from '../../services/RealtimeNotificationHub';
 import PrintModal from '../common/PrintModal';
 import PharmacyDispenseSlip from './PharmacyDispenseSlip';
+import AnimatedCounter from '../common/AnimatedCounter';
+import AnimatedTabs from '../common/AnimatedTabs';
 import { toast } from 'react-toastify';
 
 const CATEGORIES = [
@@ -748,32 +750,15 @@ function PharmacyPanel({
             </div>
 
             <div className="col-lg-auto pharmacy-hero-actions d-flex flex-wrap align-items-center gap-2">
-              <button
-                type="button"
-                className={`pharmacy-nav-tab ${
-                  activeMainTab === 'INVENTORY' ? 'active-inventory' : ''
-                }`}
-                onClick={() => setActiveMainTab('INVENTORY')}
-              >
-                <i className="bi bi-grid-fill"></i>
-                Medicine Catalog
-              </button>
-
-              <button
-                type="button"
-                className={`pharmacy-nav-tab dispense-tab ${
-                  activeMainTab === 'DISPENSE' ? 'active-dispense' : ''
-                }`}
-                onClick={() => setActiveMainTab('DISPENSE')}
-              >
-                <i className={`bi bi-bag-check-fill ${activeMainTab === 'DISPENSE' ? 'text-warning' : 'text-teal'}`}></i>
-                Dispensing Desk
-                {pendingRxCount > 0 && (
-                  <span className={`badge rounded-pill ms-1 fw-bold ${activeMainTab === 'DISPENSE' ? 'bg-warning text-dark' : 'bg-warning-subtle text-warning-emphasis border border-warning-subtle'}`} style={{ fontSize: 10 }}>
-                    {pendingRxCount} Pending
-                  </span>
-                )}
-              </button>
+              <AnimatedTabs
+                tabs={[
+                  { id: 'INVENTORY', label: 'Medicine Catalog' },
+                  { id: 'DISPENSE', label: `Dispensing Desk ${pendingRxCount > 0 ? `(${pendingRxCount} Pending)` : ''}` }
+                ]}
+                activeTab={activeMainTab}
+                onChange={setActiveMainTab}
+                layoutId="pharmacy-main-nav-tabs"
+              />
 
               {activeMainTab === 'INVENTORY' && (
                 <button
@@ -856,7 +841,7 @@ function PharmacyPanel({
                       </div>
                       <div>
                         <div className="stat-label">{stat.label}</div>
-                        <div className="stat-value">{stat.value}</div>
+                        <div className="stat-value"><AnimatedCounter value={stat.value} /></div>
                         <div className="stat-meta">{stat.meta}</div>
                       </div>
                     </div>
@@ -1089,10 +1074,20 @@ function PharmacyPanel({
                     </tr>
                   </thead>
                   <tbody>
+                    <AnimatePresence mode="popLayout">
                     {filtered.map(medicine => {
                       const stockState = getStockState(medicine.stock);
+                      const isExpiringSoon = medicine.expiryDate && (new Date(medicine.expiryDate) - new Date()) / (1000 * 60 * 60 * 24) <= 90;
+
                       return (
-                        <tr key={medicine.id}>
+                        <motion.tr
+                          key={medicine.id}
+                          layout
+                          initial={{ opacity: 0, y: 5 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.18 }}
+                        >
                           <td>
                             <div className="fw-bold text-dark">{medicine.name}</div>
                             <small className="text-muted">{medicine.genericName}</small>
@@ -1104,7 +1099,9 @@ function PharmacyPanel({
                           <td className="fw-bold text-dark">₹{Number(medicine.price || 0).toFixed(2)}</td>
                           <td>
                             <div className="stock-wrapper">
-                              <span
+                              <motion.span
+                                layout
+                                key={stockState.label}
                                 className="stock-pill"
                                 style={{
                                   color: stockState.color,
@@ -1114,7 +1111,7 @@ function PharmacyPanel({
                               >
                                 <i className={`bi ${stockState.icon}`} />
                                 {stockState.label} · {medicine.stock} {medicine.unit || 'Units'}
-                              </span>
+                              </motion.span>
                               <div className="stock-bar">
                                 <div
                                   className="stock-bar-fill"
@@ -1126,7 +1123,19 @@ function PharmacyPanel({
                               </div>
                             </div>
                           </td>
-                          <td className="small text-secondary">{medicine.expiryDate || '—'}</td>
+                          <td className="small text-secondary">
+                            {medicine.expiryDate || '—'}
+                            {isExpiringSoon && (
+                              <span
+                                role="status"
+                                aria-label="Expiring soon within 90 days"
+                                className="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle ms-1"
+                                style={{ fontSize: '9px' }}
+                              >
+                                <i className="bi bi-clock-history me-1" /> Soon
+                              </span>
+                            )}
+                          </td>
                           <td className="text-end pe-4">
                             <button
                               type="button"
@@ -1137,9 +1146,10 @@ function PharmacyPanel({
                               <i className="bi bi-trash3" />
                             </button>
                           </td>
-                        </tr>
+                        </motion.tr>
                       );
                     })}
+                    </AnimatePresence>
                   </tbody>
                 </table>
               </div>

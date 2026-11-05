@@ -1186,9 +1186,24 @@ function PaymentsPanel({ role = 'ADMIN', patients = [], bills = [], onPaymentSuc
         </div>
 
         {/* RAZORPAY ONLINE CHECKOUT MODAL */}
+        <AnimatePresence>
         {showRazorpayModal && (
-          <div className="modal show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(15, 23, 42, 0.7)', backdropFilter: 'blur(5px)', zIndex: 1060 }}>
-            <div className="modal-dialog modal-dialog-centered">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="modal show d-block"
+            tabIndex="-1"
+            style={{ backgroundColor: 'rgba(15, 23, 42, 0.7)', backdropFilter: 'blur(5px)', zIndex: 1060 }}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 15 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 15 }}
+              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+              className="modal-dialog modal-dialog-centered"
+            >
               <div className="modal-content shadow-2xl border-0 rounded-4 overflow-hidden">
                 <div className="modal-header text-white py-3 px-4" style={{ background: 'linear-gradient(135deg, #0f172a, #0284c7)' }}>
                   <div className="d-flex align-items-center gap-3">
@@ -1317,7 +1332,9 @@ function PaymentsPanel({ role = 'ADMIN', patients = [], bills = [], onPaymentSuc
                       >
                         Cancel
                       </button>
-                      <button
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
                         type="submit"
                         className="btn btn-primary btn-sm px-4 fw-bold d-inline-flex align-items-center gap-2"
                         disabled={processingRazorpay}
@@ -1334,14 +1351,15 @@ function PaymentsPanel({ role = 'ADMIN', patients = [], bills = [], onPaymentSuc
                             Pay ₹{Number(checkoutData.amount || 0).toLocaleString('en-IN')} via Razorpay
                           </>
                         )}
-                      </button>
+                      </motion.button>
                     </div>
                   </div>
                 </form>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         )}
+        </AnimatePresence>
 
         {/* FILTER TOOLBAR */}
         <div className="payment-toolbar">

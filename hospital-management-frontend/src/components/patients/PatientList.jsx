@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import PatientService from '../../services/PatientService';
 import Pagination from '../common/Pagination';
+import AnimatedCounter from '../common/AnimatedCounter';
 import { toast } from 'react-toastify';
 
 function PatientList({ patients, onPatientDeleted, onPatientUpdated, searchQuery = '' }) {
@@ -915,7 +916,7 @@ function PatientList({ patients, onPatientDeleted, onPatientUpdated, searchQuery
                   </div>
 
                   <div className="metric-value">
-                    {admittedCount}
+                    <AnimatedCounter value={admittedCount} />
                   </div>
                 </div>
 
@@ -937,7 +938,7 @@ function PatientList({ patients, onPatientDeleted, onPatientUpdated, searchQuery
                   </div>
 
                   <div className="metric-value">
-                    {opdCount}
+                    <AnimatedCounter value={opdCount} />
                   </div>
                 </div>
 
@@ -959,7 +960,7 @@ function PatientList({ patients, onPatientDeleted, onPatientUpdated, searchQuery
                   </div>
 
                   <div className="metric-value">
-                    {dischargedCount}
+                    <AnimatedCounter value={dischargedCount} />
                   </div>
                 </div>
 
@@ -1147,10 +1148,16 @@ function PatientList({ patients, onPatientDeleted, onPatientUpdated, searchQuery
                 </thead>
 
                 <tbody>
-
+                  <AnimatePresence mode="popLayout">
                   {filteredPatients.length === 0 ? (
 
-                    <tr>
+                    <motion.tr
+                      key="empty-row"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
                       <td
                         colSpan="7"
                         className="empty-state"
@@ -1169,7 +1176,7 @@ function PatientList({ patients, onPatientDeleted, onPatientUpdated, searchQuery
                         </div>
 
                       </td>
-                    </tr>
+                    </motion.tr>
 
                   ) : (
 
@@ -1179,7 +1186,14 @@ function PatientList({ patients, onPatientDeleted, onPatientUpdated, searchQuery
                         getStatusConfig(p.status);
 
                       return (
-                        <tr key={p.id}>
+                        <motion.tr
+                          key={p.id}
+                          layout
+                          initial={{ opacity: 0, y: 5 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, scale: 0.98 }}
+                          transition={{ duration: 0.18, ease: 'easeOut' }}
+                        >
 
                           {/* ID */}
 
@@ -1348,12 +1362,12 @@ function PatientList({ patients, onPatientDeleted, onPatientUpdated, searchQuery
 
                           </td>
 
-                        </tr>
+                        </motion.tr>
                       );
                     })
 
                   )}
-
+                  </AnimatePresence>
                 </tbody>
 
               </table>
