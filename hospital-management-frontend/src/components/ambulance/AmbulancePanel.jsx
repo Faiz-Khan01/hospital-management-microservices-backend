@@ -1,3 +1,4 @@
+// Ambulance Fleet & Rapid Emergency Dispatch Desk - HospitalSync Pro
 import React, { useState, useEffect, useMemo } from 'react';
 import PatientService from '../../services/PatientService';
 import BedService from '../../services/BedService';
