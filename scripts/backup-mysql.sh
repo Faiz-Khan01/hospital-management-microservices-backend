@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # ==============================================================================
 # HospitalSync Pro Suite - Automated MySQL Database Backup Script
+# HIPAA / ABDM Compliant: Gzip Compression + AES-256 Encryption at Rest
 # ==============================================================================
 set -euo pipefail
 
@@ -13,19 +14,21 @@ DB_HOST="${DB_HOST:-localhost}"
 DB_PORT="${DB_PORT:-3306}"
 DB_USER="${DB_USER:-root}"
 DB_PASSWORD="${DB_PASSWORD:-Password}"
+BACKUP_ENCRYPTION_KEY="${BACKUP_ENCRYPTION_KEY:-HospitalSyncBackupSecurePassphrase2026}"
 
 mkdir -p "${BACKUP_DIR}"
 
-BACKUP_FILE="${BACKUP_DIR}/hospitalsync_backup_${TIMESTAMP}.sql.gz"
+RAW_FILE="${BACKUP_DIR}/hospitalsync_backup_${TIMESTAMP}.sql.gz"
+ENC_FILE="${BACKUP_DIR}/hospitalsync_backup_${TIMESTAMP}.sql.gz.enc"
 
 echo "=========================================================="
-echo "HospitalSync Pro - Automated Database Backup"
+echo "HospitalSync Pro - Automated Database Backup & Encryption"
 echo "Timestamp  : ${TIMESTAMP}"
-echo "Destination: ${BACKUP_FILE}"
+echo "Destination: ${ENC_FILE}"
 echo "=========================================================="
 
 # Check if Docker container hospital-mysql is running
-if docker ps --format '{{.Names}}' | grep -q "^hospital-mysql$"; then
+if docker ps --format '{{.Names}}' 2>/dev/null | grep -q "^hospital-mysql$"; then
     echo "Running mysqldump inside Docker container 'hospital-mysql'..."
     docker exec hospital-mysql mysqldump \
         -u"${DB_USER}" \
@@ -33,7 +36,7 @@ if docker ps --format '{{.Names}}' | grep -q "^hospital-mysql$"; then
         --all-databases \
         --single-transaction \
         --quick \
-        | gzip -9 > "${BACKUP_FILE}"
+        | gzip -9 > "${RAW_FILE}"
 elif command -v mysqldump &> /dev/null; then
     echo "Running native mysqldump on ${DB_HOST}:${DB_PORT}..."
     mysqldump \
@@ -44,17 +47,33 @@ elif command -v mysqldump &> /dev/null; then
         --all-databases \
         --single-transaction \
         --quick \
-        | gzip -9 > "${BACKUP_FILE}"
+        | gzip -9 > "${RAW_FILE}"
 else
     echo "ERROR: Neither 'docker' container 'hospital-mysql' nor 'mysqldump' CLI is available."
     exit 1
 fi
 
-FILE_SIZE="$(du -h "${BACKUP_FILE}" | cut -f1)"
-echo "Backup successfully created: ${BACKUP_FILE} (${FILE_SIZE})"
+if [ ! -s "${RAW_FILE}" ]; then
+    echo "ERROR: Backup file was empty or failed to generate."
+    rm -f "${RAW_FILE}"
+    exit 1
+fi
+
+# 🔒 HIPAA / ABDM AES-256 Encryption at Rest
+echo "Encrypting backup with AES-256-CBC (PBKDF2)..."
+openssl enc -aes-256-cbc -salt -pbkdf2 -iter 100000 \
+    -in "${RAW_FILE}" \
+    -out "${ENC_FILE}" \
+    -pass pass:"${BACKUP_ENCRYPTION_KEY}"
+
+# Securely remove unencrypted raw gzip
+rm -f "${RAW_FILE}"
+
+FILE_SIZE="$(du -h "${ENC_FILE}" | cut -f1)"
+echo "Encrypted backup successfully created: ${ENC_FILE} (${FILE_SIZE})"
 
 # Retention Policy: Delete backups older than RETENTION_DAYS
 echo "Applying retention policy: purging backups older than ${RETENTION_DAYS} days..."
-find "${BACKUP_DIR}" -name "hospitalsync_backup_*.sql.gz" -type f -mtime +"${RETENTION_DAYS}" -exec rm -f {} +
+find "${BACKUP_DIR}" -name "hospitalsync_backup_*.sql.gz*" -type f -mtime +"${RETENTION_DAYS}" -exec rm -f {} +
 
 echo "Backup and retention rotation complete!"

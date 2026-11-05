@@ -11,11 +11,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Service
-public class
-AppointmentService {
+public class AppointmentService {
 
     private final AppointmentRepository repository;
     private final PatientClient patientClient;
@@ -75,24 +76,13 @@ AppointmentService {
     }
 
     public List<AppointmentResponseDTO> getAllAppointments() {
+        // ⚡ Performance Optimization: Request-level memoization eliminates N+1 inter-service HTTP loop
+        Map<Long, PatientResponse> patientCache = new ConcurrentHashMap<>();
+        Map<Long, DoctorResponse> doctorCache = new ConcurrentHashMap<>();
+
         return repository.findAll().stream().map(appointment -> {
-
-            // 🟢 Safe Patient Retrieval
-            PatientResponse patient;
-            try {
-                patient = patientClient.getPatientById(appointment.getPatientId());
-            } catch (Exception e) {
-                patient = createFallbackPatient(appointment.getPatientId());
-            }
-
-            // 🟢 Safe Doctor Retrieval
-            DoctorResponse doctor;
-            try {
-                doctor = doctorClient.getDoctorById(appointment.getDoctorId());
-            } catch (Exception e) {
-                doctor = createFallbackDoctor(appointment.getDoctorId());
-            }
-
+            PatientResponse patient = getCachedPatient(appointment.getPatientId(), patientCache);
+            DoctorResponse doctor = getCachedDoctor(appointment.getDoctorId(), doctorCache);
             return mapToResponseDTO(appointment, patient, doctor);
         }).collect(Collectors.toList());
     }
@@ -113,19 +103,14 @@ AppointmentService {
             }
             return predicate;
         };
+
+        // ⚡ Performance Optimization: Memoization eliminates redundant inter-service HTTP hops
+        Map<Long, PatientResponse> patientCache = new ConcurrentHashMap<>();
+        Map<Long, DoctorResponse> doctorCache = new ConcurrentHashMap<>();
+
         return repository.findAll(specification, pageable).map(appointment -> {
-            PatientResponse patient;
-            try {
-                patient = patientClient.getPatientById(appointment.getPatientId());
-            } catch (Exception e) {
-                patient = createFallbackPatient(appointment.getPatientId());
-            }
-            DoctorResponse doctor;
-            try {
-                doctor = doctorClient.getDoctorById(appointment.getDoctorId());
-            } catch (Exception e) {
-                doctor = createFallbackDoctor(appointment.getDoctorId());
-            }
+            PatientResponse patient = getCachedPatient(appointment.getPatientId(), patientCache);
+            DoctorResponse doctor = getCachedDoctor(appointment.getDoctorId(), doctorCache);
             return mapToResponseDTO(appointment, patient, doctor);
         });
     }
@@ -182,6 +167,34 @@ AppointmentService {
             throw new RuntimeException("Appointment not found with ID: " + id);
         }
         repository.deleteById(id);
+    }
+
+    // ⚡ Thread-safe memoized patient lookup
+    private PatientResponse getCachedPatient(Long patientId, Map<Long, PatientResponse> cache) {
+        if (patientId == null) {
+            return createFallbackPatient(null);
+        }
+        return cache.computeIfAbsent(patientId, id -> {
+            try {
+                return patientClient.getPatientById(id);
+            } catch (Exception e) {
+                return createFallbackPatient(id);
+            }
+        });
+    }
+
+    // ⚡ Thread-safe memoized doctor lookup
+    private DoctorResponse getCachedDoctor(Long doctorId, Map<Long, DoctorResponse> cache) {
+        if (doctorId == null) {
+            return createFallbackDoctor(null);
+        }
+        return cache.computeIfAbsent(doctorId, id -> {
+            try {
+                return doctorClient.getDoctorById(id);
+            } catch (Exception e) {
+                return createFallbackDoctor(id);
+            }
+        });
     }
 
     // Helper fallbacks so the stream never breaks if services are down or starting up

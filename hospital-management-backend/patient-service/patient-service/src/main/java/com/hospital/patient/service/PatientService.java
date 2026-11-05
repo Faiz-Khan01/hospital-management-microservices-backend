@@ -24,7 +24,7 @@ public class PatientService {
     }
 
     // FIX: Change parameter from 'Patient dto' to 'PatientDto dto'
-    @CacheEvict(value = "patients", allEntries = true)
+    @CacheEvict(value = "patients", key = "#result.id", condition = "#result != null")
     public PatientDto save(PatientDto dto) {
         Patient patient = convertToEntity(dto); // Ab ye bilkul sahi chalega
         Patient savedPatient = repository.save(patient);
@@ -83,7 +83,7 @@ public class PatientService {
         return convertToDto(patient);
     }
 
-    @CacheEvict(value = "patients", allEntries = true)
+    @CacheEvict(value = "patients", key = "#result.id", condition = "#result != null")
     public PatientDto saveForOwner(PatientDto dto, Long ownerUserId) {
         Patient patient = convertToEntity(dto);
         patient.setOwnerUserId(ownerUserId);

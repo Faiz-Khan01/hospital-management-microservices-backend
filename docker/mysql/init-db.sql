@@ -34,7 +34,8 @@ CREATE TABLE IF NOT EXISTS doctors (
     specialization VARCHAR(255),
     contact_number VARCHAR(50),
     email VARCHAR(255),
-    experience INT DEFAULT 0
+    experience INT DEFAULT 0,
+    INDEX idx_doc_specialization (specialization)
 ) ENGINE=InnoDB;
 
 INSERT IGNORE INTO doctors (id, name, specialization, contact_number, email, experience) VALUES
@@ -68,7 +69,8 @@ CREATE TABLE IF NOT EXISTS beds (
     status VARCHAR(50) DEFAULT 'AVAILABLE',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    CONSTRAINT uq_bed_ward_num UNIQUE (ward_id, bed_number)
+    CONSTRAINT uq_bed_ward_num UNIQUE (ward_id, bed_number),
+    INDEX idx_beds_status_ward (status, ward_id)
 ) ENGINE=InnoDB;
 
 INSERT IGNORE INTO wards (id, name, ward_type, floor_number, total_beds) VALUES
@@ -113,7 +115,9 @@ CREATE TABLE IF NOT EXISTS medicines (
     category VARCHAR(255),
     price DECIMAL(10, 2),
     stock_quantity INT DEFAULT 0,
-    expiry_date DATE
+    expiry_date DATE,
+    INDEX idx_meds_category (category),
+    INDEX idx_meds_name (name)
 ) ENGINE=InnoDB;
 
 INSERT IGNORE INTO medicines (id, name, manufacturer, category, price, stock_quantity, expiry_date) VALUES
@@ -170,10 +174,39 @@ CREATE TABLE IF NOT EXISTS patients (
     emergency_contact_name VARCHAR(255),
     emergency_contact_phone VARCHAR(50),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_patients_contact (contact_number),
+    INDEX idx_patients_owner (owner_user_id),
+    INDEX idx_patients_email (email)
 ) ENGINE=InnoDB;
 
 INSERT IGNORE INTO patients (id, name, age, date_of_birth, gender, blood_group, contact_number, email, address, disease) VALUES
 (1, 101, 'Rahul Sharma', 42, '1984-05-14', 'Male', 'O+', '+91 98765 43210', 'rahul.sharma@example.com', 'Flat 402, Lotus Apartments, Sector 18, New Delhi', 'Hypertension & CAD Evaluation'),
 (2, 102, 'Anita Verma', 36, '1990-08-22', 'Female', 'B+', '+91 98765 43211', 'anita.verma@example.com', 'Tower B, Galaxy Enclave, Gurgaon', 'Type 2 Diabetes Mellitus'),
 (3, 103, 'Vikram Malhotra', 58, '1968-11-03', 'Male', 'A+', '+91 98765 43212', 'vikram.m@example.com', 'Pocket C, Mayur Vihar Phase 1, Delhi', 'Osteoarthritis Right Knee');
+
+-- ------------------------------------------------------------
+-- 6. SEED: APPOINTMENT_DB
+-- ------------------------------------------------------------
+USE appointment_db;
+
+CREATE TABLE IF NOT EXISTS appointments (
+    appointment_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    patient_id BIGINT NOT NULL,
+    doctor_id BIGINT NOT NULL,
+    appointment_date DATE NOT NULL,
+    time VARCHAR(50) NOT NULL,
+    reason VARCHAR(500),
+    status VARCHAR(50) DEFAULT 'SCHEDULED',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_appts_doc_date (doctor_id, appointment_date),
+    INDEX idx_appts_patient (patient_id),
+    INDEX idx_appts_status (status)
+) ENGINE=InnoDB;
+
+INSERT IGNORE INTO appointments (appointment_id, patient_id, doctor_id, appointment_date, time, reason, status) VALUES
+(1, 1, 1, CURDATE(), '10:00 AM', 'Routine Post-Angioplasty Follow-up', 'SCHEDULED'),
+(2, 2, 4, CURDATE(), '11:30 AM', 'Type 2 Diabetes Quarterly Assessment', 'SCHEDULED'),
+(3, 3, 2, CURDATE(), '02:00 PM', 'Right Knee Osteoarthritis Pain Review', 'SCHEDULED');
+
