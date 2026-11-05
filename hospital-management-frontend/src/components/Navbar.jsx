@@ -161,7 +161,7 @@ function Navbar({ toggleSidebar, activeTab, setActiveTab, onSearch, darkMode, to
   const pageTitle = {
     dashboard: 'Dashboard', patients: 'Patients', doctors: 'Doctors',
     appointments: 'Appointments', prescriptions: 'Prescriptions', billing: 'Billing & Invoices',
-    payments: 'Payments', 'medical-records': '📋 Medical Records', lab: 'Laboratory',
+    payments: 'Payments', 'medical-records': 'Medical Records', lab: 'Laboratory',
     pharmacy: 'Pharmacy', beds: 'Beds & Inpatient', settings: 'System Settings',
     profile: 'My Profile', help: 'Help & Support'
   };
