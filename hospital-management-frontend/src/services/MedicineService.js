@@ -1,18 +1,13 @@
-import axios from 'axios';
-import AuthService from './AuthService';
+import apiClient from './apiClient';
 
-const BASE_URL = 'http://localhost:8080/api/v1/medicines';
-
-const getHeaders = () => ({
-  headers: { Authorization: `Bearer ${AuthService.getToken()}` }
-});
+const BASE_URL = '/medicines';
 
 const MedicineService = {
-  getAllMedicines: () => axios.get(BASE_URL, getHeaders()),
-  getMedicineById: (id) => axios.get(`${BASE_URL}/${id}`, getHeaders()),
-  createMedicine: (medicine) => axios.post(BASE_URL, medicine, getHeaders()),
-  updateMedicine: (id, medicine) => axios.put(`${BASE_URL}/${id}`, medicine, getHeaders()),
-  deleteMedicine: (id) => axios.delete(`${BASE_URL}/${id}`, getHeaders()),
+  getAllMedicines: () => apiClient.get(BASE_URL),
+  getMedicineById: (id) => apiClient.get(`${BASE_URL}/${id}`),
+  createMedicine: (medicine) => apiClient.post(BASE_URL, medicine),
+  updateMedicine: (id, medicine) => apiClient.put(`${BASE_URL}/${id}`, medicine),
+  deleteMedicine: (id) => apiClient.delete(`${BASE_URL}/${id}`),
 };
 
 export default MedicineService;

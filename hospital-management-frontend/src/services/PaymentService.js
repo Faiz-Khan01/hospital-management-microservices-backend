@@ -1,23 +1,18 @@
-import axios from 'axios';
-import AuthService from './AuthService';
+import apiClient from './apiClient';
 
-const BASE_URL = 'http://localhost:8080/api/v1/payments';
-
-const getHeaders = () => ({
-  headers: { Authorization: `Bearer ${AuthService.getToken()}` }
-});
+const BASE_URL = '/payments';
 
 const PaymentService = {
-  getAllPayments: () => axios.get(BASE_URL, getHeaders()),
-  getPaymentById: (id) => axios.get(`${BASE_URL}/${id}`, getHeaders()),
-  getPaymentsByPatient: (patientId) => axios.get(`${BASE_URL}/patient/${patientId}`, getHeaders()),
-  createPayment: (payment) => axios.post(BASE_URL, payment, getHeaders()),
-  updatePayment: (id, payment) => axios.put(`${BASE_URL}/${id}`, payment, getHeaders()),
-  deletePayment: (id) => axios.delete(`${BASE_URL}/${id}`, getHeaders()),
+  getAllPayments: () => apiClient.get(BASE_URL),
+  getPaymentById: (id) => apiClient.get(`${BASE_URL}/${id}`),
+  getPaymentsByPatient: (patientId) => apiClient.get(`${BASE_URL}/patient/${patientId}`),
+  createPayment: (payment) => apiClient.post(BASE_URL, payment),
+  updatePayment: (id, payment) => apiClient.put(`${BASE_URL}/${id}`, payment),
+  deletePayment: (id) => apiClient.delete(`${BASE_URL}/${id}`),
   createRazorpayOrder: (billingId, amount) =>
-    axios.post(`${BASE_URL}/razorpay/order`, { billingId, amount }, getHeaders()),
+    apiClient.post(`${BASE_URL}/razorpay/order`, { billingId, amount }),
   verifyRazorpayPayment: (payload) =>
-    axios.post(`${BASE_URL}/razorpay/verify`, payload, getHeaders()),
+    apiClient.post(`${BASE_URL}/razorpay/verify`, payload),
 };
 
 export default PaymentService;
