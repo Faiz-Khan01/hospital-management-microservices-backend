@@ -20,6 +20,14 @@
 
 > **HospitalSync Pro Suite** is a full-stack, distributed, cloud-native Hospital Information System (HIS) and Electronic Health Records (EHR) platform. It orchestrates **18 Spring Boot services** behind a reactive API Gateway and Eureka Service Discovery cluster, with resilient OpenFeign inter-service events, distributed Redis caching, MySQL relational persistence across 25 normalized tables, and an **Aura Mesh Gradient & Glassmorphic React 19** executive web application.
 
+<div align="center">
+
+| 🔐 **Enterprise Authentication Portal** | 🏥 **Executive Operations & Clinical Admin Dashboard** |
+|:---:|:---:|
+| <img src="docs/screenshots/landing-authentication-portal.jpg" alt="HospitalSync Pro Authentication Portal" width="100%" /> | <img src="docs/screenshots/admin-dashboard-overview.jpg" alt="HospitalSync Pro Real-Time Operations Dashboard" width="100%" /> |
+
+</div>
+
 ---
 
 ## 📑 Table of Contents
@@ -211,6 +219,15 @@ All client requests route through the **API Gateway** on Port `8080` (or through
 ## 🎨 Frontend UI & Design System
 
 The frontend is built with **React 19**, **Vite 8**, **Bootstrap 5.3**, and an **Aura Mesh Gradient & Glassmorphism** design architecture:
+
+<div align="center">
+
+| 🔐 **Landing & Authentication Portal** | 🏥 **Clinical Operations & Real-Time Dashboard** |
+|:---:|:---:|
+| <img src="docs/screenshots/landing-authentication-portal.jpg" alt="HospitalSync Pro Authentication Portal" width="100%" /> | <img src="docs/screenshots/admin-dashboard-overview.jpg" alt="HospitalSync Pro Admin Operations Dashboard" width="100%" /> |
+| *Role-based secure entry with 3D topology & microservices overview* | *Real-time telemetry, census counters, bed occupancy & revenue* |
+
+</div>
 
 - **Aura Mesh Ambient Glow**: Soft radial gradients combining Electric Blue (`#0ea5e9`), Lavender Purple (`#a855f7`), and Emerald Mint on a dark slate canvas.
 - **Glassmorphic Cards**: Semi-transparent frosted cards (`backdrop-filter: blur(24px)`), hairline borders (`rgba(226, 232, 240, 0.8)`), and soft elevation shadows.
